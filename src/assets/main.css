@@ -74,6 +74,14 @@ p {
   color: var(--text-secondary);
 }
 
+.logo {
+  height: 100px;
+}
+
+.logo-image {
+  height: 100%;
+}
+
 /* ===== LINKS ===== */
 a {
   text-decoration: none;
@@ -174,13 +182,6 @@ select:focus {
   background-color: var(--border-color);
   margin: 20px 0;
   width: 100%;
-}
-
-/* ===== RESPONSIVIDADE ===== */
-@media (min-width: 1024px) {
-  #app {
-    padding: 0 2rem;
-  }
 }
 
 /* ===== COMPONENTES ESPECÍFICOS ===== */

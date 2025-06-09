@@ -17,10 +17,14 @@ import {
   faFileImage,
   faFileExcel,
   faCog,
-  faSignOutAlt
+  faSignOutAlt,
+  faCheckCircle,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faInfoCircle,
+  faTimes
 } from '@fortawesome/free-solid-svg-icons'
 
-// Adicione os ícones que você vai usar
 library.add(
   faEye, 
   faEyeSlash, 
@@ -38,7 +42,13 @@ library.add(
   faFileImage,
   faFileExcel,
   faCog,
-  faSignOutAlt
+  faSignOutAlt,
+  faCheckCircle,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faInfoCircle,
+  faTimes
 )
+
 
 export { FontAwesomeIcon }

@@ -1,60 +1,43 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
+<!-- src/App.vue -->
 <template>
-  <!-- <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink> |
-        <RouterLink to="/about">Sobre</RouterLink> |
-        <RouterLink to="/login">Login</RouterLink> |
-        <RouterLink to="/style-guide">Guia de Estilo</RouterLink>
-      </nav>
-    </div>
-  </header> -->
-
-  <RouterView />
+  <div>
+    <RouterView />
+    <Notification 
+      v-if="notification.show" 
+      :message="notification.message" 
+      :type="notification.type" 
+      :duration="notification.duration"
+      @close="closeNotification"
+      :autoClose="false"
+    />
+  </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
+<script setup>
+import { ref, onMounted, provide } from 'vue'
+import { RouterView } from 'vue-router'
+import Notification from './components/Notification.vue'
 
-.logo {
-  display: block;
-}
+const notification = ref({
+  show: false,
+  message: '',
+  type: 'info',
+  duration: 3000
+})
 
-nav {
-  margin-top: 20px;
-}
-
-nav a {
-  color: var(--text-primary);
-  text-decoration: none;
-}
-
-nav a.router-link-exact-active {
-  color: var(--primary-color);
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
+const showNotification = (message, type = 'info', duration = 3000) => {
+  notification.value = {
+    show: true,
+    message,
+    type,
+    duration
   }
 }
-</style>
+
+const closeNotification = () => {
+  notification.value.show = false
+}
+
+// Disponibiliza a função para todos os componentes filhos
+provide('showNotification', showNotification)
+</script>

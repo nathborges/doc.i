@@ -5,5 +5,5 @@ import UserService from './user.service';
 export {
   AuthService,
   ApiService,
-  UserService
+  UserService,
 };

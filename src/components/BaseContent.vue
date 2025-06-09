@@ -1,59 +1,79 @@
-<script setup>
-import { ref } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { useRouter } from 'vue-router'
-import { AuthService } from '../services'
-import Menu from '@/components/Menu.vue'
-import BaseView from '@/components/BaseContent.vue'
-
-const router = useRouter()
-const searchQuery = ref('')
-const showUserMenu = ref(false)
-
-
-const toggleUserMenu = () => {
-  showUserMenu.value = !showUserMenu.value
-}
-
-const logout = () => {
-  AuthService.logout()
-  router.push('/login')
-}
-</script>
-
 <template>
-  <div class="home-container">
-    <Menu />
-    <div class="main-content">
-      <div class="header">
-        <div class="search-bar">
-          <font-awesome-icon icon="search" />
-          <input type="text" placeholder="Pesquisar documentos..." v-model="searchQuery">
-        </div>
-        <div class="user-profile">
-          <div class="notifications">
-            <font-awesome-icon icon="bell" />
+<div class="content">
+    <h1>Bem-vindo de volta!</h1>
+    <p class="subtitle">Aqui estão seus documentos recentes</p>
+
+    <!-- Recent Files -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Documentos Recentes</h2>
+        <button class="view-all">Ver todos</button>
+      </div>
+      <div class="files-grid">
+        <div class="file-card">
+          <div class="file-icon pdf">
+            <font-awesome-icon icon="file-pdf" />
           </div>
-          <div class="avatar" @click="toggleUserMenu">NB</div>
-          <div v-if="showUserMenu" class="user-menu">
-            <div class="user-menu-item">
-              <font-awesome-icon icon="user" />
-              <span>Perfil</span>
-            </div>
-            <div class="user-menu-item">
-              <font-awesome-icon icon="cog" />
-              <span>Configurações</span>
-            </div>
-            <div class="user-menu-item logout" @click="logout">
-              <font-awesome-icon icon="sign-out-alt" />
-              <span>Sair</span>
-            </div>
+          <div class="file-info">
+            <h3>Relatório Mensal</h3>
+            <p>Modificado: 2 dias atrás</p>
+          </div>
+        </div>
+        <div class="file-card">
+          <div class="file-icon doc">
+            <font-awesome-icon icon="file-word" />
+          </div>
+          <div class="file-info">
+            <h3>Proposta Cliente</h3>
+            <p>Modificado: 5 dias atrás</p>
+          </div>
+        </div>
+        <div class="file-card">
+          <div class="file-icon img">
+            <font-awesome-icon icon="file-image" />
+          </div>
+          <div class="file-info">
+            <h3>Apresentação</h3>
+            <p>Modificado: 1 semana atrás</p>
+          </div>
+        </div>
+        <div class="file-card">
+          <div class="file-icon xls">
+            <font-awesome-icon icon="file-excel" />
+          </div>
+          <div class="file-info">
+            <h3>Planilha Financeira</h3>
+            <p>Modificado: 2 semanas atrás</p>
           </div>
         </div>
       </div>
-      <!-- Content -->
-      <div class="content">
-        <BaseView />
+    </div>
+
+    <!-- Shared Files -->
+    <div class="section">
+      <div class="section-header">
+        <h2>Compartilhados com você</h2>
+        <button class="view-all">Ver todos</button>
+      </div>
+      <div class="files-grid">
+        <div class="file-card">
+          <div class="file-icon pdf">
+            <font-awesome-icon icon="file-pdf" />
+          </div>
+          <div class="file-info">
+            <h3>Manual do Usuário</h3>
+            <p>Compartilhado por: João Silva</p>
+          </div>
+        </div>
+        <div class="file-card">
+          <div class="file-icon doc">
+            <font-awesome-icon icon="file-word" />
+          </div>
+          <div class="file-info">
+            <h3>Contrato</h3>
+            <p>Compartilhado por: Maria Oliveira</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
