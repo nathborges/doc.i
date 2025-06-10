@@ -1,5 +1,6 @@
 @import './reset.css';
 @import './base.css';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ===== CORES DO SISTEMA ===== */
 :root {
@@ -39,6 +40,10 @@
 }
 
 /* ===== TIPOGRAFIA ===== */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
 h1 {
   font-size: 2.5rem;
   font-weight: 700;
@@ -80,6 +85,11 @@ p {
 
 .logo-image {
   height: 100%;
+}
+
+.flex-horizontal {
+  display: flex;
+  flex-direction: row;
 }
 
 /* ===== LINKS ===== */

@@ -1,7 +1,7 @@
 <template>
     <div>
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept=".pdf,.doc,.png"
-            :multiple="multiple" />
+            :multiple="true" />
         <button class="btn" @click="openFileSelector">
             <slot>Adicionar</slot>
         </button>
@@ -37,8 +37,8 @@ const openFileSelector = () => {
 }
 
 const handleFileChange = (event) => {
-    mostrarExemplo()
     const files = event.target.files
+    console.log(files);
     if (files && files.length > 0) {
         if (props.multiple) {
             emit('file-selected', files)
@@ -46,6 +46,9 @@ const handleFileChange = (event) => {
             const file = files[0]
             emit('file-selected', file)
         }
+        Array.from(files).forEach(element => {
+            showNotification(element.name, 'success', 5000)
+        });
     }
 }
 </script>
