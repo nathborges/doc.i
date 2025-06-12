@@ -1,6 +1,8 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+const emit = defineEmits(['close'])
 
 const username = ref('')
 const email = ref('')
@@ -67,11 +69,9 @@ const signup = () => {
         </div>
         
         <button type="submit" class="input-style">Criar Conta</button>
-        
-        <div class="divider"></div>
-        
+      
         <div class="login-link">
-          <span>Já tem uma conta? </span><router-link to="/login" class="bold-link">Faça login</router-link>
+          <span>Já tem uma conta? </span><a href="#" @click.prevent="$emit('close')" class="bold-link">Faça login</a>
         </div>
       </form>
     </div>
@@ -166,7 +166,6 @@ button[type="submit"]:hover {
 }
 
 .login-link a {
-  color: var(--secondary-color);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 700;

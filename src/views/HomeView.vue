@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
-import { AuthService } from '../services'
+import { AuthService } from '@/services/auth.service'
 import Menu from '@/components/Menu.vue'
 import BaseView from '@/components/BaseContent.vue'
 

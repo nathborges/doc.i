@@ -1,28 +1,36 @@
 <script setup>
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import SignupView from './SignupView.vue'
+import { AuthService } from '@/services/auth.service'
 import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const username = ref('')
 const password = ref('')
 const showPassword = ref(false)
+const showSignupModal = ref(false)
 
-// ... resto do código
-
-// const login = async () => {
-//   try {
-//     const result = await AuthService.login(username.value, password.value);
-//     console.log('Login bem-sucedido:', result.user);
-//     // Redireciona para a página inicial após o login
-//     router.push('/');
-//   } catch (error) {
-//     console.error('Erro no login:', error.message);
-//     alert('Erro no login: ' + error.message);
-//   }
-// }
+const login = async () => {
+  try {
+    const result = await AuthService.login(username.value, password.value);
+    console.log('Login bem-sucedido:', result.user);
+    router.push('/');
+  } catch (error) {
+    console.error('Erro no login:', error.message);
+  }
+}
 
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
+}
+
+const openSignupModal = () => {
+  showSignupModal.value = true
+}
+
+const closeSignupModal = () => {
+  showSignupModal.value = false
 }
 </script>
 
@@ -56,10 +64,8 @@ const togglePasswordVisibility = () => {
 
         <button type="submit" class="input-style">Entrar</button>
 
-        <div class="divider"></div>
-
         <div class="signup-link">
-          <span>Não é membro? </span><router-link to="/signup" class="bold-link">Crie uma conta</router-link>
+          <span>Não é membro? </span><a href="#" @click.prevent="openSignupModal" class="bold-link">Crie uma conta</a>
         </div>
       </form>
     </div>
@@ -70,6 +76,14 @@ const togglePasswordVisibility = () => {
 
   </div>
 
+  <div v-if="showSignupModal" class="modal-overlay">
+    <div class="modal-container">
+      <button class="close-button" @click="closeSignupModal">
+        <font-awesome-icon icon="times" />
+      </button>
+      <SignupView @close="closeSignupModal" />
+    </div>
+  </div>
 </template>
 
 <style scoped>
@@ -88,7 +102,7 @@ const togglePasswordVisibility = () => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding-top: 3%;
+  padding: 30px 25px;
   gap: 5%;
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-lg);
@@ -102,7 +116,7 @@ const togglePasswordVisibility = () => {
   justify-content: center;
   align-items: center;
   background-color: var(--bg-secondary);
-  padding: 20px;
+  padding: 30px 25px;
   margin-left: 0;
   position: relative;
 }
@@ -214,5 +228,62 @@ button[type="submit"]:hover {
   text-align: center;
   padding-left: 15%;
   padding-right: 15%;
+}
+
+/* Estilos do Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-container {
+  position: relative;
+  background-color: var(--bg-primary);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  width: 30vw;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 50px 45px;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: auto;
+  padding: 5px;
+  z-index: 1001;
+}
+
+.close-button:hover {
+  color: var(--primary-color);
+}
+
+/* Ajustes para o SignupView dentro do modal */
+.modal-container :deep(.container) {
+  height: auto;
+  width: auto;
+  background: none;
+}
+
+.modal-container :deep(.signup) {
+  width: 100%;
+  box-shadow: none;
+  padding: 0;
 }
 </style>

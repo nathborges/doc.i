@@ -33,3 +33,5 @@ coverage
 .cache
 .temp
 .eslintcache
+
+.env
