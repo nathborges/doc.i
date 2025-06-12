@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SignupView from '../components/SignupModal.vue'
 import { AuthService } from '@/services/auth.service'
 import { useRouter } from 'vue-router'
+import Carousel from '../components/Carousel.vue'
 
 const router = useRouter()
 const username = ref('')
@@ -69,9 +70,11 @@ const closeSignupModal = () => {
         </div>
       </form>
     </div>
-    <div class="image">
-      <img src="@/assets/images/login-image.svg" alt="Login Illustration" class="login-image">
-      <h1 class="image-caption">Use o Doc.i para deixar seu trabalho mais criativo e divertido</h1>
+    <div class="image-container">
+      <div class="image">
+        <Carousel  />
+      </div>
+      <h1 class="caption">Use o Doc.i para deixar seu trabalho mais criativo e divertido</h1>
     </div>
 
   </div>
@@ -109,7 +112,7 @@ const closeSignupModal = () => {
   z-index: 1;
 }
 
-.image {
+.image-container {
   flex: 0.6;
   display: flex;
   flex-direction: column;
@@ -119,10 +122,10 @@ const closeSignupModal = () => {
   padding: 30px 25px;
   margin-left: 0;
   position: relative;
+  gap: 50px;
 }
 
-.image-caption {
-  margin-top: 40px;
+.caption {
   text-align: center;
   color: var(--text-primary);
   font-size: 1.5rem;
@@ -132,8 +135,9 @@ const closeSignupModal = () => {
 }
 
 .login-image {
-  max-width: 60%;
-  max-height: 60%;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
 form {

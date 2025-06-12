@@ -38,7 +38,6 @@ const openFileSelector = () => {
 
 const handleFileChange = (event) => {
     const files = event.target.files
-    console.log(files);
     if (files && files.length > 0) {
         if (props.multiple) {
             emit('file-selected', files)
