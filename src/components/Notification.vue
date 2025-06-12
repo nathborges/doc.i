@@ -2,7 +2,9 @@
   <div v-if="show" class="notification" :class="type">
     <div class="flex-horizontal title">
       <span> Uploads </span>
-      <button @click="close" class="close-btn">&times;</button>
+      <button class="close-button" @click="close">
+        <font-awesome-icon icon="times" />
+      </button>
     </div>
 
     <div class="notification-content">
@@ -153,6 +155,22 @@ defineExpose({ close });
 .icon .info {
   color: #2196f3;
 }
+
+.close-button {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: auto;
+  padding: 0px 5px 5px 5px;
+  z-index: 1001;
+}
+
+.close-button:hover {
+  color: var(--primary-color);
+}
+
 
 @keyframes slide-in {
   from {

@@ -1,7 +1,5 @@
 <template>
 <div class="content">
-    <h1>Bem-vindo de volta!</h1>
-    <p class="subtitle">Aqui estão seus documentos recentes</p>
 
     <!-- Recent Files -->
     <div class="section">
@@ -85,7 +83,6 @@
   width: 100vw;
   height: 100vh;
   background-color: var(--bg-secondary);
-  font-family: 'General Sans', sans-serif;
 }
 
 /* Main Content */

@@ -4,9 +4,7 @@
         <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
       </div>
     <div class="menu">
-      <div class="button-item">
-        <ImportButton />
-      </div>
+      <ImportButton />
       <div class="menu-item active">
         <font-awesome-icon icon="home" />
         <span>Home</span>
@@ -20,7 +18,7 @@
         <span>Favoritos</span>
       </div>
       <div class="menu-item">
-        <font-awesome-icon icon="trash" />
+        <font-awesome-icon icon="trash-can" />
         <span>Lixeira</span>
       </div>
     </div>
@@ -70,13 +68,15 @@ import ImportButton from './ImportButton.vue';
 
 .menu {
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   padding: 14px 18px;
-  margin-bottom: 8px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;

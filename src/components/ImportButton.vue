@@ -3,7 +3,7 @@
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept=".pdf,.doc,.png"
             :multiple="true" />
         <button class="btn" @click="openFileSelector">
-            <slot>Adicionar</slot>
+            <slot>+ Importar</slot>
         </button>
     </div>
 </template>
@@ -56,14 +56,12 @@ const handleFileChange = (event) => {
 
 <style scoped>
 .btn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-weight: 500;
+    padding:14px 23px;
+    font-weight: 800;
     cursor: pointer;
     transition: all 0.2s;
     border: 1px solid var(--border-color);
-    background-color: var(--primary-color);
-    color: white;
+    width: 100%;
 }
 
 .btn:hover {

@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import SignupView from './SignupView.vue'
+import SignupView from '../components/SignupModal.vue'
 import { AuthService } from '@/services/auth.service'
 import { useRouter } from 'vue-router'
 
@@ -121,14 +121,6 @@ const closeSignupModal = () => {
   position: relative;
 }
 
-.logo {
-  height: 100px;
-}
-
-.logo-image {
-  height: 100%;
-}
-
 .image-caption {
   margin-top: 40px;
   text-align: center;
@@ -187,15 +179,7 @@ input {
   padding-left: 30px;
 }
 
-.input-style {
-  width: 100%;
-  border-radius: 20px;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
 button {
-  background-color: var(--primary-color);
   color: var(--text-light);
   border: none;
   cursor: pointer;
@@ -273,6 +257,7 @@ button[type="submit"]:hover {
 .close-button:hover {
   color: var(--primary-color);
 }
+
 
 /* Ajustes para o SignupView dentro do modal */
 .modal-container :deep(.container) {

@@ -26,30 +26,31 @@ const logout = () => {
     <Menu />
     <div class="main-content">
       <div class="header">
-        <div class="search-bar">
-          <font-awesome-icon icon="search" />
-          <input type="text" placeholder="Pesquisar documentos..." v-model="searchQuery">
-        </div>
-        <div class="user-profile">
-          <div class="notifications">
-            <font-awesome-icon icon="bell" />
+        <div class="header-title">
+          <h1>Bem-vindo de volta!</h1>
+          <div class="user-profile">
+            <div class="notifications">
+              <font-awesome-icon icon="bell" />
+            </div>
+            <div class="avatar" @click="toggleUserMenu">NB</div>
+            <div v-if="showUserMenu" class="user-menu">
+              <div class="user-menu-item">
+                <font-awesome-icon icon="user" />
+                <span>Perfil</span>
+              </div>
+              <div class="user-menu-item">
+                <font-awesome-icon icon="cog" />
+                <span>Configurações</span>
+              </div>
+              <div class="user-menu-item logout" @click="logout">
+                <font-awesome-icon icon="sign-out-alt" />
+                <span>Sair</span>
+              </div>
+            </div>
           </div>
-          <div class="avatar" @click="toggleUserMenu">NB</div>
-          <div v-if="showUserMenu" class="user-menu">
-            <div class="user-menu-item">
-              <font-awesome-icon icon="user" />
-              <span>Perfil</span>
-            </div>
-            <div class="user-menu-item">
-              <font-awesome-icon icon="cog" />
-              <span>Configurações</span>
-            </div>
-            <div class="user-menu-item logout" @click="logout">
-              <font-awesome-icon icon="sign-out-alt" />
-              <span>Sair</span>
-            </div>
-          </div>
         </div>
+
+          <input class="search-input" type="text" placeholder="Pesquisar documentos..." v-model="searchQuery">
       </div>
       <!-- Content -->
       <div class="content">
@@ -65,47 +66,44 @@ const logout = () => {
   width: 100vw;
   height: 100vh;
   background-color: var(--bg-secondary);
-  font-family: 'General Sans', sans-serif;
 }
 
 /* Main Content */
 .main-content {
   flex-grow: 1;
-  padding: 30px 50px;
+  padding: 50px 50px;
   overflow-y: auto;
 }
 
 .header {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header-title {
+  display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 50px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-secondary);
-  border-radius: 12px;
-  padding: 12px 20px;
-  width: 450px;
-  border: 1px solid var(--border-color);
-}
-
-.search-bar svg {
-  color: var(--text-secondary);
-  margin-right: 12px;
-}
-
-.search-bar input {
-  border: none;
-  outline: none;
   width: 100%;
-  font-size: 15px;
-  background-color: transparent;
-  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px;
+  font-size: 17px;
+  border: 2px solid #d1d5db; /* Tailwind's gray-300 */
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #374151; /* gray-700 */
+  box-shadow: 0 0 0 2px rgba(55, 65, 81, 0.2); /* focus:ring */
 }
 
 .user-profile {
