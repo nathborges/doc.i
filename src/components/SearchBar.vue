@@ -59,7 +59,8 @@ const handleSearch = () => {
         fullResponse.value = 'Encontrei alguns documentos que podem ser relevantes para sua pesquisa. Aqui estão os resultados mais relevantes.'
       }
       isSearching.value = false
-      emit('search-results', data)
+
+      emit('search-results', data.files || [])
       
       setTimeout(() => {
         startTyping()
@@ -142,7 +143,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
 }
 
 .loading-icon {

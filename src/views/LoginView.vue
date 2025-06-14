@@ -42,8 +42,7 @@ const closeSignupModal = () => {
       </div>
       <div class="login-container">
         <h1>Bem vindo!</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui mauris. Vivamus hendrerit arcu sed
-          erat molestie vehicula.</p>
+        <p>Transforme seus documentos em dados inteligentes prontos para análise. Aqui, sua informação trabalha por você.</p>
       </div>
       <form @submit.prevent="login">
         <div class="form-group">
@@ -73,7 +72,8 @@ const closeSignupModal = () => {
       <div class="image">
         <Carousel  />
       </div>
-      <h1 class="caption">Use o Doc.i para deixar seu trabalho mais criativo e divertido</h1>
+      <h1 class="caption">Use o Doc.i para transformar documentos soltos em insights de verdade.
+        Organize, busque e exporte dados de forma simples e rápida.</h1>
     </div>
 
   </div>

@@ -1,18 +1,18 @@
 <template>
     <div class="content">
         <SearchBar @search-results="handleSearchResults" />
-        <div class="section">
+        <div v-if="hasResults" class="section">
             <div class="section-header">
                 <h2>Resultados da pesquisa</h2>
             </div>
             <div class="files-grid">
-                <div class="file-card">
+                <div v-for="result in searchResults" class="file-card">
                     <div class="file-icon">
                         <span class="material-icons">picture_as_pdf</span>
                     </div>
                     <div class="file-info">
-                        <h3>Relatório Mensal</h3>
-                        <p>Relevância: 76%</p>
+                        <h3>{{ result.url }}</h3>
+                        <p>Relevância: {{ (result.probability * 100).toFixed(0) }}%</p>
                     </div>
                 </div>
                 <div class="file-card">
@@ -48,10 +48,15 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue';
 import SearchBar from './SearchBar.vue';
 
+const searchResults = ref([])
+const hasResults = computed(() => searchResults.value.length > 0)
+
 const handleSearchResults = (data) => {
-    console.log(data)
+    console.log('Search results:', data);
+    searchResults.value = data;
 }
 </script>
 

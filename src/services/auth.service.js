@@ -3,10 +3,15 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000/api';
 
 export const AuthService = {
-  login(username, password) { 
-    return axios.post(`${API_URL}/login`, {
-      email: username,
-      password: password
+  login(username, password) {
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+    
+    return axios.post(`${API_URL}/login`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
     })
       .then(response => {
         const token = response.data.access_token || '';
