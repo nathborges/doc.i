@@ -3,16 +3,29 @@ import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
+import { SearchService } from '@/services/search.service'
 import Menu from '@/components/Menu.vue'
 import BaseView from '@/components/BaseContent.vue'
+import ImportButton from '@/components/ImportButton.vue'
 
 const router = useRouter()
 const searchQuery = ref('')
 const showUserMenu = ref(false)
-
+const searchResults = ref(null)
 
 const toggleUserMenu = () => {
   showUserMenu.value = !showUserMenu.value
+}
+
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    SearchService.ask(searchQuery.value)
+      .then(data => {
+        searchResults.value = data
+        console.log('Resultados:', data)
+      })
+      .catch(error => console.error('Erro na pesquisa:', error))
+  }
 }
 
 const logout = () => {
@@ -30,14 +43,11 @@ const logout = () => {
           <h1>Bem-vindo de volta!</h1>
           <div class="user-profile">
             <div class="notifications">
-              <font-awesome-icon icon="bell" />
+              <span class="material-icons">notifications</span>
             </div>
-            <div class="avatar" @click="toggleUserMenu">NB</div>
+            <div class="avatar" @click="toggleUserMenu"><span class="material-icons">person</span>
+            </div>
             <div v-if="showUserMenu" class="user-menu">
-              <div class="user-menu-item">
-                <font-awesome-icon icon="user" />
-                <span>Perfil</span>
-              </div>
               <div class="user-menu-item">
                 <font-awesome-icon icon="cog" />
                 <span>Configurações</span>
@@ -47,10 +57,11 @@ const logout = () => {
                 <span>Sair</span>
               </div>
             </div>
+            <ImportButton />
           </div>
         </div>
 
-          <input class="search-input" type="text" placeholder="Pesquisar documentos..." v-model="searchQuery">
+          <input class="search-input" type="text" placeholder="Pesquisar documentos..." v-model="searchQuery" @keyup.enter="handleSearch" @click="handleSearch">
       </div>
       <!-- Content -->
       <div class="content">
@@ -109,10 +120,10 @@ const logout = () => {
 .user-profile {
   display: flex;
   align-items: center;
+  gap: 14px;
 }
 
 .notifications {
-  margin-right: 25px;
   position: relative;
   cursor: pointer;
   width: 40px;
@@ -122,23 +133,22 @@ const logout = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-secondary);
+  color: var( --text-primary);
   border: 1px solid var(--border-color);
 }
 
 .avatar {
   width: 42px;
   height: 42px;
-  background-color: var(--primary-color);
-  color: var(--text-light);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
   cursor: pointer;
-  font-size: 15px;
   position: relative;
+  border: 1px solid var(--border-color);
 }
 
 .user-menu {

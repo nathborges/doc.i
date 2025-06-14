@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import SignupView from '../components/SignupModal.vue'
 import { AuthService } from '@/services/auth.service'
 import { useRouter } from 'vue-router'
@@ -55,7 +54,7 @@ const closeSignupModal = () => {
           <input :type="showPassword ? 'text' : 'password'" class="input-style" id="password" v-model="password"
             required placeholder="Senha">
           <button type="button" class="toggle-password" @click="togglePasswordVisibility">
-            <font-awesome-icon :icon="showPassword ? 'eye-slash' : 'eye'" />
+            <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
           </button>
         </div>
 
@@ -82,7 +81,7 @@ const closeSignupModal = () => {
   <div v-if="showSignupModal" class="modal-overlay">
     <div class="modal-container">
       <button class="close-button" @click="closeSignupModal">
-        <font-awesome-icon icon="times" />
+        <span class="material-icons">close</span>
       </button>
       <SignupView @close="closeSignupModal" />
     </div>

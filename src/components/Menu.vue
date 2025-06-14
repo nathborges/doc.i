@@ -1,25 +1,32 @@
 <template>
   <div class="sidebar">
     <div class="logo">
-        <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
-      </div>
+      <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
+    </div>
     <div class="menu">
-      <ImportButton />
-      <div class="menu-item active">
-        <font-awesome-icon icon="home" />
+      <div class="menu-item" :class="{ active: currentView === 'home' }" @click="handleMenuClick('home')">
+        <span class="material-icons">home</span>
         <span>Home</span>
       </div>
-      <div class="menu-item">
-        <font-awesome-icon icon="folder" />
-        <span>Meus Documentos</span>
+      <div>
+        <div class="menu-item" @click="toggleCategorias">
+          <span class="material-icons">bookmarks</span>
+          <span>Minhas Categorias</span>
+          <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
+            'expand_more' }}</span>
+        </div>
+        <div v-if="showCategorias" class="submenu">
+          <div v-for="categoria in categorias" class="submenu-item"
+            :class="{ active: currentView === 'categoria' && currentCategory === categoria.name }"
+            @click="handleCategoriaClick(categoria.name)">
+            <span class="material-icons" :style="{ color: categoria.color }">bookmark</span>
+            <span>{{ categoria.name }}</span>
+          </div>
+        </div>
       </div>
       <div class="menu-item">
-        <font-awesome-icon icon="star" />
+        <span class="material-icons">star</span>
         <span>Favoritos</span>
-      </div>
-      <div class="menu-item">
-        <font-awesome-icon icon="trash-can" />
-        <span>Lixeira</span>
       </div>
     </div>
     <div class="storage">
@@ -35,8 +42,33 @@
 </template>
 
 <script setup>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import ImportButton from './ImportButton.vue';
+import { nextTick, onMounted, ref } from 'vue';
+import { FileService } from '@/services/files.service';
+import { computed } from 'vue';
+import { currentView, changeView } from '@/store/BaseViewState';
+
+const showCategorias = ref(false);
+const categorias = ref([]);
+const hasCategorias = computed(() => categorias.value.length > 0);
+
+const handleMenuClick = (item) => {
+  console.log('Menu item clicked:', item);
+};
+
+const handleCategoriaClick = (categoria) => {
+  changeView('categoria', categoria);
+};
+
+const toggleCategorias = () => {
+  if (!hasCategorias.value) return;
+  showCategorias.value = !showCategorias.value;
+};
+
+onMounted(async () => {
+  categorias.value = await FileService.getCategorias();
+  nextTick()
+});
+
 </script>
 
 <style scoped>
@@ -70,33 +102,68 @@ import ImportButton from './ImportButton.vue';
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 15px;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  padding: 14px 18px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s;
   font-size: 15px;
-  color: var(--text-secondary);
+  font-weight: 400;
+  color: var(--text-primary);
 }
+
 
 .menu-item:hover {
   background-color: var(--bg-secondary);
 }
 
 .menu-item.active {
-  background-color: var(--primary-color-light);
-  color: var(--primary-color);
-  font-weight: 600;
+  font-weight: 800;
 }
 
-.menu-item svg {
-  margin-right: 15px;
-  width: 18px;
+.menu-item .material-icons {
+  font-size: 17px;
+  margin-right: 8px;
+  margin-bottom: 3px;
+}
+
+.menu-item .expand-icon {
+  margin-left: auto;
+  margin-right: 0;
+  font-size: 20px;
+}
+
+.submenu {
+  margin-left: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.submenu-item {
+  display: flex;
+  align-items: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.submenu-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.submenu-item .material-icons {
+  margin-right: 5px;
+  font-size: 20px;
 }
 
 .storage {

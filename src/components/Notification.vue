@@ -3,15 +3,15 @@
     <div class="flex-horizontal title">
       <span> Uploads </span>
       <button class="close-button" @click="close">
-        <font-awesome-icon icon="times" />
+        <span class="material-icons">close</span>
       </button>
     </div>
 
     <div class="notification-content">
       <div v-for="notification in notifications" class="notifications">
         <span class="filename"> {{ notification.fileName }}</span>
-        <span class="icon"> <font-awesome-icon :class="notification.status"
-            :icon="getIconForStatus(notification.status)" />
+        <span class="icon">
+          <span class="material-icons" :class="notification.status">{{ getMaterialIconForStatus(notification.status) }}</span>
         </span>
       </div>
     </div>
@@ -41,17 +41,17 @@ const close = () => {
 
 const emit = defineEmits(['close']);
 
-const getIconForStatus = (status) => {
+const getMaterialIconForStatus = (status) => {
   console.log(status)
   switch (status) {
     case 'success':
-      return 'check-circle';
+      return 'check_circle';
     case 'error':
-      return 'exclamation-circle';
+      return 'error';
     case 'warning':
-      return 'exclamation-triangle';
+      return 'warning';
     default:
-      return 'info-circle';
+      return 'info';
   }
 };
 
