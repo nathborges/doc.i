@@ -1,71 +1,36 @@
 <script setup>
-import { ref } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { useRouter } from 'vue-router'
-import { AuthService } from '@/services/auth.service'
-import { SearchService } from '@/services/search.service'
+import { ref, computed } from 'vue'
 import Menu from '@/components/Menu.vue'
-import BaseView from '@/components/BaseContent.vue'
-import ImportButton from '@/components/ImportButton.vue'
+import BaseContent from '@/components/BaseContent.vue'
+import HeaderBar from '@/components/HeaderBar.vue'
+import { currentView } from '@/store/BaseViewState';
+import CategoriaContent from '@/components/CategoriaContent.vue';
 
-const router = useRouter()
-const searchQuery = ref('')
-const showUserMenu = ref(false)
-const searchResults = ref(null)
-
-const toggleUserMenu = () => {
-  showUserMenu.value = !showUserMenu.value
-}
-
-const handleSearch = () => {
-  if (searchQuery.value.trim()) {
-    SearchService.ask(searchQuery.value)
-      .then(data => {
-        searchResults.value = data
-        console.log('Resultados:', data)
-      })
-      .catch(error => console.error('Erro na pesquisa:', error))
+const currentComponent = computed(() => {
+  switch (currentView.value) {
+    case 'home':
+      return BaseContent;
+    case 'categoria':
+      return CategoriaContent;
   }
+});
+
+const searchResults = ref([])
+
+const handleSearchResults = (results) => {
+  searchResults.value = results
 }
 
-const logout = () => {
-  AuthService.logout()
-  router.push('/login')
-}
 </script>
 
 <template>
   <div class="home-container">
     <Menu />
     <div class="main-content">
-      <div class="header">
-        <div class="header-title">
-          <h1>Bem-vindo de volta!</h1>
-          <div class="user-profile">
-            <div class="notifications">
-              <span class="material-icons">notifications</span>
-            </div>
-            <div class="avatar" @click="toggleUserMenu"><span class="material-icons">person</span>
-            </div>
-            <div v-if="showUserMenu" class="user-menu">
-              <div class="user-menu-item">
-                <font-awesome-icon icon="cog" />
-                <span>Configurações</span>
-              </div>
-              <div class="user-menu-item logout" @click="logout">
-                <font-awesome-icon icon="sign-out-alt" />
-                <span>Sair</span>
-              </div>
-            </div>
-            <ImportButton />
-          </div>
-        </div>
-
-          <input class="search-input" type="text" placeholder="Pesquisar documentos..." v-model="searchQuery" @keyup.enter="handleSearch" @click="handleSearch">
-      </div>
+      <HeaderBar @search-results="handleSearchResults"/>
       <!-- Content -->
       <div class="content">
-        <BaseView />
+        <component :is="currentComponent" :results="searchResults.value"/>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@
       </div>
       <div>
         <div class="menu-item" @click="toggleCategorias">
-          <span class="material-icons">bookmarks</span>
+          <span class="material-icons">folder</span>
           <span>Minhas Categorias</span>
           <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
             'expand_more' }}</span>
@@ -19,7 +19,7 @@
           <div v-for="categoria in categorias" class="submenu-item"
             :class="{ active: currentView === 'categoria' && currentCategory === categoria.name }"
             @click="handleCategoriaClick(categoria.name)">
-            <span class="material-icons" :style="{ color: categoria.color }">bookmark</span>
+            <span class="material-icons" :style="{ color: categoria.color }">circle</span>
             <span>{{ categoria.name }}</span>
           </div>
         </div>
@@ -52,7 +52,7 @@ const categorias = ref([]);
 const hasCategorias = computed(() => categorias.value.length > 0);
 
 const handleMenuClick = (item) => {
-  console.log('Menu item clicked:', item);
+  changeView(item);
 };
 
 const handleCategoriaClick = (categoria) => {
