@@ -46,111 +46,11 @@ const handleSearchResults = (results) => {
 
 /* Main Content */
 .main-content {
-  flex-grow: 1;
+  flex: 2;
   padding: 50px 50px;
   overflow-y: auto;
 }
 
-.header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.header-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 1.5rem;
-}
-
-.search-input {
-  width: 100%;
-  padding: 15px 20px;
-  font-size: 17px;
-  border: 2px solid #d1d5db; /* Tailwind's gray-300 */
-  border-radius: 12px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* shadow-sm */
-  transition: border-color 0.2s, box-shadow 0.2s;
-  margin-bottom: 1.5rem;
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: #374151; /* gray-700 */
-  box-shadow: 0 0 0 2px rgba(55, 65, 81, 0.2); /* focus:ring */
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.notifications {
-  position: relative;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  background-color: var(--bg-secondary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var( --text-primary);
-  border: 1px solid var(--border-color);
-}
-
-.avatar {
-  width: 42px;
-  height: 42px;
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  border: 1px solid var(--border-color);
-}
-
-.user-menu {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
-  width: 200px;
-  z-index: 100;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-}
-
-.user-menu-item {
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: var(--text-primary);
-}
-
-.user-menu-item:hover {
-  background-color: var(--bg-secondary);
-}
-
-.user-menu-item.logout {
-  border-top: 1px solid var(--border-color);
-  color: var(--error-color);
-}
-
-.user-menu-item svg {
-  margin-right: 12px;
-  width: 16px;
-}
 
 .content h1 {
   margin-bottom: 8px;

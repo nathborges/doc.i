@@ -2,23 +2,16 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000/api';
 
-let inMemoryToken = null;
-
 export const AuthService = {
   login(username, password) { 
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-    
-    return axios.post(`${API_URL}/login`, formData, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
+    return axios.post(`${API_URL}/login`, {
+      email: username,
+      password: password
     })
       .then(response => {
         const token = response.data.access_token || '';
-        inMemoryToken = token;
         localStorage.setItem('user', username);
+        localStorage.setItem('token', token);
         localStorage.setItem('isAuthenticated', 'true');
         this.setAuthHeader(token);
         return response.data;
@@ -34,11 +27,13 @@ export const AuthService = {
   },
   
   isAuthenticated() {
-    return localStorage.getItem('isAuthenticated') === 'true' && inMemoryToken !== null;
+    const token = localStorage.getItem('token');
+    return localStorage.getItem('isAuthenticated') === 'true' && token !== null;
   },
   checkAuth() {
-    if (this.isAuthenticated()) {
-      const token = inMemoryToken;
+    const storedToken = localStorage.getItem('token');
+    if (localStorage.getItem('isAuthenticated') === 'true' && storedToken !== null) {
+      const token = storedToken;
       
       if (token) {
         this.setAuthHeader(token);
@@ -48,6 +43,7 @@ export const AuthService = {
             if (response.data.valid === true) {
               return true;
             }
+            this.logout();
             return false;
           })
           .catch(error => {
@@ -57,12 +53,13 @@ export const AuthService = {
       }
     }
     
-    return Promise.resolve(false);
+    return false;
   },
-  
+
   logout() {
     inMemoryToken = null;
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     localStorage.removeItem('isAuthenticated');
     delete axios.defaults.headers.common['Authorization'];
   }
