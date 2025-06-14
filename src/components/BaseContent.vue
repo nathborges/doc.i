@@ -1,48 +1,40 @@
+<script setup>
+import { computed } from 'vue'
+import { useCategoriesStore } from '@/store/CategoriesStore'
+import CategoryCard from '@/components/CategoryCard.vue'
+import { useRouter } from 'vue-router'
+import { currentCategory } from '@/store/BaseViewState'
+
+const categoriesStore = useCategoriesStore()
+const router = useRouter()
+
+const categories = computed(() => categoriesStore.categories.value)
+
+const handleCategoryClick = (category) => {
+  currentCategory.value = category.name
+  router.push('/categoria')
+}
+</script>
+
 <template>
 <div class="content">
 
-    <!-- Recent Files -->
+    <!-- Categorias -->
     <div class="section">
       <div class="section-header">
-        <h2>Documentos Recentes</h2>
+        <h2>Categorias mais recentes</h2>
         <button class="view-all">Ver todos</button>
       </div>
       <div class="files-grid">
-        <div class="file-card">
-          <div class="file-icon pdf">
-            <font-awesome-icon icon="file-pdf" />
-          </div>
-          <div class="file-info">
-            <h3>Relatório Mensal</h3>
-            <p>Modificado: 2 dias atrás</p>
-          </div>
-        </div>
-        <div class="file-card">
-          <div class="file-icon doc">
-            <font-awesome-icon icon="file-word" />
-          </div>
-          <div class="file-info">
-            <h3>Proposta Cliente</h3>
-            <p>Modificado: 5 dias atrás</p>
-          </div>
-        </div>
-        <div class="file-card">
-          <div class="file-icon img">
-            <font-awesome-icon icon="file-image" />
-          </div>
-          <div class="file-info">
-            <h3>Apresentação</h3>
-            <p>Modificado: 1 semana atrás</p>
-          </div>
-        </div>
-        <div class="file-card">
-          <div class="file-icon xls">
-            <font-awesome-icon icon="file-excel" />
-          </div>
-          <div class="file-info">
-            <h3>Planilha Financeira</h3>
-            <p>Modificado: 2 semanas atrás</p>
-          </div>
+        <CategoryCard 
+          v-for="category in categories" 
+          :key="category.name" 
+          :category="category" 
+          subtitle="Categoria"
+          @click="handleCategoryClick"
+        />
+        <div v-if="categories.length === 0" class="empty-state">
+          <p>Carregando categorias...</p>
         </div>
       </div>
     </div>

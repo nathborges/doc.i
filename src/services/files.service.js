@@ -27,20 +27,39 @@ export const FileService = {
       });
   },
   gerarCorAleatoria() {
-    const hue = Math.floor(Math.random() * 360);
-    const saturation = Math.floor(30 + Math.random() * 30);
-    const lightness = Math.floor(60 + Math.random() * 20);
+    const coresTag = [
+      '#1A5276', // Azul marinho profundo
+      '#154360', // Azul petróleo
+      '#0E6655', // Verde esmeralda escuro
+      '#186A3B', // Verde floresta
+      '#7D3C98', // Roxo intenso
+      '#6C3483', // Roxo profundo
+      '#A93226', // Vermelho tijolo
+      '#922B21', // Vermelho escuro
+      '#873600', // Marrom escuro
+      '#784212', // Marrom terra
+      '#283747', // Azul ardósia profundo
+      '#212F3D', // Azul-cinza escuro
+      '#17202A', // Azul-preto
+      '#641E16', // Borgonha
+      '#512E5F', // Roxo escuro
+      '#1B4F72', // Azul cobalto
+      '#0B5345', // Verde musgo
+      '#7E5109', // Âmbar escuro
+      '#4A235A', // Roxo imperial
+      '#1B2631'  // Cinza ardósia escuro
+    ];
     
-    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    return coresTag[Math.floor(Math.random() * coresTag.length)];
   },  
   getCategorias() {
     return axios.get(`${API_URL}/categorias`)
       .then(response => {
-        return [{ color: this.gerarCorAleatoria(), name: "Cantar" }, { color: this.gerarCorAleatoria(), name: "Dançar" }, { color: this.gerarCorAleatoria(), name: "Brincar" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Serviços" }, { color: this.gerarCorAleatoria(), name: "Contratos comerciais" }];
       })
       .catch(error => {
         console.error('Erro de obter categorias:', error.response?.data || error.message);
-        return [{ color: this.gerarCorAleatoria(), name: "Cantar" }, { color: this.gerarCorAleatoria(), name: "Dançar" }, { color: this.gerarCorAleatoria(), name: "Brincar" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Serviços" }, { color: this.gerarCorAleatoria(), name: "Contratos comerciais" }];
       });
   },
 }

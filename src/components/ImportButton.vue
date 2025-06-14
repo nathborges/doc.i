@@ -16,7 +16,7 @@ const props = defineProps({
     multiple: {
         type: Boolean,
         default: false
-    }
+    },
 })
 
 import { inject } from 'vue'

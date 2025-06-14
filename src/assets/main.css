@@ -34,7 +34,7 @@
 }
 /* ===== TIPOGRAFIA ===== */
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 h1 {
   font-size: 1.875rem;
@@ -108,11 +108,9 @@ button,
   border: none;
   color: white;
 }
-
 button[type="submit"]:hover {
   background-color: var(--primary-color-hover);
 }
-
 .input-style {
   width: 100%;
   border-radius: 12px;
@@ -120,7 +118,6 @@ button[type="submit"]:hover {
   font-weight: 400;
   border: 1px solid var(--border-color);
 }
-
 .btn-primary:hover {
   background-color: var(--primary-color-hover);
 }
@@ -167,9 +164,6 @@ select:focus {
 }
 .image {
   background-color: var(--bg-secondary);
-}
-.image-caption {
-  color: var(--text-primary);
 }
 .toggle-password {
   color: var(--secondary-color);

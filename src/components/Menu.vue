@@ -19,7 +19,6 @@
           <div v-for="categoria in categorias" class="submenu-item"
             :class="{ active: currentView === 'categoria' && currentCategory === categoria.name }"
             @click="handleCategoriaClick(categoria.name)">
-            <span class="material-icons" :style="{ color: categoria.color }">circle</span>
             <span>{{ categoria.name }}</span>
           </div>
         </div>
@@ -46,14 +45,18 @@ import { nextTick, onMounted, ref } from 'vue';
 import { FileService } from '@/services/files.service';
 import { computed } from 'vue';
 import { currentView, changeView } from '@/store/BaseViewState';
+import { useCategoriesStore } from '@/store/CategoriesStore'
+
+const categoriesStore = useCategoriesStore()
 
 const showCategorias = ref(false);
-const categorias = ref([]);
 const hasCategorias = computed(() => categorias.value.length > 0);
+const categorias = computed(() => categoriesStore.categories.value)
 
 const handleMenuClick = (item) => {
   changeView(item);
 };
+
 
 const handleCategoriaClick = (categoria) => {
   changeView('categoria', categoria);
