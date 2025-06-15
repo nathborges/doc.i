@@ -1,26 +1,31 @@
 <template>
-  <div class="search-container">
-    <div class="input-wrapper">
-      <input class="search-input" type="text" :placeholder="placeholder" v-model="searchQuery"
-        @keyup.enter="handleSearch">
-      <span class="search-icon material-icons" @click="handleSearch">search</span>
-    </div>
-
-    <transition name="slide-fade">
-      <div v-if="showResults" class="search-results" :class="{ 'error': hasError }">
-        <div v-if="isSearching" class="search-loading">
-          <span class="material-icons loading-icon">search</span>
-          <span>Buscando...</span>
-        </div>
-        <div v-else-if="hasError" class="search-error">
-          <span class="material-icons error-icon">error</span>
-          <span>{{ errorMessage }}</span>
-        </div>
-        <div v-else class="search-response">
-          <div class="typewriter">{{ displayedResponse }}</div>
-        </div>
+  <div class="search">
+    <div class="search-container">
+      <div class="input-wrapper">
+        <span class="search-icon-left material-icons">search</span>
+        <input class="search-input" type="text" :placeholder="placeholder" v-model="searchQuery"
+          @keyup.enter="handleSearch">
+        <span class="search-icon material-icons" @click="handleSearch">search</span>
       </div>
-    </transition>
+
+      <transition name="slide-fade">
+        <div v-if="showResults" class="search-results" :class="{ 'error': hasError }">
+          <span class="close-icon material-icons" @click="closeResults">close</span>
+          <div v-if="isSearching" class="search-loading">
+            <span class="material-icons loading-icon">search</span>
+            <span>Buscando...</span>
+          </div>
+          <div v-else-if="hasError" class="search-error">
+            <span class="material-icons error-icon">error</span>
+            <span>{{ errorMessage }}</span>
+          </div>
+          <div v-else class="search-response">
+            <div class="typewriter">{{ displayedResponse }}</div>
+          </div>
+        </div>
+      </transition>
+    </div>
+    <ImportButton />
   </div>
 </template>
 
@@ -28,6 +33,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { SearchService } from '@/services/search.service'
 import { currentCategory, currentView } from '@/store/BaseViewState'
+import ImportButton from './ImportButton.vue'
 
 const searchQuery = ref('')
 const query = ref('')
@@ -60,7 +66,7 @@ const showError = () => {
 
 const handleSearch = () => {
   if (!searchQuery.value.trim()) return;
-  
+
   isSearching.value = true
   displayedResponse.value = ''
   typingComplete.value = false
@@ -69,7 +75,7 @@ const handleSearch = () => {
   hasError.value = false
   emit('search-results', [])
   setInitialQuery()
-  query.value = query.value + ' ' + searchQuery.value
+  query.value = searchQuery.value
 
   console.log('Pesquisando:', query.value)
 
@@ -83,7 +89,7 @@ const handleSearch = () => {
       console.log(data.files)
 
       emit('search-results', data.files || [])
-      
+
       setTimeout(() => {
         startTyping()
       }, 300)
@@ -98,7 +104,7 @@ const startTyping = () => {
   let i = 0
   clearInterval(typingInterval.value)
   displayedResponse.value = ''
-  
+
   typingInterval.value = setInterval(() => {
     if (i < fullResponse.value.length) {
       displayedResponse.value += fullResponse.value.charAt(i)
@@ -111,8 +117,12 @@ const startTyping = () => {
 }
 
 const formatCategory = (category) => {
-    return category.toLowerCase().replace(/\s+/g, '_');
- }
+  return category.toLowerCase().replace(/\s+/g, '_');
+}
+
+const closeResults = () => {
+  showResults.value = false;
+}
 
 const setInitialQuery = () => {
   if (currentCategory.value !== null) {
@@ -130,6 +140,16 @@ onMounted(() => {
 </script>
 
 <style scoped>
+
+.search {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+}
+
 .search-container {
   width: 100%;
   z-index: 10;
@@ -140,14 +160,15 @@ onMounted(() => {
 
 .input-wrapper {
   position: relative;
-  width: 90%;
+  width: 100%;
   display: flex;
   align-items: center;
+  gap: 40px;
 }
 
 .search-input {
   width: 100%;
-  padding: 15px 20px;
+  padding: 15px 20px 15px 45px;
   padding-right: 50px;
   font-size: 17px;
   border: 2px solid #d1d5db;
@@ -167,7 +188,29 @@ onMounted(() => {
   transition: color 0.2s;
 }
 
+.search-icon-left {
+  position: absolute;
+  left: 15px;
+  color: #6B7280;
+  font-size: 20px;
+  z-index: 1;
+}
+
 .search-icon:hover {
+  color: #374151;
+}
+
+.close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: #6B7280;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.close-icon:hover {
   color: #374151;
 }
 
@@ -178,7 +221,8 @@ onMounted(() => {
 }
 
 .search-results {
-  width: 90%;
+  position: relative;
+  width: 100%;
   max-width: 100%;
   background-color: white;
   border-top: none;
@@ -200,7 +244,8 @@ onMounted(() => {
   color: #e53e3e;
 }
 
-.search-loading, .search-error {
+.search-loading,
+.search-error {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -238,23 +283,39 @@ onMounted(() => {
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: #374151; }
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: #374151;
+  }
 }
 
 @keyframes pulse {
-  0% { opacity: 0.5; }
-  50% { opacity: 1; }
-  100% { opacity: 0.5; }
+  0% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.5;
+  }
 }
 
 @keyframes slideDownFade {
-  from { 
-    opacity: 0; 
+  from {
+    opacity: 0;
     transform: translateY(-10px);
   }
-  to { 
-    opacity: 1; 
+
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
 }

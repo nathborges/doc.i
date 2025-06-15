@@ -26,7 +26,7 @@ export const calculateProbabilityPercentage = (probability) => {
 export const processFile = (file) => {
   return {
     ...file,
-    extension: getFileExtension(file.name),
+    extension: getFileExtension(file.filename),
     probability: calculateProbabilityPercentage(file.probability)
   };
 };

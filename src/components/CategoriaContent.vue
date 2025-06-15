@@ -4,45 +4,21 @@
         <div  class="section">
             <div class="section-header">
                 <h2>Resultado</h2>
+                <button class="view-all">Exportar</button>
             </div>
             <div v-if="hasResults" class="files-grid">
                 <div v-for="result in searchResults" class="file-card" @click="openFileUrl(result.url)">
                     <div class="file-icon">
-                        <span class="material-icons">picture_as_pdf</span>
+                        <span class="material-icons">{{ getFileIcon(result.extension) }}</span>
                     </div>
                     <div class="file-info">
                         <h3>{{ result.filename }}</h3>
-                        <p>Relevância: {{ result.probability  }}%</p>
-                        <p>Relevância: {{ result.extension  }}%</p>
+                        <p>Relevância: {{ result.probability }}%</p>
                     </div>
                 </div>
-                <!-- <div class="file-card">
-                    <div class="file-icon">
-                        <span class="material-icons">description</span>
-                    </div>
-                    <div class="file-info">
-                        <h3>Proposta Cliente</h3>
-                        <p>Modificado: 5 dias atrás</p>
-                    </div>
-                </div>
-                <div class="file-card">
-                    <div class="file-icon">
-                        <span class="material-icons">image</span>
-                    </div>
-                    <div class="file-info">
-                        <h3>Apresentação</h3>
-                        <p>Modificado: 1 semana atrás</p>
-                    </div>
-                </div>
-                <div class="file-card">
-                    <div class="file-icon">
-                        <span class="material-icons">grid_on</span>
-                    </div>
-                    <div class="file-info">
-                        <h3>Planilha Financeira</h3>
-                        <p>Modificado: 2 semanas atrás</p>
-                    </div>
-                </div> -->
+            </div>
+            <div v-else class="files-grid">
+                <p>Nenhum documento encontrado. </p>
             </div>
         </div>
     </div>
@@ -61,6 +37,57 @@ const handleSearchResults = (data) => {
     searchResults.value = data;
 }
 
+const getFileIcon = (extension) => {
+    if (!extension) return 'insert_drive_file';
+    
+    extension = extension.toLowerCase();
+    
+    switch (extension) {
+        case 'pdf':
+            return 'picture_as_pdf';
+        case 'doc':
+        case 'docx':
+        case 'txt':
+        case 'rtf':
+            return 'description';
+        case 'xls':
+        case 'xlsx':
+        case 'csv':
+            return 'grid_on';
+        case 'ppt':
+        case 'pptx':
+            return 'slideshow';
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+        case 'bmp':
+        case 'svg':
+            return 'image';
+        case 'mp4':
+        case 'avi':
+        case 'mov':
+        case 'wmv':
+            return 'videocam';
+        case 'mp3':
+        case 'wav':
+        case 'ogg':
+            return 'audiotrack';
+        case 'zip':
+        case 'rar':
+        case '7z':
+        case 'tar':
+        case 'gz':
+            return 'folder_zip';
+        case 'html':
+        case 'htm':
+        case 'xml':
+            return 'code';
+        default:
+            return 'insert_drive_file';
+    }
+};
+
 const openFileUrl = (url) => {
     if (url) {
         window.open(url, '_blank');
@@ -72,7 +99,6 @@ const getAllFilesFromCategory = async () => {
         return;
     }
     searchResults.value = await FileService.getFiles(currentCategory.value);
-    console.log(searchResults.value)
 }
 
 watchEffect(() => {
@@ -138,6 +164,20 @@ watchEffect(() => {
     transform: translateY(-5px);
     box-shadow: var(--shadow-lg);
     border-color: var(--border-color);
+}
+
+.view-all {
+  background: none;
+  border: none;
+  color: var(--accent-green);
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 15px 40px;
+}
+
+.view-all:hover {
+    color: var(--primary-color);
 }
 
 .file-icon {

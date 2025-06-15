@@ -18,7 +18,6 @@
                         <span>Sair</span>
                     </div>
                 </div>
-                <ImportButton />
             </div>
         </div>
     </div>
@@ -29,7 +28,6 @@ import { ref, computed } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
-import ImportButton from '@/components/ImportButton.vue'
 import { currentCategory, currentView } from '@/store/BaseViewState';
 
 const router = useRouter()
@@ -38,13 +36,6 @@ const showUserMenu = ref(false)
 const initialText = computed(() => {
     if (currentView.value == 'home' || currentCategory.value == null) {
         return 'Bem vindo de volta!';
-    }
-    return currentCategory.value;
-})
-
-const importColor = computed(() => {
-    if (currentView.value == 'home' || currentCategory.value == null) {
-        return null;
     }
     return currentCategory.value;
 })

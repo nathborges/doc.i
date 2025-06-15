@@ -5,12 +5,10 @@
     </div>
     <div class="menu">
       <div class="menu-item" :class="{ active: currentView === 'home' }" @click="handleMenuClick('home')">
-        <!-- <span class="material-icons">home</span> -->
         <span>Home</span>
       </div>
       <div>
         <div class="menu-item" @click="toggleCategorias">
-          <!-- <span class="material-icons">folder</span> -->
           <span>Minhas Categorias</span>
           <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
             'expand_more' }}</span>

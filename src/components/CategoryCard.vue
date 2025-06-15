@@ -12,6 +12,7 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import { changeView } from '@/store/BaseViewState';
 
 const props = defineProps({
   category: {
@@ -27,8 +28,9 @@ const props = defineProps({
 const emit = defineEmits(['click'])
 
 const handleClick = () => {
-  emit('click', props.category)
-}
+  changeView('categoria', props.category.name);
+};
+
 </script>
 
 <style scoped>
