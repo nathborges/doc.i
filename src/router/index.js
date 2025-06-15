@@ -27,12 +27,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (!AuthService.checkAuth()) {
-      next({ name: 'login' })
-    } else {
-      next()
-    }
+  if (to.meta.requiresAuth && !AuthService.checkAuth()) {
+    next({ name: 'login' })
   } else {
     next()
   }

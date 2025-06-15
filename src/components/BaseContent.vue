@@ -30,7 +30,7 @@ const handleCategoryClick = (category) => {
           v-for="category in categories" 
           :key="category.name" 
           :category="category" 
-          subtitle="Categoria"
+          subtitle="Criada em 22/03/2025"
           @click="handleCategoryClick"
         />
         <div v-if="categories.length === 0" class="empty-state">

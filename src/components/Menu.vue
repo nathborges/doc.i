@@ -5,12 +5,12 @@
     </div>
     <div class="menu">
       <div class="menu-item" :class="{ active: currentView === 'home' }" @click="handleMenuClick('home')">
-        <span class="material-icons">home</span>
+        <!-- <span class="material-icons">home</span> -->
         <span>Home</span>
       </div>
       <div>
         <div class="menu-item" @click="toggleCategorias">
-          <span class="material-icons">folder</span>
+          <!-- <span class="material-icons">folder</span> -->
           <span>Minhas Categorias</span>
           <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
             'expand_more' }}</span>
@@ -19,13 +19,14 @@
           <div v-for="categoria in categorias" class="submenu-item"
             :class="{ active: currentView === 'categoria' && currentCategory === categoria.name }"
             @click="handleCategoriaClick(categoria.name)">
+            <div class="category-dot" :style="{ backgroundColor: categoria.color }"></div>
             <span>{{ categoria.name }}</span>
           </div>
         </div>
       </div>
       <div class="menu-item">
-        <span class="material-icons">star</span>
-        <span>Favoritos</span>
+        <!-- <span class="material-icons">star</span> -->
+        <span>Membros</span>
       </div>
     </div>
     <div class="storage">
@@ -79,11 +80,13 @@ onMounted(async () => {
 .sidebar {
   width: 280px;
   background-color: var(--bg-primary);
-  padding: 30px 25px;
+  padding: 50px 25px;
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow-sm);
   border-right: 1px solid var(--border-color);
+  font-family: 'Inter', sans-serif !important;
+  gap: 30px;
 }
 
 .logo h2 {
@@ -117,6 +120,7 @@ onMounted(async () => {
   font-size: 15px;
   font-weight: 400;
   color: var(--text-primary);
+  gap: 3px
 }
 
 
@@ -135,13 +139,12 @@ onMounted(async () => {
 }
 
 .menu-item .expand-icon {
-  margin-left: auto;
-  margin-right: 0;
   font-size: 20px;
 }
 
 .submenu {
-  margin-left: 30px;
+  margin-left: 25px;
+  font-size:15px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -157,6 +160,14 @@ onMounted(async () => {
   transition: all 0.2s;
   font-size: 14px;
   color: var(--text-secondary);
+  gap: 8px;
+}
+
+.category-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .submenu-item:hover {
@@ -179,7 +190,8 @@ onMounted(async () => {
 
 .storage-info {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 5px;
   margin-bottom: 15px;
 }
 
@@ -205,6 +217,6 @@ onMounted(async () => {
 
 .progress {
   height: 100%;
-  background-color: var(--primary-color);
+  background-color: #4CAF50;
 }
 </style>

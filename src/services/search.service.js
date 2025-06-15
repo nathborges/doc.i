@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { processFile } from '../utils/fileUtils';
 
 const API_URL = import.meta.env.VITE_API_BACKEND_ASK || 'http://0.0.0.0:8004';
 
@@ -9,7 +10,15 @@ export const SearchService = {
       top_k: top_k
     })
       .then(response => {
-        return response.data;
+        const data = response.data;
+        console.log(data.files)
+        
+        if (data.files && Array.isArray(data.files)) {
+          // Process files
+          data.files = data.files.map(file => processFile(file));
+        }
+        
+        return data;
       })
       .catch(error => {
         console.error('Erro na consulta:', error.response?.data || error.message);

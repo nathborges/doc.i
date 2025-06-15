@@ -1,13 +1,20 @@
 <template>
   <div class="search-container">
-    <input class="search-input" type="text" :placeholder="placeholder" v-model="searchQuery"
-      @keyup.enter="handleSearch">
+    <div class="input-wrapper">
+      <input class="search-input" type="text" :placeholder="placeholder" v-model="searchQuery"
+        @keyup.enter="handleSearch">
+      <span class="search-icon material-icons" @click="handleSearch">search</span>
+    </div>
 
     <transition name="slide-fade">
-      <div v-if="showResults" class="search-results">
+      <div v-if="showResults" class="search-results" :class="{ 'error': hasError }">
         <div v-if="isSearching" class="search-loading">
           <span class="material-icons loading-icon">search</span>
           <span>Buscando...</span>
+        </div>
+        <div v-else-if="hasError" class="search-error">
+          <span class="material-icons error-icon">error</span>
+          <span>{{ errorMessage }}</span>
         </div>
         <div v-else class="search-response">
           <div class="typewriter">{{ displayedResponse }}</div>
@@ -23,6 +30,7 @@ import { SearchService } from '@/services/search.service'
 import { currentCategory, currentView } from '@/store/BaseViewState'
 
 const searchQuery = ref('')
+const query = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
 const displayedResponse = ref('')
@@ -31,6 +39,8 @@ const typingInterval = ref(null)
 const typingComplete = ref(false)
 const showResults = ref(false)
 const hasSearched = ref(false)
+const hasError = ref(false)
+const errorMessage = ref('')
 
 const emit = defineEmits(['search-results'])
 
@@ -41,6 +51,13 @@ const placeholder = computed(() => {
   return 'Digite aqui para pesquisar dentro da categoria...';
 })
 
+const showError = () => {
+  hasError.value = true
+  errorMessage.value = 'Ocorreu um erro ao processar sua pesquisa. Por favor, tente novamente.'
+  showResults.value = true
+  displayedResponse.value = ''
+}
+
 const handleSearch = () => {
   if (!searchQuery.value.trim()) return;
   
@@ -49,16 +66,21 @@ const handleSearch = () => {
   typingComplete.value = false
   showResults.value = true
   hasSearched.value = true
+  hasError.value = false
+  emit('search-results', [])
+  setInitialQuery()
+  query.value = query.value + ' ' + searchQuery.value
 
-  SearchService.ask(searchQuery.value)
+  console.log('Pesquisando:', query.value)
+
+  SearchService.ask(query.value)
     .then(data => {
       searchResults.value = data
       if (data.answer) {
         fullResponse.value = data.answer
-      } else {
-        fullResponse.value = 'Encontrei alguns documentos que podem ser relevantes para sua pesquisa. Aqui estão os resultados mais relevantes.'
       }
       isSearching.value = false
+      console.log(data.files)
 
       emit('search-results', data.files || [])
       
@@ -67,8 +89,8 @@ const handleSearch = () => {
       }, 300)
     })
     .catch(error => {
-      console.error('Erro na pesquisa:', error)
       isSearching.value = false
+      showError()
     })
 }
 
@@ -88,7 +110,19 @@ const startTyping = () => {
   }, 20)
 }
 
+const formatCategory = (category) => {
+    return category.toLowerCase().replace(/\s+/g, '_');
+ }
+
+const setInitialQuery = () => {
+  if (currentCategory.value !== null) {
+    query.value = 'Pesquise dentro da categoria ' + formatCategory(currentCategory.value) + '';
+  }
+}
+
 onMounted(() => {
+  setInitialQuery();
+
   return () => {
     clearInterval(typingInterval.value)
   }
@@ -102,12 +136,19 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-bottom: 15px;
+}
+
+.input-wrapper {
+  position: relative;
+  width: 90%;
+  display: flex;
+  align-items: center;
 }
 
 .search-input {
   width: 100%;
   padding: 15px 20px;
+  padding-right: 50px;
   font-size: 17px;
   border: 2px solid #d1d5db;
   border-radius: 12px;
@@ -117,6 +158,19 @@ onMounted(() => {
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.search-icon {
+  position: absolute;
+  right: 15px;
+  color: #6B7280;
+  cursor: pointer;
+  font-size: 20px;
+  transition: color 0.2s;
+}
+
+.search-icon:hover {
+  color: #374151;
+}
+
 .search-input:focus {
   outline: none;
   border-color: #374151;
@@ -124,7 +178,7 @@ onMounted(() => {
 }
 
 .search-results {
-  width: 100%;
+  width: 90%;
   max-width: 100%;
   background-color: white;
   border-top: none;
@@ -137,9 +191,16 @@ onMounted(() => {
   margin-bottom: 1.5rem;
   overflow-y: auto;
   max-height: 400px;
+  transition: all 0.3s ease;
 }
 
-.search-loading {
+.search-results.error {
+  background-color: #fff5f5;
+  border: 2px solid #fed7d7;
+  color: #e53e3e;
+}
+
+.search-loading, .search-error {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,6 +209,16 @@ onMounted(() => {
 .loading-icon {
   animation: pulse 1.5s infinite;
   margin-right: 10px;
+}
+
+.search-error {
+  color: #e53e3e;
+  padding: 15px;
+}
+
+.error-icon {
+  margin-right: 10px;
+  color: #e53e3e;
 }
 
 .search-response {

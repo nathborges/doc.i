@@ -1,21 +1,22 @@
 <template>
     <div class="content">
-        <SearchBar @search-results="handleSearchResults" />
-        <div v-if="hasResults" class="section">
+        <SearchBar @search-results="handleSearchResults" :category="category" />
+        <div  class="section">
             <div class="section-header">
-                <h2>Resultados da pesquisa</h2>
+                <h2>Resultado</h2>
             </div>
-            <div class="files-grid">
-                <div v-for="result in searchResults" class="file-card">
+            <div v-if="hasResults" class="files-grid">
+                <div v-for="result in searchResults" class="file-card" @click="openFileUrl(result.url)">
                     <div class="file-icon">
                         <span class="material-icons">picture_as_pdf</span>
                     </div>
                     <div class="file-info">
-                        <h3>{{ result.url }}</h3>
-                        <p>Relevância: {{ (result.probability * 100).toFixed(0) }}%</p>
+                        <h3>{{ result.filename }}</h3>
+                        <p>Relevância: {{ result.probability  }}%</p>
+                        <p>Relevância: {{ result.extension  }}%</p>
                     </div>
                 </div>
-                <div class="file-card">
+                <!-- <div class="file-card">
                     <div class="file-icon">
                         <span class="material-icons">description</span>
                     </div>
@@ -41,156 +42,60 @@
                         <h3>Planilha Financeira</h3>
                         <p>Modificado: 2 semanas atrás</p>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watchEffect } from 'vue';
 import SearchBar from './SearchBar.vue';
+import { FileService } from '@/services/files.service';
+import { currentCategory, currentView } from '@/store/BaseViewState'
 
 const searchResults = ref([])
 const hasResults = computed(() => searchResults.value.length > 0)
 
 const handleSearchResults = (data) => {
-    console.log('Search results:', data);
     searchResults.value = data;
 }
+
+const openFileUrl = (url) => {
+    if (url) {
+        window.open(url, '_blank');
+    }
+}
+
+const getAllFilesFromCategory = async () => {
+    if (currentCategory.value == null) {
+        return;
+    }
+    searchResults.value = await FileService.getFiles(currentCategory.value);
+    console.log(searchResults.value)
+}
+
+watchEffect(() => {
+    if (currentCategory.value) {
+        getAllFilesFromCategory();
+    }
+});
+
+
 </script>
 
 <style scoped>
-.home-container {
+
+.content {
+    gap: 20px;
     display: flex;
-    width: 100vw;
-    height: 100vh;
-    background-color: var(--bg-secondary);
+    flex-direction: column;
 }
-
-/* Main Content */
-.main-content {
-    flex-grow: 1;
-    padding: 30px 50px;
-    overflow-y: auto;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 50px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.search-bar {
-    display: flex;
-    align-items: center;
-    background-color: var(--bg-secondary);
-    border-radius: 12px;
-    padding: 12px 20px;
-    width: 450px;
-    border: 1px solid var(--border-color);
-}
-
-.search-bar svg {
-    color: var(--text-secondary);
-    margin-right: 12px;
-}
-
-.search-bar input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 15px;
-    background-color: transparent;
-    color: var(--text-primary);
-}
-
-.user-profile {
-    display: flex;
-    align-items: center;
-}
-
-.notifications {
-    margin-right: 25px;
-    position: relative;
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    background-color: var(--bg-secondary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-}
-
-.avatar {
-    width: 42px;
-    height: 42px;
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 15px;
-    position: relative;
-}
-
-.user-menu {
-    position: absolute;
-    top: 50px;
-    right: 0;
-    background-color: var(--bg-primary);
-    border-radius: 12px;
-    box-shadow: var(--shadow-lg);
-    width: 200px;
-    z-index: 100;
-    border: 1px solid var(--border-color);
-    overflow: hidden;
-}
-
-.user-menu-item {
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    color: var(--text-primary);
-}
-
-.user-menu-item:hover {
-    background-color: var(--bg-secondary);
-}
-
-.user-menu-item.logout {
-    border-top: 1px solid var(--border-color);
-    color: var(--error-color);
-}
-
-.user-menu-item svg {
-    margin-right: 12px;
-    width: 16px;
-}
-
 .content h1 {
-    margin-bottom: 8px;
     font-size: 32px;
     font-weight: 600;
     color: var(--text-primary);
     letter-spacing: -0.5px;
-}
-
-.subtitle {
-    color: var(--text-secondary);
-    margin-bottom: 40px;
-    font-size: 16px;
 }
 
 .section {
@@ -209,16 +114,6 @@ const handleSearchResults = (data) => {
     margin: 0;
     font-weight: 600;
     color: var(--text-primary);
-}
-
-.view-all {
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    font-weight: 500;
-    cursor: pointer;
-    padding: 0;
-    font-size: 15px;
 }
 
 .files-grid {
@@ -253,17 +148,8 @@ const handleSearchResults = (data) => {
     align-items: center;
     justify-content: center;
     margin-bottom: 20px;
-}
-
-.file-icon svg {
-    font-size: 22px;
-    color: var(--text-light);
-}
-
-.file-icon {
     background-color: var(--bg-secondary);
 }
-
 
 .file-info h3 {
     margin: 0 0 8px 0;

@@ -1,30 +1,65 @@
 import axios from 'axios';
+import { processFile } from '../utils/fileUtils';
 
 const API_URL = import.meta.env.VITE_API_BACKEND_FILE || 'http://localhost:3000/api';
 
 export const FileService = {
-  upload(username, password) {
-    const formData = new URLSearchParams();
-    formData.append('username', username);
-    formData.append('password', password);
-
-    return axios.post(`${API_URL}/login`, formData, {
+  formatCategory(category) {
+    return category.toLowerCase().replace(/\s+/g, '_');
+  },
+  getFiles(category = null) {
+    const token = localStorage.getItem('token');
+    let url = `${API_URL}/upload/files/`;
+    
+    // Adiciona o parâmetro de categoria à URL se fornecido
+    if (category) {
+      const formattedCategory = this.formatCategory(category);
+      url += `?category=${formattedCategory}`;
+    }
+    
+    return axios.get(url, {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Authorization': `Bearer ${token}`
       }
     })
-      .then(response => {
-        const token = response.data.access_token || '';
-        inMemoryToken = token;
-        localStorage.setItem('user', username);
-        localStorage.setItem('isAuthenticated', 'true');
-        this.setAuthHeader(token);
-        return response.data;
-      })
-      .catch(error => {
-        console.error('Erro de autenticação:', error.response?.data || error.message);
-        throw error;
-      });
+    .then(response => {
+      if (response.data && Array.isArray(response.data)) {
+        console.log(response.data)
+        return response.data.map(file => processFile(file));
+      }
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Erro ao obter arquivos:', error.response?.data || error.message);
+      throw error;
+    });
+  },
+  upload(files, category="geral") {
+    console.log(category, files)
+    const formData = new FormData();
+    
+    const formattedCategory = this.formatCategory(category);
+    formData.append('category', formattedCategory); 
+    
+    for (let i = 0; i < files.length; i++) {
+      formData.append('file', files[i]);
+    }
+
+    const token = localStorage.getItem('token');
+
+    return axios.post(`${API_URL}/upload/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`
+      }
+    })
+    .then(response => {
+      return response.data;
+    })
+    .catch(error => {
+      console.error('Erro no upload:', error.response?.data || error.message);
+      throw error;
+    });
   },
   gerarCorAleatoria() {
     const coresTag = [
@@ -55,11 +90,11 @@ export const FileService = {
   getCategorias() {
     return axios.get(`${API_URL}/categorias`)
       .then(response => {
-        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Serviços" }, { color: this.gerarCorAleatoria(), name: "Contratos comerciais" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
       })
       .catch(error => {
         console.error('Erro de obter categorias:', error.response?.data || error.message);
-        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Serviços" }, { color: this.gerarCorAleatoria(), name: "Contratos comerciais" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
       });
   },
 }

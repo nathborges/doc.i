@@ -3,11 +3,9 @@ import { ref, computed, onMounted } from 'vue'
 import Menu from '@/components/Menu.vue'
 import BaseContent from '@/components/BaseContent.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
-import { currentView } from '@/store/BaseViewState';
+import { currentView, currentCategory } from '@/store/BaseViewState';
 import CategoriaContent from '@/components/CategoriaContent.vue';
 import { useCategoriesStore } from '@/store/CategoriesStore';
-
-// Inicializa a store de categorias
 const categoriesStore = useCategoriesStore();
 
 const currentComponent = computed(() => {
@@ -17,6 +15,13 @@ const currentComponent = computed(() => {
     case 'categoria':
       return CategoriaContent;
   }
+});
+
+const componentKey = computed(() => {
+  if (currentView.value === 'categoria') {
+    return `${currentView.value}-${currentCategory.value}`;
+  }
+  return currentView.value;
 });
 
 // Carrega as categorias quando o componente é montado
@@ -32,7 +37,7 @@ onMounted(async () => {
       <HeaderBar />
       <!-- Content -->
       <div class="content">
-        <component :is="currentComponent"/>
+        <component :is="currentComponent" :key="componentKey"/>
       </div>
     </div>
   </div>
@@ -49,7 +54,7 @@ onMounted(async () => {
 /* Main Content */
 .main-content {
   flex: 2;
-  padding: 50px 50px;
+  padding: 50px 100px;
   overflow-y: auto;
 }
 

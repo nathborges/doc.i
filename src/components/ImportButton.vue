@@ -1,6 +1,6 @@
 <template>
     <div>
-        <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept=".pdf,.doc,.png"
+        <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept=".pdf,.docx,.doc,.png"
             :multiple="true" />
         <button class="btn" @click="openFileSelector">
              <span class="material-icons">add</span>
@@ -10,7 +10,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject, onMounted } from 'vue'
+import { FileService } from '@/services/files.service'
+import { currentCategory } from '@/store/BaseViewState'
 
 const props = defineProps({
     multiple: {
@@ -19,17 +21,8 @@ const props = defineProps({
     },
 })
 
-import { inject } from 'vue'
-
-// Obtém a função de notificação
+const category = ref(null)
 const showNotification = inject('showNotification')
-
-// Exemplo de uso
-function mostrarExemplo() {
-  // Parâmetros: mensagem, tipo (info, success, warning, error), duração em ms
-  showNotification('Operação realizada com sucesso!', 'success', 5000)
-}
-
 const emit = defineEmits(['file-selected'])
 const fileInput = ref(null)
 
@@ -40,17 +33,21 @@ const openFileSelector = () => {
 const handleFileChange = (event) => {
     const files = event.target.files
     if (files && files.length > 0) {
-        if (props.multiple) {
-            emit('file-selected', files)
-        } else {
-            const file = files[0]
-            emit('file-selected', file)
-        }
-        Array.from(files).forEach(element => {
-            showNotification(element.name, 'success', 5000)
+        Array.from(files).forEach(async file => {
+            try {
+                await FileService.upload([file], category.value || 'sem_categoria')
+                showNotification(file.name, 'success', 5000)
+            } catch (error) {
+                console.error('Erro no upload:', error)
+                showNotification(file.name, 'error', 5000)
+            }
         });
     }
 }
+
+onMounted(() => {
+    category.value = currentCategory.value
+})
 </script>
 
 

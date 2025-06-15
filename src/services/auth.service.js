@@ -26,25 +26,21 @@ export const AuthService = {
         throw error;
       });
   },
-  
+
   setAuthHeader(token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  },
-  
-  isAuthenticated() {
-    const token = localStorage.getItem('token');
-    return localStorage.getItem('isAuthenticated') === 'true' && token !== null;
   },
   checkAuth() {
     const storedToken = localStorage.getItem('token');
     if (localStorage.getItem('isAuthenticated') === 'true' && storedToken !== null) {
       const token = storedToken;
-      
+    
       if (token) {
         this.setAuthHeader(token);
         
         return axios.get(`${API_URL}/validate-token`)
           .then(response => {
+            console.log(response)
             if (response.data.valid === true) {
               return true;
             }
@@ -52,6 +48,7 @@ export const AuthService = {
             return false;
           })
           .catch(error => {
+            console.log("Error ao tentar validar o token", error)
             this.logout();
             return false;
           });
@@ -62,7 +59,6 @@ export const AuthService = {
   },
 
   logout() {
-    inMemoryToken = null;
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     localStorage.removeItem('isAuthenticated');
