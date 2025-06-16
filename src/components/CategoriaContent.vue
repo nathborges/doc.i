@@ -1,12 +1,16 @@
 <template>
     <div class="content">
-        <SearchBar @search-results="handleSearchResults" @refresh-page="refreshPage" :category="category" />
+        <SearchBar @search-results="handleSearchResults" @refresh-page="refreshPage" :category="category" @is-loading="handleIsLoading" />
         <div  class="section">
             <div class="section-header">
                 <h2>Resultado</h2>
-                <button class="view-all">Exportar</button>
+                <button class="view-all" @click="exportToExcel">Exportar</button>
             </div>
-            <div v-if="hasResults" class="files-grid">
+            <div v-if="isLoading" class="loading-container">
+                <div class="loading-spinner"></div>
+                <p>Carregando...</p>
+            </div>
+            <div v-else-if="hasResults" class="files-grid">
                 <div v-for="result in searchResults" class="file-card" @click="openFileUrl(result.url)">
                     <div class="file-icon">
                         <span class="material-icons">{{ getFileIcon(result.extension) }}</span>
@@ -39,6 +43,12 @@ const props = defineProps({
 
 const searchResults = ref([])
 const hasResults = computed(() => searchResults.value.length > 0)
+
+const isLoading = ref(false)
+
+const handleIsLoading = (bool) => {
+    isLoading.value = bool;
+}
 
 const refreshPage = () => {
     getAllFilesFromCategory();
@@ -106,8 +116,27 @@ const openFileUrl = (url) => {
 }
 
 const getAllFilesFromCategory = async () => {
+    isLoading.value = true;
     const files = await FileService.getFiles();
     searchResults.value = filterHighProbabilityFiles(files);
+    isLoading.value = false;
+}
+
+const exportToExcel = () => {
+    // URL da planilha estática (substitua pelo caminho correto)
+    const fileUrl = '/planilhas/relatorio.xlsx';
+    
+    // Criar link para download
+    const link = document.createElement("a");
+    link.setAttribute("href", fileUrl);
+    link.setAttribute("download", "relatorio.xlsx");
+    document.body.appendChild(link);
+    
+    // Iniciar download
+    link.click();
+    
+    // Remover o link
+    document.body.removeChild(link);
 }
 
 onMounted(() => {
@@ -209,5 +238,29 @@ onMounted(() => {
     margin: 0;
     font-size: 13px;
     color: var(--text-secondary);
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    width: 100%;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid var(--bg-secondary);
+    border-top: 4px solid var(--accent-green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 </style>

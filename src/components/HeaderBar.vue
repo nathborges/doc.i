@@ -10,11 +10,11 @@
                 </div>
                 <div v-if="showUserMenu" class="user-menu">
                     <div class="user-menu-item">
-                        <font-awesome-icon icon="cog" />
+                        <span class="material-icons">settings</span>
                         <span>Configurações</span>
                     </div>
                     <div class="user-menu-item logout" @click="logout">
-                        <font-awesome-icon icon="sign-out-alt" />
+                        <span class="material-icons">logout</span>
                         <span>Sair</span>
                     </div>
                 </div>
@@ -25,7 +25,6 @@
 
 <script setup>
 import { ref } from 'vue'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 

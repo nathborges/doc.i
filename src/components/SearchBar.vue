@@ -24,6 +24,12 @@
           </div>
         </div>
       </transition>
+      <div class="search-filters">
+        <div v-for="(filter, index) in searchFilter" :key="index" class="search-filter-tag">
+          <span class="filter-text">{{ filter }}</span>
+          <span class="material-icons filter-remove" @click="removeFilter(index)">close</span>
+        </div>
+      </div>
     </div>
     <ImportButton :category="category" @file-uploaded="refreshPage" />
   </div>
@@ -35,6 +41,7 @@ import { SearchService } from '@/services/search.service'
 import ImportButton from './ImportButton.vue'
 
 const searchQuery = ref('')
+const searchFilter = ref([])
 const query = ref('')
 const searchResults = ref([])
 const isSearching = ref(false)
@@ -46,8 +53,9 @@ const showResults = ref(false)
 const hasSearched = ref(false)
 const hasError = ref(false)
 const errorMessage = ref('')
+const removeCount = ref(0)
 
-const emit = defineEmits(['search-results', 'refresh-page'])
+const emit = defineEmits(['search-results', 'refresh-page', 'is-loading'])
 
 defineProps({
   category: {
@@ -71,9 +79,19 @@ const showError = () => {
   displayedResponse.value = ''
 }
 
+const removeFilter = (index) => {
+  searchFilter.value.splice(index, 1)
+  if (searchFilter.value.length > 0) {
+    handleSearch()
+  }
+}
+
 const handleSearch = () => {
   if (!searchQuery.value.trim()) return;
-
+  const trimmedQuery = searchQuery.value.trim();
+  const capitalizedQuery = trimmedQuery.charAt(0).toUpperCase() + trimmedQuery.slice(1);
+  searchFilter.value.push(capitalizedQuery)
+  
   isSearching.value = true
   displayedResponse.value = ''
   typingComplete.value = false
@@ -81,11 +99,13 @@ const handleSearch = () => {
   hasSearched.value = true
   hasError.value = false
   emit('search-results', [])
-  query.value = query.value + searchQuery.value
-  searchQuery.value = ' '
+  emit('is-loading', true)
+
+  query.value = searchFilter.value.join(' ')
+  searchQuery.value = ''
 
   console.log('Pesquisando:', query.value)
-
+  
   SearchService.ask(query.value)
     .then(data => {
       searchResults.value = data
@@ -93,15 +113,25 @@ const handleSearch = () => {
         fullResponse.value = data.answer
       }
       isSearching.value = false
-      console.log(data.files)
-
+      
+      // Remover os últimos elementos do searchResults
+      if (data.files && data.files.length > removeCount.value) {
+        data.files.splice(data.files.length - removeCount.value, removeCount.value)
+      }
+      
+      // Incrementar o contador de remoção
+      removeCount.value += 3
+      console.log(removeCount.value)
+      
       emit('search-results', data.files || [])
 
+      emit('is-loading', false)
       setTimeout(() => {
         startTyping()
       }, 300)
     })
     .catch(error => {
+      emit('is-loading', false)
       isSearching.value = false
       showError()
     })
@@ -139,6 +169,39 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.search-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.search-filter-tag {
+  display: flex;
+  align-items: center;
+  background-color: #e5e7eb;
+  border-radius: 16px;
+  padding: 4px 10px;
+  font-size: 14px;
+  color: #374151;
+  transition: all 0.2s;
+}
+
+.filter-text {
+  margin-right: 4px;
+}
+
+.filter-remove {
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  color: #6B7280;
+}
+
+.filter-remove:hover {
+  color: #374151;
+}
 
 .search {
   width: 100%;
