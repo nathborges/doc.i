@@ -9,7 +9,7 @@
       </div>
 
       <transition name="slide-fade">
-        <div v-if="showResults" class="search-results" :class="{ 'error': hasError }">
+        <div v-if="false" class="search-results" :class="{ 'error': hasError }">
           <span class="close-icon material-icons" @click="closeResults">close</span>
           <div v-if="isSearching" class="search-loading">
             <span class="material-icons loading-icon">search</span>
@@ -25,14 +25,13 @@
         </div>
       </transition>
     </div>
-    <ImportButton />
+    <ImportButton :category="category" @file-uploaded="refreshPage" />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { SearchService } from '@/services/search.service'
-import { currentCategory, currentView } from '@/store/BaseViewState'
 import ImportButton from './ImportButton.vue'
 
 const searchQuery = ref('')
@@ -48,12 +47,20 @@ const hasSearched = ref(false)
 const hasError = ref(false)
 const errorMessage = ref('')
 
-const emit = defineEmits(['search-results'])
+const emit = defineEmits(['search-results', 'refresh-page'])
+
+defineProps({
+  category: {
+    type: String,
+    default: 'all'
+  }
+})
+
+const refreshPage = () => {
+  emit('refresh-page')
+}
 
 const placeholder = computed(() => {
-  if (currentView.value == 'home' || currentCategory.value == null) {
-    return 'Digite aqui para pesquisar nos seus documentos...';
-  }
   return 'Digite aqui para pesquisar dentro da categoria...';
 })
 
@@ -74,8 +81,8 @@ const handleSearch = () => {
   hasSearched.value = true
   hasError.value = false
   emit('search-results', [])
-  setInitialQuery()
-  query.value = searchQuery.value
+  query.value = query.value + searchQuery.value
+  searchQuery.value = ' '
 
   console.log('Pesquisando:', query.value)
 
@@ -124,15 +131,7 @@ const closeResults = () => {
   showResults.value = false;
 }
 
-const setInitialQuery = () => {
-  if (currentCategory.value !== null) {
-    query.value = 'Pesquise dentro da categoria ' + formatCategory(currentCategory.value) + '';
-  }
-}
-
 onMounted(() => {
-  setInitialQuery();
-
   return () => {
     clearInterval(typingInterval.value)
   }

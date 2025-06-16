@@ -1,6 +1,6 @@
 <template>
     <div class="content">
-        <SearchBar @search-results="handleSearchResults" :category="category" />
+        <SearchBar @search-results="handleSearchResults" @refresh-page="refreshPage" :category="category" />
         <div  class="section">
             <div class="section-header">
                 <h2>Resultado</h2>
@@ -25,16 +25,27 @@
 </template>
 
 <script setup>
-import { ref, computed, watchEffect } from 'vue';
+import { ref, computed, defineProps, onMounted } from 'vue';
 import SearchBar from './SearchBar.vue';
 import { FileService } from '@/services/files.service';
-import { currentCategory, currentView } from '@/store/BaseViewState'
+import { filterHighProbabilityFiles } from '@/utils/fileUtils';
+
+const props = defineProps({
+  category: {
+    type: String,
+    required: true
+  }
+});
 
 const searchResults = ref([])
 const hasResults = computed(() => searchResults.value.length > 0)
 
+const refreshPage = () => {
+    getAllFilesFromCategory();
+}
+
 const handleSearchResults = (data) => {
-    searchResults.value = data;
+    searchResults.value = filterHighProbabilityFiles(data);
 }
 
 const getFileIcon = (extension) => {
@@ -95,16 +106,12 @@ const openFileUrl = (url) => {
 }
 
 const getAllFilesFromCategory = async () => {
-    if (currentCategory.value == null) {
-        return;
-    }
-    searchResults.value = await FileService.getFiles(currentCategory.value);
+    const files = await FileService.getFiles();
+    searchResults.value = filterHighProbabilityFiles(files);
 }
 
-watchEffect(() => {
-    if (currentCategory.value) {
-        getAllFilesFromCategory();
-    }
+onMounted(() => {
+    getAllFilesFromCategory();
 });
 
 

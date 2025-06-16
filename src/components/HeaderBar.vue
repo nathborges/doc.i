@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="header-title">
-            <h1>{{ initialText }}</h1>
+            <h1>{{ title }}</h1>
             <div class="user-profile">
                 <div class="notifications">
                     <span class="material-icons">notifications</span>
@@ -24,20 +24,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
-import { currentCategory, currentView } from '@/store/BaseViewState';
 
 const router = useRouter()
 const showUserMenu = ref(false)
 
-const initialText = computed(() => {
-    if (currentView.value == 'home' || currentCategory.value == null) {
-        return 'Bem vindo de volta!';
-    }
-    return currentCategory.value;
+defineProps({
+    title: String
 })
 
 const toggleUserMenu = () => {

@@ -27,6 +27,28 @@ export const processFile = (file) => {
   return {
     ...file,
     extension: getFileExtension(file.filename),
-    probability: calculateProbabilityPercentage(file.probability)
+    probability: calculateProbabilityPercentage(file.probability),
+    filename: getFileNameFromUrl(file.url)
   };
+};
+
+/**
+ * Filtra arquivos com probabilidade maior ou igual a 80%
+ * @param {Array} files - Lista de arquivos
+ * @returns {Array} - Lista filtrada de arquivos
+ */
+export const filterHighProbabilityFiles = (files) => {
+  return files.filter(file => file.probability >= 83);
+};
+
+/**
+ * Extrai o nome do arquivo de uma URL, removendo o ID único entre _ e .extensão
+ * @param {string} url - URL do arquivo
+ * @returns {string} - Nome do arquivo limpo, sem o ID único
+ */
+export const getFileNameFromUrl = (url) => {
+  if (!url) return '';
+  const segments = url.split('/');
+  const fileName = segments[segments.length - 1] || '';
+  return fileName.replace(/_[^_.]+(\.[^.]+)$/, '$1');
 };

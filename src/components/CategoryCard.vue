@@ -12,7 +12,7 @@
 
 <script setup>
 import { defineProps, defineEmits } from 'vue'
-import { changeView } from '@/store/BaseViewState';
+import { useRouter } from 'vue-router';
 
 const props = defineProps({
   category: {
@@ -26,9 +26,10 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['click'])
+const router = useRouter()
 
 const handleClick = () => {
-  changeView('categoria', props.category.name);
+  router.push({ name: 'category', params: { name: props.category.name } });
 };
 
 </script>

@@ -1,10 +1,13 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import Menu from '@/components/Menu.vue'
-import BaseContent from '@/components/BaseContent.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
-import CategoriaContent from '@/components/CategoriaContent.vue';
 import { useCategoriesStore } from '@/store/CategoriesStore';
+import CategoriaContent from '@/components/CategoriaContent.vue';
+
+const route = useRoute();
+const categoryName = computed(() => route.params.name);
 const categoriesStore = useCategoriesStore();
 
 onMounted(async () => {
@@ -16,10 +19,10 @@ onMounted(async () => {
   <div class="home-container">
     <Menu />
     <div class="main-content">
-      <HeaderBar title="Bem vindo de volta!"/>
+      <HeaderBar :title="categoryName" />
       <!-- Content -->
       <div class="content">
-        <BaseContent />
+        <CategoriaContent :category="categoryName" />
       </div>
     </div>
   </div>

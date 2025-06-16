@@ -4,7 +4,7 @@
       <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
     </div>
     <div class="menu">
-      <div class="menu-item" :class="{ active: currentView === 'home' }" @click="handleMenuClick('home')">
+      <div class="menu-item" :class="{ active: route.path === '/' }" @click="handleMenuClick('home')">
         <span>Home</span>
       </div>
       <div>
@@ -15,7 +15,7 @@
         </div>
         <div v-if="showCategorias" class="submenu">
           <div v-for="categoria in categorias" class="submenu-item"
-            :class="{ active: currentView === 'categoria' && currentCategory === categoria.name }"
+            :class="{ active: route.name === 'category' && route.params.name === categoria.name }"
             @click="handleCategoriaClick(categoria.name)">
             <div class="category-dot" :style="{ backgroundColor: categoria.color }"></div>
             <span>{{ categoria.name }}</span>
@@ -43,22 +43,28 @@
 import { nextTick, onMounted, ref } from 'vue';
 import { FileService } from '@/services/files.service';
 import { computed } from 'vue';
-import { currentView, changeView } from '@/store/BaseViewState';
-import { useCategoriesStore } from '@/store/CategoriesStore'
+import { useCategoriesStore } from '@/store/CategoriesStore';
+import { useRouter, useRoute } from 'vue-router';
 
-const categoriesStore = useCategoriesStore()
+const categoriesStore = useCategoriesStore();
+const router = useRouter();
+const route = useRoute();
 
 const showCategorias = ref(false);
 const hasCategorias = computed(() => categorias.value.length > 0);
 const categorias = computed(() => categoriesStore.categories.value)
 
 const handleMenuClick = (item) => {
-  changeView(item);
+  if (item === 'home') {
+    router.push('/');
+  } else {
+    router.push({ name: item });
+  }
 };
 
 
 const handleCategoriaClick = (categoria) => {
-  changeView('categoria', categoria);
+  router.push({ name: 'category', params: { name: categoria } });
 };
 
 const toggleCategorias = () => {

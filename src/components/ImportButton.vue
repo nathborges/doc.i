@@ -1,59 +1,56 @@
 <template>
     <div>
-        <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept=".pdf,.docx,.doc,.png"
-            :multiple="true" />
+        <input type="file" ref="fileInput" @change="handleFileChange" style="display: none"
+            accept=".pdf,.jpg,.png" :multiple="true" />
         <button class="btn" @click="openFileSelector">
-             <span class="material-icons">add</span>
-             Importar
+            <span class="material-icons">add</span>
+            Importar
         </button>
     </div>
 </template>
 
 <script setup>
-import { ref, inject, onMounted } from 'vue'
+import { ref, inject } from 'vue'
 import { FileService } from '@/services/files.service'
-import { currentCategory } from '@/store/BaseViewState'
 
 const props = defineProps({
-    multiple: {
-        type: Boolean,
-        default: false
+    category: {
+        type: String,
+        default: ""
     },
 })
 
 const category = ref(null)
 const showNotification = inject('showNotification')
-const emit = defineEmits(['file-selected'])
+const emit = defineEmits(['file-uploaded'])
 const fileInput = ref(null)
 
 const openFileSelector = () => {
     fileInput.value.click()
 }
 
-const handleFileChange = (event) => {
+const handleFileChange = async (event) => {
     const files = event.target.files
     if (files && files.length > 0) {
-        Array.from(files).forEach(async file => {
+        
+        for (const file of Array.from(files)) {
             try {
-                await FileService.upload([file], category.value || 'sem_categoria')
+                await FileService.upload([file])
+                emit('file-uploaded')
                 showNotification(file.name, 'success', 5000)
             } catch (error) {
                 console.error('Erro no upload:', error)
                 showNotification(file.name, 'error', 5000)
             }
-        });
+        }
     }
 }
-
-onMounted(() => {
-    category.value = currentCategory.value
-})
 </script>
 
 
 <style scoped>
 .btn {
-    padding:14px 23px;
+    padding: 14px 23px;
     font-weight: 800;
     cursor: pointer;
     transition: all 0.2s;

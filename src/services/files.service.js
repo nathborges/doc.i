@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { processFile } from '../utils/fileUtils';
+import { processFile, filterHighProbabilityFiles } from '../utils/fileUtils';
 
 const API_URL = import.meta.env.VITE_API_BACKEND_FILE || 'http://localhost:3000/api';
 
@@ -25,7 +25,8 @@ export const FileService = {
     .then(response => {
       if (response.data && Array.isArray(response.data)) {
         console.log(response.data)
-        return response.data.map(file => processFile(file));
+        const processedFiles = response.data.map(file => processFile(file));
+        return filterHighProbabilityFiles(processedFiles);
       }
       return response.data;
     })
@@ -34,13 +35,9 @@ export const FileService = {
       throw error;
     });
   },
-  upload(files, category="geral") {
-    console.log(category, files)
+  upload(files) {
     const formData = new FormData();
-    
-    const formattedCategory = this.formatCategory(category);
-    formData.append('category', formattedCategory); 
-    
+        
     for (let i = 0; i < files.length; i++) {
       formData.append('file', files[i]);
     }
@@ -90,11 +87,11 @@ export const FileService = {
   getCategorias() {
     return axios.get(`${API_URL}/categorias`)
       .then(response => {
-        return [{ color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
       })
       .catch(error => {
         console.error('Erro de obter categorias:', error.response?.data || error.message);
-        return [{ color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
+        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
       });
   },
 }

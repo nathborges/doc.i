@@ -3,7 +3,6 @@ import { computed } from 'vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 import CategoryCard from '@/components/CategoryCard.vue'
 import { useRouter } from 'vue-router'
-import { currentCategory } from '@/store/BaseViewState'
 
 const categoriesStore = useCategoriesStore()
 const router = useRouter()
@@ -11,8 +10,7 @@ const router = useRouter()
 const categories = computed(() => categoriesStore.categories.value)
 
 const handleCategoryClick = (category) => {
-  currentCategory.value = category.name
-  router.push('/categoria')
+  router.push({ name: 'category', params: { name: category.name } })
 }
 </script>
 
