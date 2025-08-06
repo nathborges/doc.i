@@ -6,14 +6,15 @@
                 <div class="notifications">
                     <span class="material-icons">notifications</span>
                 </div>
-                <div class="avatar" @click="toggleUserMenu"><span class="material-icons">person</span>
+                <div class="avatar" @click="toggleUserMenu">
+                    <span class="material-icons">person</span>
                 </div>
                 <div v-if="showUserMenu" class="user-menu">
-                    <div class="user-menu-item">
+                    <div class="user-menu-item" @click="goToSettings">
                         <span class="material-icons">settings</span>
                         <span>Configurações</span>
                     </div>
-                    <div class="user-menu-item logout" @click="logout">
+                    <div class="user-menu-item logout" @click="handleLogout">
                         <span class="material-icons">logout</span>
                         <span>Sair</span>
                     </div>
@@ -28,20 +29,24 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 
-const router = useRouter()
-const showUserMenu = ref(false)
-
-defineProps({
+const props = defineProps({
     title: String
 })
 
-const toggleUserMenu = () => {
+const router = useRouter()
+const showUserMenu = ref(false)
+
+function toggleUserMenu() {
     showUserMenu.value = !showUserMenu.value
 }
 
-const logout = () => {
+function handleLogout() {
     AuthService.logout()
     router.push('/login')
+}
+
+function goToSettings() {
+    router.push('/settings')
 }
 </script>
 

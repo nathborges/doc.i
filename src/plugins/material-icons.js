@@ -1,32 +1,3 @@
-// Arquivo de configuração para Material Icons
-// Este arquivo substitui o fontawesome.js
-
-// Mapeamento de ícones FontAwesome para Material Icons:
-// faEye -> visibility
-// faEyeSlash -> visibility_off
-// faUser -> person
-// faLock -> lock
-// faEnvelope -> email
-// faHome -> home
-// faFolder -> folder
-// faStar -> star
-// faTrashCan -> delete
-// faSearch -> search
-// faBell -> notifications
-// faFilePdf -> picture_as_pdf
-// faFileWord -> description
-// faFileImage -> image
-// faFileExcel -> table_chart
-// faCog -> settings
-// faSignOutAlt -> logout
-// faCheckCircle -> check_circle
-// faExclamationCircle -> error
-// faExclamationTriangle -> warning
-// faInfoCircle -> info
-// faTimes -> close
-// faPlus -> add
-
-// Componente para compatibilidade com código existente
 const MaterialIcon = {
   name: 'MaterialIcon',
   props: {
@@ -36,7 +7,6 @@ const MaterialIcon = {
     }
   },
   setup(props) {
-    // Mapeamento de ícones FontAwesome para Material Icons
     const iconMap = {
       'eye': 'visibility',
       'eye-slash': 'visibility_off',
@@ -62,7 +32,6 @@ const MaterialIcon = {
       'times': 'close',
       'plus': 'add'
     }
-    
     return { iconMap }
   },
   template: `

@@ -10,8 +10,7 @@ export const FileService = {
   getFiles(category = null) {
     const token = localStorage.getItem('token');
     let url = `${API_URL}/upload/files/`;
-    
-    // Adiciona o parâmetro de categoria à URL se fornecido
+
     if (category) {
       const formattedCategory = this.formatCategory(category);
       url += `?category=${formattedCategory}`;
@@ -60,26 +59,9 @@ export const FileService = {
   },
   gerarCorAleatoria() {
     const coresTag = [
-      '#1A5276', // Azul marinho profundo
-      '#154360', // Azul petróleo
-      '#0E6655', // Verde esmeralda escuro
-      '#186A3B', // Verde floresta
-      '#7D3C98', // Roxo intenso
-      '#6C3483', // Roxo profundo
-      '#A93226', // Vermelho tijolo
-      '#922B21', // Vermelho escuro
-      '#873600', // Marrom escuro
-      '#784212', // Marrom terra
-      '#283747', // Azul ardósia profundo
-      '#212F3D', // Azul-cinza escuro
-      '#17202A', // Azul-preto
-      '#641E16', // Borgonha
-      '#512E5F', // Roxo escuro
-      '#1B4F72', // Azul cobalto
-      '#0B5345', // Verde musgo
-      '#7E5109', // Âmbar escuro
-      '#4A235A', // Roxo imperial
-      '#1B2631'  // Cinza ardósia escuro
+      '#1A5276', '#154360', '#0E6655', '#186A3B', '#7D3C98', '#6C3483', '#A93226', '#922B21',
+      '#873600', '#784212', '#283747', '#212F3D', '#17202A', '#641E16', '#512E5F', '#1B4F72',
+      '#0B5345', '#7E5109', '#4A235A', '#1B2631'
     ];
     
     return coresTag[Math.floor(Math.random() * coresTag.length)];

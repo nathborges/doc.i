@@ -65,16 +65,6 @@ p {
   margin-bottom: 1rem;
   color: var(--text-secondary);
 }
-.logo {
-  height: 50px;
-}
-.logo-image {
-  height: 100%;
-}
-.flex-horizontal {
-  display: flex;
-  flex-direction: row;
-}
 /* ===== LINKS ===== */
 a {
   text-decoration: none;
@@ -161,9 +151,6 @@ select:focus {
 .login, .signup {
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-md);
-}
-.image {
-  background-color: var(--bg-secondary);
 }
 .toggle-password {
   color: var(--secondary-color);
