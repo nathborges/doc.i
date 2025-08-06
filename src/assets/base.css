@@ -1,20 +1,20 @@
 :root {
-  /* Cores principais */
+  /* Main colors */
   --primary-color: #3b82f6;
   --primary-color-light: #eff6ff;
   --success-color: #10b981;
   --warning-color: #f59e0b;
   --error-color: #ef4444;
-  /* Cores de fundo */
+  /* Background colors */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
-  /* Cores de texto */
+  /* Text colors */
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --text-light: #ffffff;
-  /* Bordas */
+  /* Borders */
   --border-color: #eaeef2;
-  /* Sombras */
+  /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.03);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.08);

@@ -30,7 +30,7 @@ export const FileService = {
       return response.data;
     })
     .catch(error => {
-      console.error('Erro ao obter arquivos:', error.response?.data || error.message);
+      console.error('Error fetching files:', error.response?.data || error.message);
       throw error;
     });
   },
@@ -53,27 +53,37 @@ export const FileService = {
       return response.data;
     })
     .catch(error => {
-      console.error('Erro no upload:', error.response?.data || error.message);
+      console.error('Upload error:', error.response?.data || error.message);
       throw error;
     });
   },
-  gerarCorAleatoria() {
-    const coresTag = [
+  generateRandomColor() {
+    const colorTags = [
       '#1A5276', '#154360', '#0E6655', '#186A3B', '#7D3C98', '#6C3483', '#A93226', '#922B21',
       '#873600', '#784212', '#283747', '#212F3D', '#17202A', '#641E16', '#512E5F', '#1B4F72',
       '#0B5345', '#7E5109', '#4A235A', '#1B2631'
     ];
     
-    return coresTag[Math.floor(Math.random() * coresTag.length)];
+    return colorTags[Math.floor(Math.random() * colorTags.length)];
   },  
-  getCategorias() {
-    return axios.get(`${API_URL}/categorias`)
+  getCategories() {
+    return axios.get(`${API_URL}/categories`)
       .then(response => {
-        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
+        return [
+          { color: this.generateRandomColor(), name: "Invoices" },
+          { color: this.generateRandomColor(), name: "Contracts" },
+          { color: this.generateRandomColor(), name: "Coupons" },
+          { color: this.generateRandomColor(), name: "Documents" }
+        ];
       })
       .catch(error => {
-        console.error('Erro de obter categorias:', error.response?.data || error.message);
-        return [{ color: this.gerarCorAleatoria(), name: "Notas fiscais" }, { color: this.gerarCorAleatoria(), name: "Contratos" }, { color: this.gerarCorAleatoria(), name: "Cupons" }, { color: this.gerarCorAleatoria(), name: "Documentos" }];
+        console.error('Error fetching categories:', error.response?.data || error.message);
+        return [
+          { color: this.generateRandomColor(), name: "Invoices" },
+          { color: this.generateRandomColor(), name: "Contracts" },
+          { color: this.generateRandomColor(), name: "Coupons" },
+          { color: this.generateRandomColor(), name: "Documents" }
+        ];
       });
   },
 }

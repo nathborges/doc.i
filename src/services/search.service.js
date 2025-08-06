@@ -20,7 +20,7 @@ export const SearchService = {
         return data;
       })
       .catch(error => {
-        console.error('Erro na consulta:', error.response?.data || error.message);
+        console.error('Search error:', error.response?.data || error.message);
         throw error;
       });
   },

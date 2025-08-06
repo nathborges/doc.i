@@ -1,6 +1,6 @@
 <template>
 <div class="content">
-    <!-- Categorias -->
+    <!-- Categories -->
     <div class="section">
       <div class="section-header">
         <h2>Categorias mais recentes</h2>
@@ -12,7 +12,6 @@
           :key="category.name" 
           :category="category" 
           subtitle="Criada em 22/03/2025"
-          @click="handleCategoryClick"
         />
         <div v-if="categories.length === 0" class="empty-state">
           <p>Carregando categorias...</p>
@@ -29,7 +28,7 @@
       <div class="files-grid">
         <div class="file-card">
           <div class="file-icon pdf">
-            <font-awesome-icon icon="file-pdf" />
+            <span class="material-icons">picture_as_pdf</span>
           </div>
           <div class="file-info">
             <h3>Manual do Usuário</h3>
@@ -38,7 +37,7 @@
         </div>
         <div class="file-card">
           <div class="file-icon doc">
-            <font-awesome-icon icon="file-word" />
+            <span class="material-icons">description</span>
           </div>
           <div class="file-info">
             <h3>Contrato</h3>
@@ -60,10 +59,6 @@ const categoriesStore = useCategoriesStore()
 const router = useRouter()
 
 const categories = computed(() => categoriesStore.categories.value)
-
-const handleCategoryClick = (category) => {
-  router.push({ name: 'category', params: { name: category.name } })
-}
 </script>
 
 <style scoped>

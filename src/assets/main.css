@@ -1,38 +1,38 @@
 @import './reset.css';
 @import './base.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-/* ===== CORES DO SISTEMA ===== */
+/* ===== SYSTEM COLORS ===== */
 :root {
-  /* Cores primárias */
+  /* Primary colors */
   --primary-color: #f58404;
   --primary-color-hover: #AB5C02;
   --primary-color-light: rgba(66, 103, 178, 0.1);
   --accent-green: #15803D;
-  /* Cores secundárias */
+  /* Secondary colors */
   --secondary-color: #666666;
   --secondary-color-hover: #444444;
-  /* Cores de fundo */
+  /* Background colors */
   --bg-primary: #ffffff;
   --bg-secondary: #f0f2f5;
   --bg-tertiary: #e0e0e0;
-  /* Cores de texto */
+  /* Text colors */
   --text-primary: #1d2129;
   --text-secondary: #666666;
   --text-light: #ffffff;
-  /* Cores de borda */
+  /* Border colors */
   --border-color: #e0e0e0;
   --border-color-focus: #4267B2;
-  /* Cores de estado */
+  /* State colors */
   --error-color: #e74c3c;
   --success-color: #2ecc71;
   --warning-color: #f39c12;
   --info-color: #3498db;
-  /* Sombras */
+  /* Shadows */
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
-/* ===== TIPOGRAFIA ===== */
+/* ===== TYPOGRAPHY ===== */
 body {
   font-family: 'Inter', sans-serif;
 }
@@ -85,7 +85,7 @@ a:hover {
   transition: all 0.5s ease;
   padding: 3px;
 }
-/* ===== BOTÕES ===== */
+/* ===== BUTTONS ===== */
 button, 
 .btn {
   background: var(--accent-green);
@@ -117,7 +117,7 @@ button[type="submit"]:hover {
 .btn-outline:hover {
   background-color: var(--primary-color-light);
 }
-/* ===== FORMULÁRIOS ===== */
+/* ===== FORMS ===== */
 input, 
 textarea, 
 select {
@@ -146,8 +146,8 @@ select:focus {
   width: 100%;
   margin: 0 auto;
 }
-/* ===== COMPONENTES ESPECÍFICOS ===== */
-/* Login e Signup */
+/* ===== SPECIFIC COMPONENTS ===== */
+/* Login and Signup */
 .login, .signup {
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-md);

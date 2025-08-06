@@ -40,9 +40,9 @@ const swiperOptions = {
 };
 
 const images = ref([
-  { src: './carousel/slide1.svg' },
-  { src: './carousel/slide2.svg' },
-  { src: './carousel/slide3.svg' },
+  { src: './carousel/slide1.svg', alt: 'Slide 1' },
+  { src: './carousel/slide2.svg', alt: 'Slide 2' },
+  { src: './carousel/slide3.svg', alt: 'Slide 3' },
 ]);
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="category-card" @click="handleClick">
     <div class="category-icon" :style="{ backgroundColor: category.color }">
-      <font-awesome-icon icon="folder" />
+      <span class="material-icons">folder</span>
     </div>
     <div class="category-info">
       <h3>{{ category.name }}</h3>

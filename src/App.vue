@@ -4,7 +4,7 @@
     <Notification 
       v-if="notifications.length > 0" 
       :notifications="notifications" 
-      @close="() => closeNotification(index)"
+      @close="closeNotification"
       :autoClose="false"
     />
   </div>
@@ -26,7 +26,7 @@ const showNotification = (fileName, type = 'info', duration = 3000) => {
 }
 
 const closeNotification = (index) => {
-  if (index !== undefined) {
+  if (typeof index === 'number') {
     notifications.value.splice(index, 1);
   } else {
     notifications.value = [];

@@ -104,7 +104,7 @@ const handleSearch = () => {
   query.value = searchFilter.value.join(' ')
   searchQuery.value = ''
 
-  console.log('Pesquisando:', query.value)
+  console.log('Searching:', query.value)
   
   SearchService.ask(query.value)
     .then(data => {
@@ -114,12 +114,12 @@ const handleSearch = () => {
       }
       isSearching.value = false
       
-      // Remover os últimos elementos do searchResults
+      // Remove last elements from searchResults
       if (data.files && data.files.length > removeCount.value) {
         data.files.splice(data.files.length - removeCount.value, removeCount.value)
       }
       
-      // Incrementar o contador de remoção
+      // Increment remove counter
       removeCount.value += 3
       console.log(removeCount.value)
       

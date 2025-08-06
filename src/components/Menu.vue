@@ -8,29 +8,28 @@
         <span>Home</span>
       </div>
       <div>
-        <div class="menu-item" @click="toggleCategorias">
+        <div class="menu-item" @click="toggleCategories">
           <span>Minhas Categorias</span>
-          <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
+          <span v-if="hasCategories" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
             'expand_more' }}</span>
         </div>
-        <div v-if="showCategorias" class="submenu">
-          <div v-for="categoria in categorias" class="submenu-item"
-            :class="{ active: route.name === 'category' && route.params.name === categoria.name }"
-            @click="handleCategoriaClick(categoria.name)">
-            <div class="category-dot" :style="{ backgroundColor: categoria.color }"></div>
-            <span>{{ categoria.name }}</span>
+        <div v-if="showCategories" class="submenu">
+          <div v-for="category in categories" class="submenu-item"
+            :class="{ active: route.name === 'category' && route.params.name === category.name }"
+            @click="handleCategoryClick(category.name)">
+            <div class="category-dot" :style="{ backgroundColor: category.color }"></div>
+            <span>{{ category.name }}</span>
           </div>
         </div>
       </div>
       <div class="menu-item">
-        <!-- <span class="material-icons">star</span> -->
-        <span>Membros</span>
+        <span>Members</span>
       </div>
     </div>
     <div class="storage">
       <div class="storage-info">
-        <h4>Armazenamento</h4>
-        <p>7.5GB de 15GB usado</p>
+        <h4>Storage</h4>
+        <p>7.5GB of 15GB used</p>
       </div>
       <div class="progress-bar">
         <div class="progress" style="width: 50%"></div>
@@ -50,9 +49,9 @@ const categoriesStore = useCategoriesStore();
 const router = useRouter();
 const route = useRoute();
 
-const showCategorias = ref(false);
-const hasCategorias = computed(() => categorias.value.length > 0);
-const categorias = computed(() => categoriesStore.categories.value)
+const showCategories = ref(false);
+const hasCategories = computed(() => categories.value.length > 0);
+const categories = computed(() => categoriesStore.categories.value)
 
 const handleMenuClick = (item) => {
   if (item === 'home') {
@@ -63,18 +62,17 @@ const handleMenuClick = (item) => {
 };
 
 
-const handleCategoriaClick = (categoria) => {
-  router.push({ name: 'category', params: { name: categoria } });
+const handleCategoryClick = (category) => {
+  router.push({ name: 'category', params: { name: category } });
 };
 
-const toggleCategorias = () => {
-  if (!hasCategorias.value) return;
-  showCategorias.value = !showCategorias.value;
+const toggleCategories = () => {
+  if (!hasCategories.value) return;
+  showCategories.value = !showCategories.value;
 };
 
 onMounted(async () => {
-  categorias.value = await FileService.getCategorias();
-  nextTick()
+  await categoriesStore.fetchCategories();
 });
 
 </script>

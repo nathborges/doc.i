@@ -24,11 +24,15 @@ import { ref, onMounted, onUnmounted } from 'vue';
 const props = defineProps({
   notifications: {
     type: Array,
-    default: []
+    default: () => []
   },
   autoClose: {
     type: Boolean,
     default: true
+  },
+  duration: {
+    type: Number,
+    default: 3000
   }
 });
 

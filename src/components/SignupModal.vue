@@ -1,5 +1,5 @@
 <template>
-  <div class="container"></div>
+  <div class="container">
     <div class="signup">
       <div class="signup-container">
         <h1>Criar Conta</h1>
@@ -44,7 +44,7 @@ const form = ref({
 
 function validateForm() {
   if (form.value.password !== form.value.confirmPassword) {
-    alert('As senhas não coincidem.')
+    alert('Passwords do not match.')
     return false
   }
   return true
@@ -52,8 +52,8 @@ function validateForm() {
 
 function signup() {
   if (!validateForm()) return
-  console.log('Cadastro tentado:', form.value.username, form.value.email)
-  alert('Cadastro tentado! Verifique o console para detalhes.')
+  console.log('Signup attempted:', form.value.username, form.value.email)
+  alert('Signup attempted! Check the console for details.')
 }
 </script>
 

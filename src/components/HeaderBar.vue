@@ -16,7 +16,7 @@
                     </div>
                     <div class="user-menu-item logout" @click="handleLogout">
                         <span class="material-icons">logout</span>
-                        <span>Sair</span>
+                        <span>Logout</span>
                     </div>
                 </div>
             </div>

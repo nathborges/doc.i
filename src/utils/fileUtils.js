@@ -1,7 +1,7 @@
 /**
- * Extrai a extensão de um nome de arquivo
- * @param {string} filename - Nome do arquivo
- * @returns {string} - Extensão do arquivo em minúsculas ou string vazia se não houver extensão
+ * Extracts the extension from a filename
+ * @param {string} filename - File name
+ * @returns {string} - File extension in lowercase or empty string if none
  */
 export const getFileExtension = (filename) => {
   if (!filename) return '';
@@ -10,18 +10,18 @@ export const getFileExtension = (filename) => {
 };
 
 /**
- * Calcula a probabilidade em porcentagem
- * @param {number} probability - Probabilidade em decimal (0-1)
- * @returns {number} - Probabilidade em porcentagem (0-100)
+ * Calculates probability percentage
+ * @param {number} probability - Probability in decimal (0-1)
+ * @returns {number} - Probability in percentage (0-100)
  */
 export const calculateProbabilityPercentage = (probability) => {
   return Math.floor(probability * 100);
 };
 
 /**
- * Processa um arquivo adicionando extensão e calculando probabilidade
- * @param {Object} file - Objeto do arquivo
- * @returns {Object} - Arquivo processado com extensão e probabilidade
+ * Processes a file by adding extension and calculating probability
+ * @param {Object} file - File object
+ * @returns {Object} - Processed file with extension and probability
  */
 export const processFile = (file) => {
   return {
@@ -33,18 +33,18 @@ export const processFile = (file) => {
 };
 
 /**
- * Filtra arquivos com probabilidade maior ou igual a 80%
- * @param {Array} files - Lista de arquivos
- * @returns {Array} - Lista filtrada de arquivos
+ * Filters files with probability greater than or equal to 80%
+ * @param {Array} files - List of files
+ * @returns {Array} - Filtered list of files
  */
 export const filterHighProbabilityFiles = (files) => {
-  return files.filter(file => file.probability >= 83);
+  return files.filter(file => file.probability >= 80);
 };
 
 /**
- * Extrai o nome do arquivo de uma URL, removendo o ID único entre _ e .extensão
- * @param {string} url - URL do arquivo
- * @returns {string} - Nome do arquivo limpo, sem o ID único
+ * Extracts the filename from a URL, removing the unique ID between _ and .extension
+ * @param {string} url - File URL
+ * @returns {string} - Clean filename without unique ID
  */
 export const getFileNameFromUrl = (url) => {
   if (!url) return '';

@@ -117,7 +117,7 @@ const openFileUrl = (url) => {
 
 const getAllFilesFromCategory = async () => {
     isLoading.value = true;
-    const files = await FileService.getFiles();
+    const files = await FileService.getFiles(props.category);
     searchResults.value = filterHighProbabilityFiles(files);
     isLoading.value = false;
 }
