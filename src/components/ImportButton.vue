@@ -2,16 +2,14 @@
     <div>
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none"
             accept=".pdf,.jpg,.png" :multiple="true" />
-        <button class="btn" @click="openFileSelector">
-            <span class="material-icons">add</span>
-            Importar
-        </button>
+        <BaseButton text="Importar" icon="add" @click="openFileSelector" />
     </div>
 </template>
 
 <script setup>
 import { ref, inject } from 'vue'
 import { FileService } from '@/services/files.service'
+import BaseButton from './BaseButton.vue'
 
 const props = defineProps({
     category: {
@@ -49,20 +47,5 @@ const handleFileChange = async (event) => {
 
 
 <style scoped>
-.btn {
-    padding: 14px 23px;
-    font-weight: 800;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid var(--border-color);
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
 
-.btn:hover {
-    background-color: var(--primary-color-hover);
-}
 </style>

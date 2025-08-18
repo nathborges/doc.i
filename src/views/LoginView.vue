@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import SignupView from '../components/SignupModal.vue'
+import SignupModal from '../components/modal/SignupModal.vue'
 import { AuthService } from '@/services/auth.service'
 import { useRouter } from 'vue-router'
 import Carousel from '../components/Carousel.vue'
@@ -80,10 +80,7 @@ const closeSignupModal = () => {
 
   <div v-if="showSignupModal" class="modal-overlay">
     <div class="modal-container">
-      <button class="close-button" @click="closeSignupModal">
-        <span class="material-icons">close</span>
-      </button>
-      <SignupView @close="closeSignupModal" />
+      <SignupModal @close="closeSignupModal" />
     </div>
   </div>
 </template>
@@ -262,7 +259,7 @@ button[type="submit"]:hover {
 }
 
 
-/* Ajustes para o SignupView dentro do modal */
+/* Ajustes para o SignupModal dentro do modal */
 .modal-container :deep(.container) {
   height: auto;
   width: auto;

@@ -6,14 +6,24 @@ const categories = ref([])
 const isLoading = ref(false)
 const error = ref(null)
 
+// Cache para melhorar performance de buscas
+const categoryCache = new Map()
+
 // Função para carregar categorias da API
 const fetchCategories = async () => {
   isLoading.value = true
   error.value = null
-  
+
   try {
-    const data = await FileService.getCategorias()
+    const data = await FileService.getCategories()
     categories.value = data
+    
+    // Atualizar cache
+    categoryCache.clear()
+    data.forEach(cat => {
+      categoryCache.set(cat.name, cat)
+    })
+
     return data
   } catch (err) {
     error.value = 'Erro ao carregar categorias'
@@ -24,18 +34,15 @@ const fetchCategories = async () => {
   }
 }
 
-// Função para obter uma categoria pelo nome
 const getCategoryByName = (name) => {
-  return categories.value.find(cat => cat.name === name) || null
+  return categoryCache.get(name) || null
 }
 
-// Função para obter uma cor pelo nome da categoria
 const getColorByName = (name) => {
-  const category = getCategoryByName(name)
-  return category ? category.color : '#808080' // Cinza como cor padrão
+  const category = categoryCache.get(name)
+  return category?.color || '#808080' // Cinza como cor padrão
 }
 
-// Exporta a store como um objeto com estado e métodos
 export const useCategoriesStore = () => {
   return {
     categories,

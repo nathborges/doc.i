@@ -3,6 +3,17 @@
         <div class="header-title">
             <h1>{{ title }}</h1>
             <div class="user-profile">
+                <div class="upload-button">
+                    <input type="file" ref="fileInput" @change="handleFileChange" style="display: none"
+                        accept=".pdf,.jpg,.png" :multiple="true" />
+                    <BaseButton 
+                        text="Importar" 
+                        icon="upload" 
+                        variant="primary" 
+                        size="small" 
+                        @click="openFileSelector" 
+                    />
+                </div>
                 <div class="notifications">
                     <span class="material-icons">notifications</span>
                 </div>
@@ -24,12 +35,18 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
+import { FileService } from '@/services/files.service'
+import BaseButton from './BaseButton.vue'
 
 const router = useRouter()
 const showUserMenu = ref(false)
+const fileInput = ref(null)
+const showNotification = inject('showNotification')
+
+const emit = defineEmits(['file-uploaded'])
 
 defineProps({
     title: String
@@ -42,6 +59,26 @@ const toggleUserMenu = () => {
 const logout = () => {
     AuthService.logout()
     router.push('/login')
+}
+
+const openFileSelector = () => {
+    fileInput.value.click()
+}
+
+const handleFileChange = async (event) => {
+    const files = event.target.files
+    if (files && files.length > 0) {
+        for (const file of Array.from(files)) {
+            try {
+                await FileService.upload([file])
+                emit('file-uploaded')
+                showNotification(file.name, 'success', 5000)
+            } catch (error) {
+                console.error('Erro no upload:', error)
+                showNotification(file.name, 'error', 5000)
+            }
+        }
+    }
 }
 </script>
 
@@ -64,35 +101,43 @@ const logout = () => {
 .user-profile {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
 .notifications {
     position: relative;
     cursor: pointer;
-    width: 40px;
-    height: 40px;
-    background-color: var(--bg-secondary);
+    width: 36px;
+    height: 36px;
+    background-color: #f3f4f6;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
+    color: #6b7280;
+    transition: background-color 0.2s;
+}
+
+.notifications:hover {
+    background-color: #e5e7eb;
 }
 
 .avatar {
-    width: 42px;
-    height: 42px;
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
+    width: 36px;
+    height: 36px;
+    background-color: #f3f4f6;
+    color: #6b7280;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     position: relative;
-    border: 1px solid var(--border-color);
+    transition: background-color 0.2s;
+}
+
+.avatar:hover {
+    background-color: #e5e7eb;
 }
 
 .user-menu {
@@ -130,4 +175,10 @@ const logout = () => {
     margin-right: 12px;
     width: 16px;
 }
+
+.upload-button {
+    position: relative;
+}
+
+
 </style>

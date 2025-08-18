@@ -31,14 +31,14 @@
         </div>
       </div>
     </div>
-    <ImportButton :category="category" @file-uploaded="refreshPage" />
+
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { SearchService } from '@/services/search.service'
-import ImportButton from './ImportButton.vue'
+
 
 const searchQuery = ref('')
 const searchFilter = ref([])
@@ -55,7 +55,7 @@ const hasError = ref(false)
 const errorMessage = ref('')
 const removeCount = ref(0)
 
-const emit = defineEmits(['search-results', 'refresh-page', 'is-loading'])
+const emit = defineEmits(['search-results', 'is-loading'])
 
 defineProps({
   category: {
@@ -64,9 +64,7 @@ defineProps({
   }
 })
 
-const refreshPage = () => {
-  emit('refresh-page')
-}
+
 
 const placeholder = computed(() => {
   return 'Digite aqui para pesquisar dentro da categoria...';
@@ -114,12 +112,10 @@ const handleSearch = () => {
       }
       isSearching.value = false
       
-      // Remover os últimos elementos do searchResults
       if (data.files && data.files.length > removeCount.value) {
         data.files.splice(data.files.length - removeCount.value, removeCount.value)
       }
       
-      // Incrementar o contador de remoção
       removeCount.value += 3
       console.log(removeCount.value)
       

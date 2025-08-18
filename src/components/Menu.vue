@@ -4,27 +4,25 @@
       <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
     </div>
     <div class="menu">
-      <div class="menu-item" :class="{ active: route.path === '/' }" @click="handleMenuClick('home')">
-        <span>Home</span>
+      <div v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ active: isActiveRoute(item.route) }"
+        @click="handleMenuClick(item.id)">
+        <span class="material-icons">{{ item.icon }}</span>
+        <span>{{ item.label }}</span>
       </div>
-      <div>
-        <div class="menu-item" @click="toggleCategorias">
-          <span>Minhas Categorias</span>
-          <span v-if="hasCategorias" class="material-icons expand-icon">{{ showCategorias ? 'expand_less' :
-            'expand_more' }}</span>
+
+      <div v-if="hasCategories" class="categories-section">
+        <div class="categories-header">
+          <span class="categories-title">Categorias</span>
+          <span class="material-icons add-icon" @click="openCreateCategoryModal">add</span>
         </div>
-        <div v-if="showCategorias" class="submenu">
-          <div v-for="categoria in categorias" class="submenu-item"
-            :class="{ active: route.name === 'category' && route.params.name === categoria.name }"
-            @click="handleCategoriaClick(categoria.name)">
-            <div class="category-dot" :style="{ backgroundColor: categoria.color }"></div>
-            <span>{{ categoria.name }}</span>
+        <div class="categories-list">
+          <div v-for="category in categories" class="category-item"
+            :class="{ active: route.name === 'category' && route.params.name === category.name }"
+            @click="handleCategoryClick(category.name)">
+            <div class="category-dot" :style="{ backgroundColor: category.color || '#3b82f6' }"></div>
+            <span class="category-name">{{ category.name }}</span>
           </div>
         </div>
-      </div>
-      <div class="menu-item">
-        <!-- <span class="material-icons">star</span> -->
-        <span>Membros</span>
       </div>
     </div>
     <div class="storage">
@@ -40,187 +38,219 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from 'vue';
-import { FileService } from '@/services/files.service';
-import { computed } from 'vue';
-import { useCategoriesStore } from '@/store/CategoriesStore';
-import { useRouter, useRoute } from 'vue-router';
+import { nextTick, onMounted, ref, computed } from 'vue'
+import { FileService } from '@/services/files.service'
+import { useCategoriesStore } from '@/store/CategoriesStore'
+import { useRouter, useRoute } from 'vue-router'
 
-const categoriesStore = useCategoriesStore();
-const router = useRouter();
-const route = useRoute();
+const categoriesStore = useCategoriesStore()
+const router = useRouter()
+const route = useRoute()
 
-const showCategorias = ref(false);
-const hasCategorias = computed(() => categorias.value.length > 0);
-const categorias = computed(() => categoriesStore.categories.value)
+const emit = defineEmits(['open-create-category'])
 
-const handleMenuClick = (item) => {
-  if (item === 'home') {
-    router.push('/');
-  } else {
-    router.push({ name: item });
+const menuItems = [
+  { id: 'home', icon: 'home', label: 'Início', route: '/' },
+  { id: 'recent', icon: 'schedule', label: 'Recentes', route: '/recent' },
+  { id: 'favorites', icon: 'star', label: 'Favoritos', route: '/favorites' },
+  { id: 'shared', icon: 'share', label: 'Compartilhados', route: '/shared' },
+  { id: 'trash', icon: 'delete', label: 'Lixeira', route: '/trash' }
+]
+
+const categories = computed(() => categoriesStore.categories.value)
+const hasCategories = computed(() => categories.value && categories.value.length > 0)
+
+const isActiveRoute = (routePath) => {
+  return route.path === routePath
+}
+
+const handleMenuClick = (itemId) => {
+  const item = menuItems.find(i => i.id === itemId)
+  if (item) {
+    router.push(item.route)
   }
-};
+}
 
+const handleCategoryClick = (category) => {
+  router.push({ name: 'category', params: { name: category } })
+}
 
-const handleCategoriaClick = (categoria) => {
-  router.push({ name: 'category', params: { name: categoria } });
-};
-
-const toggleCategorias = () => {
-  if (!hasCategorias.value) return;
-  showCategorias.value = !showCategorias.value;
-};
+const openCreateCategoryModal = () => {
+  emit('open-create-category')
+}
 
 onMounted(async () => {
-  categorias.value = await FileService.getCategorias();
+  await categoriesStore.fetchCategories()
   nextTick()
-});
+})
 
 </script>
 
 <style scoped>
-/* Sidebar */
 .sidebar {
-  width: 280px;
-  background-color: var(--bg-primary);
-  padding: 50px 25px;
+  width: 240px;
+  background-color: #ffffff;
+  padding: 24px 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-sm);
-  border-right: 1px solid var(--border-color);
-  font-family: 'Inter', sans-serif !important;
-  gap: 30px;
-}
-
-.logo h2 {
-  color: var(--primary-color);
-  font-weight: 700;
-  font-size: 24px;
-  letter-spacing: -0.5px;
-}
-
-.button-item {
-  display: flex;
-  align-items: center;
-  padding: 14px 18px;
-  margin-bottom: 8px;
-  border-radius: 12px;
+  border-right: 1px solid #e5e7eb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  gap: 24px;
 }
 
 .menu {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 2px;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
-  border-radius: 12px;
+  padding: 8px 12px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 15px;
-  font-weight: 400;
+  font-size: 13px;
+  font-weight: 500;
   color: var(--text-primary);
-  gap: 3px
+  gap: 8px;
 }
-
 
 .menu-item:hover {
   background-color: var(--bg-secondary);
 }
 
 .menu-item.active {
-  font-weight: 800;
+  background-color: #f0f9f0;
+  font-weight: 500;
+  color: #4a7c59;
 }
 
 .menu-item .material-icons {
-  font-size: 17px;
-  margin-right: 8px;
-  margin-bottom: 3px;
+  font-size: 16px;
+  color: var(--text-secondary);
 }
 
-.menu-item .expand-icon {
-  font-size: 20px;
+
+
+.categories-section {
+  margin-top: 24px;
 }
 
-.submenu {
-  margin-left: 25px;
-  font-size:15px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-}
-
-.submenu-item {
+.categories-header {
   display: flex;
   align-items: center;
-  border-radius: 8px;
+  justify-content: space-between;
+  padding: 0 12px;
+  margin-bottom: 8px;
+}
+
+.categories-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.add-icon {
+  font-size: 16px;
+  color: var(--primary-color);
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.add-icon:hover {
+  background-color: var(--bg-secondary);
+}
+
+.categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.category-item {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 14px;
-  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
   gap: 8px;
 }
 
+.category-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.category-item.active {
+  background-color: #f0f9f0;
+  font-weight: 500;
+  color: #4a7c59;
+}
+
+.category-name {
+  flex: 1;
+}
+
+
+
+
+
+
+
 .category-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-.submenu-item:hover {
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-}
 
-.submenu-item .material-icons {
-  margin-right: 5px;
-  font-size: 20px;
-}
 
 .storage {
   margin-top: auto;
-  padding: 20px;
-  background-color: var(--bg-secondary);
-  border-radius: 16px;
-  border: 1px solid var(--border-color);
+  padding: 16px;
+  background-color: #f9fafb;
+  border-radius: 12px;
 }
 
 .storage-info {
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  margin-bottom: 15px;
+  gap: 4px;
+  margin-bottom: 12px;
 }
 
 .storage-info h4 {
   margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .storage-info p {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-secondary);
 }
 
 .progress-bar {
-  height: 8px;
-  background-color: var(--border-color);
-  border-radius: 4px;
+  height: 6px;
+  background-color: #e5e7eb;
+  border-radius: 3px;
   overflow: hidden;
 }
 
 .progress {
   height: 100%;
-  background-color: #4CAF50;
+  background-color: #15803D;
 }
 </style>

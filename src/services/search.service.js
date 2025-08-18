@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from '@/utils/httpClient';
 import { processFile, filterHighProbabilityFiles } from '../utils/fileUtils';
 
-const API_URL = import.meta.env.VITE_API_BACKEND_ASK || 'http://0.0.0.0:8004';
+const API_URL = import.meta.env.VITE_API_BACKEND;
 
 export const SearchService = {
   ask(query, top_k = 10) { 
@@ -13,14 +13,13 @@ export const SearchService = {
         const data = response.data;
         
         if (data.files && Array.isArray(data.files)) {
-          // Process files and filter by probability
           data.files = filterHighProbabilityFiles(data.files.map(file => processFile(file)));
         }
         
         return data;
       })
       .catch(error => {
-        console.error('Erro na consulta:', error.response?.data || error.message);
+        console.error('Query error:', error.response?.data || error.message);
         throw error;
       });
   },

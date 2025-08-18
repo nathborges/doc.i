@@ -4,8 +4,8 @@
 /* ===== CORES DO SISTEMA ===== */
 :root {
   /* Cores primárias */
-  --primary-color: #f58404;
-  --primary-color-hover: #AB5C02;
+  --primary-color: #15803D;
+  --primary-color-hover: #0F5D2E;
   --primary-color-light: rgba(66, 103, 178, 0.1);
   --accent-green: #15803D;
   /* Cores secundárias */

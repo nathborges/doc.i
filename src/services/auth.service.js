@@ -1,10 +1,10 @@
-import axios from 'axios';
+import axios from '@/utils/httpClient';
 
 const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000/api';
 
 export const AuthService = {
   login(email, password) {
-    return axios.post(`${API_URL}/doc-i/auth/login`, {
+    return axios.post(`${API_URL}/auth/login`, {
       email,
       password
     }, {
@@ -21,7 +21,27 @@ export const AuthService = {
         return response.data;
       })
       .catch(error => {
-        console.error('Erro de autenticação:', error.response?.data || error.message);
+        console.error('Authentication error:', error.response?.data || error.message);
+        throw error;
+      });
+  },
+
+  signup(name, email, password, code) {
+    return axios.post('https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i/users', {
+      name,
+      email,
+      password,
+      code
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        console.error('Signup error:', error.response?.data || error.message);
         throw error;
       });
   },
@@ -37,12 +57,12 @@ export const AuthService = {
       if (token) {
         this.setAuthHeader(token);
         
-        return axios.get(`${API_URL}/doc-i/users/profile`)
+        return axios.get(`${API_URL}/users/profile`)
           .then(response => {
             return true;
           })
           .catch(error => {
-            console.log("Error ao tentar validar o token", error)
+            console.log("Error validating token", error)
             this.logout();
             return false;
           });

@@ -1,17 +1,22 @@
 <template>
     <div class="content">
-        <SearchBar @search-results="handleSearchResults" @refresh-page="refreshPage" :category="category" @is-loading="handleIsLoading" />
-        <div  class="section">
-            <div class="section-header">
-                <h2>Resultado</h2>
-                <button class="view-all" @click="exportToExcel">Exportar</button>
-            </div>
+        <SearchBar @search-results="updateSearchResults" @refresh-page="loadCategoryFiles" :category="category" @is-loading="setLoadingState" />
+        <section class="results-section">
+            <header class="section-header">
+                <h2>Resultados</h2>
+                <BaseButton text="Exportar" icon="download" @click="exportToExcel" />
+            </header>
             <div v-if="isLoading" class="loading-container">
                 <div class="loading-spinner"></div>
                 <p>Carregando...</p>
             </div>
-            <div v-else-if="hasResults" class="files-grid">
-                <div v-for="result in searchResults" class="file-card" @click="openFileUrl(result.url)">
+            <div v-else-if="searchResults.length > 0" class="files-grid">
+                <div v-for="result in searchResults" :key="result.filename" 
+                     class="file-card" 
+                     @click="openFile(result.url)"
+                     @keydown.enter="openFile(result.url)"
+                     tabindex="0"
+                     role="button">
                     <div class="file-icon">
                         <span class="material-icons">{{ getFileIcon(result.extension) }}</span>
                     </div>
@@ -21,18 +26,21 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="files-grid">
-                <p>Nenhum documento encontrado. </p>
+            <div v-else class="no-results">
+                <p>Nenhum documento encontrado.</p>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
 <script setup>
-import { ref, computed, defineProps, onMounted } from 'vue';
+import { ref, defineProps, onMounted, reactive, toRefs } from 'vue';
 import SearchBar from './SearchBar.vue';
 import { FileService } from '@/services/files.service';
 import { filterHighProbabilityFiles } from '@/utils/fileUtils';
+import { useFileIcons } from '@/composables/useFileIcons';
+import { useGlobalState } from '@/composables/useGlobalState';
+import BaseButton from './BaseButton.vue';
 
 const props = defineProps({
   category: {
@@ -41,107 +49,74 @@ const props = defineProps({
   }
 });
 
-const searchResults = ref([])
-const hasResults = computed(() => searchResults.value.length > 0)
+const state = reactive({
+  searchResults: [],
+  isLoading: false
+})
 
-const isLoading = ref(false)
+const { searchResults, isLoading } = toRefs(state)
+const { getFileIcon } = useFileIcons()
+const { addNotification } = useGlobalState()
 
-const handleIsLoading = (bool) => {
-    isLoading.value = bool;
+const setLoadingState = (loading) => {
+  state.isLoading = loading
 }
 
-const refreshPage = () => {
-    getAllFilesFromCategory();
+const updateSearchResults = (data) => {
+  state.searchResults = filterHighProbabilityFiles(data)
 }
 
-const handleSearchResults = (data) => {
-    searchResults.value = filterHighProbabilityFiles(data);
+const openFile = (url) => {
+  if (url) {
+    window.open(url, '_blank')
+  }
 }
 
-const getFileIcon = (extension) => {
-    if (!extension) return 'insert_drive_file';
-    
-    extension = extension.toLowerCase();
-    
-    switch (extension) {
-        case 'pdf':
-            return 'picture_as_pdf';
-        case 'doc':
-        case 'docx':
-        case 'txt':
-        case 'rtf':
-            return 'description';
-        case 'xls':
-        case 'xlsx':
-        case 'csv':
-            return 'grid_on';
-        case 'ppt':
-        case 'pptx':
-            return 'slideshow';
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-        case 'gif':
-        case 'bmp':
-        case 'svg':
-            return 'image';
-        case 'mp4':
-        case 'avi':
-        case 'mov':
-        case 'wmv':
-            return 'videocam';
-        case 'mp3':
-        case 'wav':
-        case 'ogg':
-            return 'audiotrack';
-        case 'zip':
-        case 'rar':
-        case '7z':
-        case 'tar':
-        case 'gz':
-            return 'folder_zip';
-        case 'html':
-        case 'htm':
-        case 'xml':
-            return 'code';
-        default:
-            return 'insert_drive_file';
-    }
-};
-
-const openFileUrl = (url) => {
-    if (url) {
-        window.open(url, '_blank');
-    }
-}
-
-const getAllFilesFromCategory = async () => {
-    isLoading.value = true;
-    const files = await FileService.getFiles();
-    searchResults.value = filterHighProbabilityFiles(files);
-    isLoading.value = false;
+const loadCategoryFiles = async () => {
+  state.isLoading = true
+  try {
+    const files = await FileService.getFiles()
+    state.searchResults = filterHighProbabilityFiles(files)
+  } catch (error) {
+    console.error('Error loading files:', error)
+    addNotification({
+      type: 'error',
+      message: 'Error loading files. Please try again.',
+      duration: 5000
+    })
+  } finally {
+    state.isLoading = false
+  }
 }
 
 const exportToExcel = () => {
-    // URL da planilha estática (substitua pelo caminho correto)
-    const fileUrl = '/planilhas/relatorio.xlsx';
-    
-    // Criar link para download
-    const link = document.createElement("a");
-    link.setAttribute("href", fileUrl);
-    link.setAttribute("download", "relatorio.xlsx");
-    document.body.appendChild(link);
-    
-    // Iniciar download
-    link.click();
-    
-    // Remover o link
-    document.body.removeChild(link);
+    try {
+        const fileUrl = '/planilhas/relatorio.xlsx';
+        
+        const link = document.createElement("a");
+        link.setAttribute("href", fileUrl);
+        link.setAttribute("download", "relatorio.xlsx");
+        document.body.appendChild(link);
+        
+        link.click();
+        
+        document.body.removeChild(link);
+        
+        addNotification({
+            type: 'success',
+            message: 'Report exported successfully!'
+        })
+    } catch (error) {
+        addNotification({
+            type: 'error',
+            message: 'Error exporting report. Please try again.'
+        })
+    }
 }
 
 onMounted(() => {
-    getAllFilesFromCategory();
-});
+  loadCategoryFiles()
+})
 
 
 </script>
@@ -153,14 +128,9 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
 }
-.content h1 {
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--text-primary);
-    letter-spacing: -0.5px;
-}
 
-.section {
+
+.results-section {
     margin-bottom: 50px;
 }
 
@@ -196,25 +166,21 @@ onMounted(() => {
     border: 1px solid var(--border-color);
 }
 
-.file-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--border-color);
+.file-card:hover,
+.file-card:focus {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+  outline: none;
 }
 
-.view-all {
-  background: none;
-  border: none;
-  color: var(--accent-green);
-  font-weight: 500;
-  cursor: pointer;
-  font-size: 15px;
-  padding: 15px 40px;
+.no-results {
+  text-align: center;
+  padding: 40px 0;
+  color: var(--text-secondary);
 }
 
-.view-all:hover {
-    color: var(--primary-color);
-}
+
 
 .file-icon {
     width: 54px;
