@@ -62,11 +62,6 @@ const handleClick = () => {
   margin-bottom: 20px;
 }
 
-.category-icon svg {
-  font-size: 22px;
-  color: var(--text-light);
-}
-
 .category-info h3 {
   margin: 0 0 8px 0;
   font-size: 16px;

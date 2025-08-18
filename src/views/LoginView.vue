@@ -6,14 +6,14 @@ import { useRouter } from 'vue-router'
 import Carousel from '../components/Carousel.vue'
 
 const router = useRouter()
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const showSignupModal = ref(false)
 
 const login = async () => {
   try {
-    const result = await AuthService.login(username.value, password.value);
+    const result = await AuthService.login(email.value, password.value);
     console.log('Login bem-sucedido:', result.user);
     router.push('/');
   } catch (error) {
@@ -46,7 +46,7 @@ const closeSignupModal = () => {
       </div>
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="text" id="username" class="input-style" v-model="username" required placeholder="Usuário">
+          <input type="email" id="email" class="input-style" v-model="email" required placeholder="Email">
         </div>
 
         <div class="form-group password-group">

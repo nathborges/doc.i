@@ -1,0 +1,468 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2024-01-01T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "req_auth_login",
+      "parentId": "fld_auth",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/auth/login",
+      "name": "Login",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"admin@doc-i.com\",\n  \"password\": \"123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_create",
+      "parentId": "fld_users",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/users",
+      "name": "Create User",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Nathália\",\n  \"email\": \"nathi-borges@hotmail.com\",\n  \"password\": \"nathhalia\",\n  \"code\": \"2\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_list",
+      "parentId": "fld_users",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/users",
+      "name": "List Users",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995100000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_users_profile",
+      "parentId": "fld_users",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/users/profile",
+      "name": "Get Profile",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995000000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_categories_list",
+      "parentId": "fld_categories",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/categories",
+      "name": "Get All Categories",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_categories_create",
+      "parentId": "fld_categories",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/categories",
+      "name": "Create Category",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Nova Categoria\",\n  \"description\": \"Descrição da categoria\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995100000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_categories_get",
+      "parentId": "fld_categories",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/categories/{{ _.category_id }}",
+      "name": "Get Category",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995000000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_categories_update",
+      "parentId": "fld_categories",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/categories/{{ _.category_id }}",
+      "name": "Update Category",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Categoria Atualizada\",\n  \"description\": \"Nova descrição\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640994900000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_categories_delete",
+      "parentId": "fld_categories",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/categories/{{ _.category_id }}",
+      "name": "Delete Category",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640994800000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_documents_process",
+      "parentId": "fld_documents",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/documents/process",
+      "name": "Process PDF",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "multipart/form-data",
+        "params": [
+          {
+            "name": "file",
+            "value": "",
+            "description": "",
+            "type": "file"
+          }
+        ]
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "X-Category-Id",
+          "value": "{{ _.category_id }}"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_documents_list",
+      "parentId": "fld_documents",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/documents/{{ _.category_id }}",
+      "name": "Get Documents by Category",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995100000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_documents_delete",
+      "parentId": "fld_documents",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/documents/{{ _.document_id }}",
+      "name": "Delete Document",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        {
+          "name": "X-Category-Id",
+          "value": "{{ _.category_id }}"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995000000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_search_semantic",
+      "parentId": "fld_search",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/search/semantic",
+      "name": "Semantic Search",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"query\": \"buscar por\",\n  \"limit\": 10,\n  \"categoryId\": \"{{ _.category_id }}\",\n  \"question\": \"Qual é a pergunta?\",\n  \"withAi\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_admin_codes_list",
+      "parentId": "fld_admin",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/admin/codes",
+      "name": "Get All Codes",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995200000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_admin_codes_create",
+      "parentId": "fld_admin",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/admin/codes",
+      "name": "Create Code",
+      "description": "",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995100000,
+      "_type": "request"
+    },
+    {
+      "_id": "req_admin_codes_available",
+      "parentId": "fld_admin",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "url": "{{ _.base_url }}/admin/codes/available",
+      "name": "Get Available Codes",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ _.access_token }}"
+      },
+      "metaSortKey": -1640995000000,
+      "_type": "request"
+    },
+    {
+      "_id": "fld_auth",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Auth",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995200000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_users",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Users",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995100000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_categories",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Categories",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640995000000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_documents",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Documents",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640994900000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_search",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Search",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640994800000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "fld_admin",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Admin",
+      "description": "",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": -1640994700000,
+      "_type": "request_group"
+    },
+    {
+      "_id": "wrk_main",
+      "parentId": null,
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Doc.i API",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_main",
+      "parentId": "wrk_main",
+      "modified": 1640995200000,
+      "created": 1640995200000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i",
+        "access_token": "",
+        "category_id": "",
+        "document_id": ""
+      },
+      "dataPropertyOrder": {
+        "&": ["base_url", "access_token", "category_id", "document_id"]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1640995200000,
+      "_type": "environment"
+    }
+  ]
+}

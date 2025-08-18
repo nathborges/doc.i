@@ -7,32 +7,42 @@ import { useRouter } from 'vue-router'
 const categoriesStore = useCategoriesStore()
 const router = useRouter()
 
-const categories = computed(() => categoriesStore.categories.value)
+const categories = computed(() => categoriesStore.categories)
+const isLoading = computed(() => categoriesStore.isLoading)
 
 const handleCategoryClick = (category) => {
   router.push({ name: 'category', params: { name: category.name } })
+}
+
+const handleViewAllCategories = () => {
+  router.push({ name: 'categories' })
+}
+
+const handleViewAllShared = () => {
+  router.push({ name: 'shared' })
 }
 </script>
 
 <template>
 <div class="content">
-
-    <!-- Categorias -->
     <div class="section">
       <div class="section-header">
         <h2>Categorias mais recentes</h2>
-        <button class="view-all">Ver todos</button>
+        <button class="view-all" @click="handleViewAllCategories">Ver todos</button>
       </div>
       <div class="files-grid">
         <CategoryCard 
           v-for="category in categories" 
           :key="category.name" 
           :category="category" 
-          subtitle="Criada em 22/03/2025"
+          :subtitle="category.createdAt || 'Data não disponível'"
           @click="handleCategoryClick"
         />
-        <div v-if="categories.length === 0" class="empty-state">
+        <div v-if="isLoading" class="empty-state">
           <p>Carregando categorias...</p>
+        </div>
+        <div v-else-if="categories.length === 0" class="empty-state">
+          <p>Nenhuma categoria encontrada</p>
         </div>
       </div>
     </div>
@@ -41,7 +51,7 @@ const handleCategoryClick = (category) => {
     <div class="section">
       <div class="section-header">
         <h2>Compartilhados com você</h2>
-        <button class="view-all">Ver todos</button>
+        <button class="view-all" @click="handleViewAllShared">Ver todos</button>
       </div>
       <div class="files-grid">
         <div class="file-card">
@@ -68,123 +78,6 @@ const handleCategoryClick = (category) => {
 </template>
 
 <style scoped>
-.home-container {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg-secondary);
-}
-
-/* Main Content */
-.main-content {
-  flex-grow: 1;
-  padding: 30px 50px;
-  overflow-y: auto;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 50px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-secondary);
-  border-radius: 12px;
-  padding: 12px 20px;
-  width: 450px;
-  border: 1px solid var(--border-color);
-}
-
-.search-bar svg {
-  color: var(--text-secondary);
-  margin-right: 12px;
-}
-
-.search-bar input {
-  border: none;
-  outline: none;
-  width: 100%;
-  font-size: 15px;
-  background-color: transparent;
-  color: var(--text-primary);
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-}
-
-.notifications {
-  margin-right: 25px;
-  position: relative;
-  cursor: pointer;
-  width: 40px;
-  height: 40px;
-  background-color: var(--bg-secondary);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  border: 1px solid var(--border-color);
-}
-
-.avatar {
-  width: 42px;
-  height: 42px;
-  background-color: var(--primary-color);
-  color: var(--text-light);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 15px;
-  position: relative;
-}
-
-.user-menu {
-  position: absolute;
-  top: 50px;
-  right: 0;
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  box-shadow: var(--shadow-lg);
-  width: 200px;
-  z-index: 100;
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-}
-
-.user-menu-item {
-  padding: 15px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  color: var(--text-primary);
-}
-
-.user-menu-item:hover {
-  background-color: var(--bg-secondary);
-}
-
-.user-menu-item.logout {
-  border-top: 1px solid var(--border-color);
-  color: var(--error-color);
-}
-
-.user-menu-item svg {
-  margin-right: 12px;
-  width: 16px;
-}
 
 .content h1 {
   margin-bottom: 8px;
@@ -192,12 +85,6 @@ const handleCategoryClick = (category) => {
   font-weight: 600;
   color: var(--text-primary);
   letter-spacing: -0.5px;
-}
-
-.subtitle {
-  color: var(--text-secondary);
-  margin-bottom: 40px;
-  font-size: 16px;
 }
 
 .section {

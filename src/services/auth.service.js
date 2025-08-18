@@ -3,19 +3,18 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000/api';
 
 export const AuthService = {
-  login(username, password) {
-    const formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
-    
-    return axios.post(`${API_URL}/login`, formData, {
+  login(email, password) {
+    return axios.post(`${API_URL}/doc-i/auth/login`, {
+      email,
+      password
+    }, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'application/json'
       }
     })
       .then(response => {
-        const token = response.data.access_token || '';
-        localStorage.setItem('user', username);
+        const token = response.data.accessToken;
+        localStorage.setItem('user', email);
         localStorage.setItem('token', token);
         localStorage.setItem('isAuthenticated', 'true');
         this.setAuthHeader(token);
@@ -38,14 +37,9 @@ export const AuthService = {
       if (token) {
         this.setAuthHeader(token);
         
-        return axios.get(`${API_URL}/validate-token`)
+        return axios.get(`${API_URL}/doc-i/users/profile`)
           .then(response => {
-            console.log(response)
-            if (response.data.valid === true) {
-              return true;
-            }
-            this.logout();
-            return false;
+            return true;
           })
           .catch(error => {
             console.log("Error ao tentar validar o token", error)
