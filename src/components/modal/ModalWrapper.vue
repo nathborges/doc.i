@@ -1,19 +1,23 @@
 <template>
-  <div class="modal-wrapper" @click="$emit('close')">
-    <div class="modal-content" :style="{ width: width }" @click.stop>
-      <button class="close-btn" @click="$emit('close')">
-        <span class="material-icons">close</span>
-      </button>
-      <div class="modal-header" v-if="title">
-        <h1>{{ title }}</h1>
-        <p v-if="description">{{ description }}</p>
-      </div>
-      <slot />
-      <div class="modal-footer" v-if="$slots.footer">
-        <slot name="footer" />
+  <Transition name="modal" appear>
+    <div class="modal-wrapper" @click="$emit('close')">
+      <div class="modal-content" :style="{ width: width }" @click.stop>
+        <button class="close-btn" @click="$emit('close')">
+          <span class="material-icons">close</span>
+        </button>
+        <div class="modal-header animate-item" v-if="title" style="animation-delay: 0.1s">
+          <h1>{{ title }}</h1>
+          <p v-if="description">{{ description }}</p>
+        </div>
+        <div class="animate-item" style="animation-delay: 0.2s">
+          <slot />
+        </div>
+        <div class="modal-footer animate-item" v-if="$slots.footer" style="animation-delay: 0.3s">
+          <slot name="footer" />
+        </div>
       </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup>
@@ -94,7 +98,6 @@ defineEmits(['close'])
 }
 
 .modal-footer {
-  padding-top: 10px;
   display: flex;
   justify-content: center;
 }
@@ -113,5 +116,44 @@ defineEmits(['close'])
 
 .modal-footer button:hover {
   opacity: 0.9;
+}
+
+.modal-enter-active {
+  transition: all 0.3s ease;
+}
+
+.modal-leave-active {
+  transition: all 0.2s ease;
+}
+
+.modal-enter-from {
+  opacity: 0;
+}
+
+.modal-enter-from .modal-content {
+  transform: scale(0.9) translateY(-20px);
+}
+
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-leave-to .modal-content {
+  transform: scale(0.95);
+}
+
+.animate-item {
+  animation: slideInUp 0.4s ease-out both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

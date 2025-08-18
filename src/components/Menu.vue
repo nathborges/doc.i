@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar">
     <div class="logo">
-      <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
+      <img src="@/assets/images/doci-logo.png" alt="Doci" />
     </div>
     <div class="menu">
       <div v-for="item in menuItems" :key="item.id" class="menu-item" :class="{ active: isActiveRoute(item.route) }"
@@ -17,7 +17,7 @@
         </div>
         <div class="categories-list">
           <div v-for="category in categories" class="category-item"
-            :class="{ active: route.name === 'category' && route.params.name === category.name }"
+            :class="{ active: route.name === 'category' && route.params.name === category.name.toLowerCase().replace(/\s+/g, '-') }"
             @click="handleCategoryClick(category.name)">
             <div class="category-dot" :style="{ backgroundColor: category.color || '#3b82f6' }"></div>
             <span class="category-name">{{ category.name }}</span>
@@ -71,8 +71,9 @@ const handleMenuClick = (itemId) => {
   }
 }
 
-const handleCategoryClick = (category) => {
-  router.push({ name: 'category', params: { name: category } })
+const handleCategoryClick = (categoryName) => {
+  const normalizedName = categoryName.toLowerCase().replace(/\s+/g, '-')
+  router.push({ name: 'category', params: { name: normalizedName } })
 }
 
 const openCreateCategoryModal = () => {
@@ -90,12 +91,21 @@ onMounted(async () => {
 .sidebar {
   width: 240px;
   background-color: #ffffff;
-  padding: 24px 16px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid #e5e7eb;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  gap: 24px;
+}
+
+.logo {
+  padding: 30px;
+  max-height: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.logo img {
+  height: 100%;
 }
 
 .menu {
@@ -103,6 +113,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 2px;
+  padding: 16px;
 }
 
 .menu-item {
@@ -198,10 +209,6 @@ onMounted(async () => {
 .category-name {
   flex: 1;
 }
-
-
-
-
 
 
 

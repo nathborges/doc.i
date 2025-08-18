@@ -10,14 +10,18 @@ const email = ref('')
 const password = ref('')
 const showPassword = ref(false)
 const showSignupModal = ref(false)
+const isLoading = ref(false)
 
 const login = async () => {
+  isLoading.value = true
   try {
     const result = await AuthService.login(email.value, password.value);
     console.log('Login bem-sucedido:', result.user);
     router.push('/');
   } catch (error) {
     console.error('Erro no login:', error.message);
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -61,7 +65,13 @@ const closeSignupModal = () => {
           <a href="#">Esqueceu a senha?</a>
         </div>
 
-        <button type="submit" class="input-style">Entrar</button>
+        <button type="submit" class="input-style login-btn" :disabled="isLoading" :class="{ 'loading': isLoading }">
+          <span v-if="!isLoading">Entrar</span>
+          <span v-if="isLoading" class="loading-content">
+            <span class="spinner"></span>
+            Entrando...
+          </span>
+        </button>
 
         <div class="signup-link">
           <span>Não é membro? </span><a href="#" @click.prevent="openSignupModal" class="bold-link">Crie uma conta</a>
@@ -72,17 +82,19 @@ const closeSignupModal = () => {
       <div class="image">
         <Carousel  />
       </div>
-      <h1 class="caption">Use o Doc.i para transformar documentos soltos em insights de verdade.
+      <h1 class="caption animate-item" style="animation-delay: 0.2s">Use o Doc.i para transformar documentos soltos em insights de verdade.
         Organize, busque e exporte dados de forma simples e rápida.</h1>
     </div>
 
   </div>
 
-  <div v-if="showSignupModal" class="modal-overlay">
-    <div class="modal-container">
-      <SignupModal @close="closeSignupModal" />
+  <Transition name="modal-overlay">
+    <div v-if="showSignupModal" class="modal-overlay">
+      <div class="modal-container">
+        <SignupModal @close="closeSignupModal" />
+      </div>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <style scoped>
@@ -177,6 +189,13 @@ form {
 input {
   border: 1px solid var(--border-color);
   padding-left: 30px;
+  transition: all 0.3s ease;
+}
+
+input:focus {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-color: var(--primary-color);
 }
 
 button {
@@ -186,8 +205,13 @@ button {
   padding-top: 12px;
   padding-bottom: 12px;
   font-weight: 700;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
   width: 100%;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
 button[type="submit"]:hover {
@@ -224,5 +248,88 @@ button[type="submit"]:hover {
   width: 100%;
   box-shadow: none;
   padding: 0;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+}
+
+.logo-image {
+  max-height: 50px;
+  width: auto;
+}
+
+.modal-overlay-enter-active {
+  transition: all 0.3s ease;
+}
+
+.modal-overlay-leave-active {
+  transition: all 0.2s ease;
+}
+
+.modal-overlay-enter-from {
+  opacity: 0;
+}
+
+.modal-overlay-enter-from .modal-container {
+  transform: scale(0.9) translateY(-20px);
+}
+
+.modal-overlay-leave-to {
+  opacity: 0;
+}
+
+.modal-overlay-leave-to .modal-container {
+  transform: scale(0.95);
+}
+
+/* Loading no botão */
+.login-btn {
+  transition: all 0.3s ease;
+}
+
+.login-btn.loading {
+  background-color: var(--primary-color-hover) !important;
+  cursor: not-allowed;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-item {
+  animation: slideInUp 1.2s ease-out both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

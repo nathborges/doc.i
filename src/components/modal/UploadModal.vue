@@ -10,19 +10,16 @@
           </option>
         </select>
       </div>
-
       <div class="upload-area" :class="{ 'drag-over': isDragOver, 'has-files': files.length > 0 }" @drop="handleDrop"
         @dragover.prevent="isDragOver = true" @dragleave="isDragOver = false" @click="triggerFileInput">
         <input ref="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
           @change="handleFileSelect" style="display: none">
-
         <div v-if="files.length === 0" class="upload-placeholder">
           <span class="material-icons upload-icon">cloud_upload</span>
           <h3>Arraste arquivos aqui ou clique para selecionar</h3>
           <p>Suporte para PDF, DOC, DOCX, TXT, JPG, PNG</p>
           <p class="size-limit">Tamanho máximo: 10MB por arquivo</p>
         </div>
-
         <div v-else class="files-list">
           <div v-for="(file, index) in files" :key="index" class="file-item">
             <div class="file-info">
@@ -38,20 +35,10 @@
           </div>
         </div>
       </div>
-
-
-      <div class="form-group">
-        <label>Tags <span class="optional">(opcional)</span></label>
-        <input v-model="tags" type="text" placeholder="Ex: contrato, importante, 2024..." class="form-input">
-        <small>Separe as tags com vírgulas</small>
-      </div>
     </div>
-
     <template #footer>
-      <div class="footer-buttons">
-        <button class="btn-secondary" @click="closeModal">Cancelar</button>
-        <BaseButton text="Fazer Upload" :disabled="files.length === 0 || isUploading" @click="uploadFiles" />
-      </div>
+      <BaseButton class="button" text="Fazer Upload" :disabled="files.length === 0 || !selectedCategory || isUploading"
+        @click="uploadFiles" />
     </template>
   </ModalWrapper>
 </template>
@@ -77,7 +64,6 @@ const fileInput = ref(null)
 const files = ref([])
 const isDragOver = ref(false)
 const selectedCategory = ref('')
-const tags = ref('')
 const isUploading = ref(false)
 
 const categoriesStore = useCategoriesStore()
@@ -116,10 +102,8 @@ const addFiles = (newFiles) => {
       'image/jpg',
       'image/png'
     ]
-
     return file.size <= maxSize && allowedTypes.includes(file.type)
   })
-
   files.value = [...files.value, ...validFiles]
 }
 
@@ -145,28 +129,28 @@ const formatFileSize = (bytes) => {
 
 const uploadFiles = async () => {
   if (files.value.length === 0) return
-
+  if (!selectedCategory.value) {
+    showNotification('Selecione uma categoria', 'error', 5000)
+    return
+  }
   isUploading.value = true
-
-  try {
-    for (const file of files.value) {
-      await FileService.upload([file])
+  for (const file of files.value) {
+    try {
+      await FileService.upload([file], selectedCategory.value)
       emit('file-uploaded')
       showNotification(file.name, 'success', 5000)
+    } catch (error) {
+      console.error('Erro no upload:', error)
+      showNotification(file.name, 'error', 5000)
     }
-    closeModal()
-  } catch (error) {
-    console.error('Erro no upload:', error)
-    showNotification('Erro ao enviar arquivos', 'error', 5000)
-  } finally {
-    isUploading.value = false
   }
+  closeModal()
+  isUploading.value = false
 }
 
 const closeModal = () => {
   files.value = []
   selectedCategory.value = ''
-  tags.value = ''
   isDragOver.value = false
   isUploading.value = false
   emit('close')
@@ -177,9 +161,7 @@ const closeModal = () => {
 .modal-body {
   display: flex;
   flex-direction: column;
-  gap: 20px;
 }
-
 .upload-area {
   border: 2px dashed var(--border-color);
   border-radius: 12px;
@@ -189,58 +171,48 @@ const closeModal = () => {
   transition: all 0.3s ease;
   background: var(--bg-secondary);
 }
-
 .upload-area:hover {
   border-color: var(--primary-color);
   background: var(--bg-primary);
 }
-
 .upload-area.drag-over {
   border-color: var(--primary-color);
   background: var(--primary-color-light, rgba(21, 128, 61, 0.1));
 }
-
 .upload-area.has-files {
   padding: 20px;
   text-align: left;
 }
-
 .upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
 }
-
 .upload-icon {
   font-size: 48px;
   color: var(--primary-color);
 }
-
 .upload-placeholder h3 {
   margin: 0;
   color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
-
 .upload-placeholder p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 14px;
 }
-
 .size-limit {
   font-size: 12px !important;
   color: var(--text-secondary);
 }
-
 .files-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 .file-item {
   display: flex;
   align-items: center;
@@ -250,34 +222,28 @@ const closeModal = () => {
   border: 1px solid var(--border-color);
   border-radius: 8px;
 }
-
 .file-info {
   display: flex;
   align-items: center;
   gap: 12px;
 }
-
 .file-icon {
   color: var(--primary-color);
   font-size: 24px;
 }
-
 .file-details {
   display: flex;
   flex-direction: column;
 }
-
 .file-name {
   font-weight: 500;
   color: var(--text-primary);
   font-size: 14px;
 }
-
 .file-size {
   font-size: 12px;
   color: var(--text-secondary);
 }
-
 .remove-file {
   background: none;
   border: none;
@@ -287,30 +253,20 @@ const closeModal = () => {
   border-radius: 4px;
   transition: all 0.2s;
 }
-
 .remove-file:hover {
   background: var(--bg-secondary);
   color: var(--error-color);
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .form-group label {
   font-weight: 500;
   color: var(--text-primary);
   font-size: 14px;
 }
-
-.optional {
-  color: var(--text-secondary);
-  font-weight: 400;
-}
-
-.form-input,
 .form-select {
   padding: 12px;
   border: 1px solid var(--border-color);
@@ -319,37 +275,12 @@ const closeModal = () => {
   background: var(--bg-primary);
   color: var(--text-primary);
 }
-
-.form-input:focus,
 .form-select:focus {
   outline: none;
   border-color: var(--primary-color);
 }
-
-.form-group small {
-  font-size: 12px;
-  color: var(--text-secondary);
+.button {
+  margin-top: 15px;
 }
 
-.footer-buttons {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.btn-secondary {
-  padding: 12px 24px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-  min-width: 120px;
-}
-
-.btn-secondary:hover {
-  background: var(--bg-secondary);
-}
 </style>

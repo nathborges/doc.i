@@ -9,38 +9,36 @@ export const FileService = {
   formatCategory(category) {
     return category.toLowerCase().replace(/\s+/g, '_');
   },
-  getFiles(category = null) {
-    let url = `${API_URL}/upload/files/`;
-    
-    if (category) {
-      const formattedCategory = this.formatCategory(category);
-      url += `?category=${formattedCategory}`;
-    }
-    
-    return axios.get(url)
+  getFiles(categoryId) {
+    console.log(categoryId);
+    return axios.get(`${API_URL}/documents/${categoryId}`)
     .then(response => {
       if (response.data && Array.isArray(response.data)) {
         console.log('Files loaded:', sanitizeForLog(response.data?.length || 0))
-        const processedFiles = response.data.map(file => processFile(file));
-        return filterHighProbabilityFiles(processedFiles);
+        return response.data;
       }
-      return response.data;
+      return response.data || [];
     })
     .catch(error => {
       console.error('Error getting files:', sanitizeForLog(error.message));
-      throw error;
+      return [];
     });
   },
-  upload(files) {
+  upload(files, categoryId) {
+    if (!categoryId) {
+      throw new Error('Categoria é obrigatória para o upload');
+    }
+
     const formData = new FormData();
         
     for (let i = 0; i < files.length; i++) {
       formData.append('file', files[i]);
     }
 
-    return axios.post(`${API_URL}/upload/`, formData, {
+    return axios.post(`${API_URL}/documents/process`, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
+        'Content-Type': 'multipart/form-data',
+        'X-Category-Id': categoryId
       }
     })
     .then(response => {
@@ -84,6 +82,16 @@ export const FileService = {
       })
       .catch(error => {
         console.error('Error creating category:', sanitizeForLog(error.message));
+        throw error;
+      });
+  },
+  deleteCategory(categoryId) {
+    return axios.delete(`${API_URL}/categories/${categoryId}`)
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        console.error('Error deleting category:', sanitizeForLog(error.message));
         throw error;
       });
   },

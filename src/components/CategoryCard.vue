@@ -1,24 +1,35 @@
 <template>
-  <div class="category-card" @click="handleClick">
-    <div class="category-icon" :style="{ 
+  <BaseCard
+    :title="category.name"
+    :subtitle="subtitle || 'Categoria'"
+    :footer="`${category.fileCount || 0} arquivos`"
+    :icon="category.icon || 'folder'"
+    :icon-style="{
       backgroundColor: category.color?.background || category.color,
       color: category.color?.item || 'white'
-    }">
-      <span class="material-icons">{{ category.icon || 'folder' }}</span>
-    </div>
-    <div class="category-info">
-      <h3>{{ category.name }}</h3>
-      <p>{{ subtitle || 'Categoria' }}</p>
-      <div class="file-count">
-        {{ category.fileCount || 0 }} arquivos
-      </div>
-    </div>
-  </div>
+    }"
+    :show-menu="true"
+    :menu-id="`category-${category.id}`"
+    @click="handleClick"
+  >
+    <template #menu-items>
+      <button @click="handleEdit" class="menu-item">
+        <span class="material-icons">edit</span>
+        Editar
+      </button>
+      <button @click="handleDelete" class="menu-item delete">
+        <span class="material-icons">delete</span>
+        Excluir
+      </button>
+    </template>
+  </BaseCard>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from 'vue'
-import { useRouter } from 'vue-router';
+import BaseCard from './BaseCard.vue'
+import { useRouter } from 'vue-router'
+import { useCategoriesStore } from '@/store/CategoriesStore'
+import { useGlobalState } from '@/composables/useGlobalState'
 
 const props = defineProps({
   category: {
@@ -31,71 +42,59 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['click'])
 const router = useRouter()
+const categoriesStore = useCategoriesStore()
+const { addNotification } = useGlobalState()
 
 const handleClick = () => {
-  router.push({ name: 'category', params: { name: props.category.name } });
-};
+  router.push({ name: 'category', params: { name: props.category.name } })
+}
 
+const handleEdit = () => {
+  console.log('Editar categoria:', props.category.name)
+}
+
+const handleDelete = async () => {
+  if (confirm('Tem certeza que deseja excluir esta categoria?')) {
+    try {
+      await categoriesStore.deleteCategory(props.category.id)
+      addNotification({
+        type: 'success',
+        message: 'Categoria excluída com sucesso!'
+      })
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        message: 'Erro ao excluir categoria. Tente novamente.'
+      })
+    }
+  }
+}
 </script>
 
 <style scoped>
-.category-card {
-  background-color: var(--bg-primary);
-  border-radius: 12px;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
-  cursor: pointer;
-  border: 2px solid transparent;
-  min-width: 180px;
-  flex-shrink: 0;
-}
-
-.category-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.category-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+.menu-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-}
-
-.category-icon .material-icons {
-  font-size: 20px;
-}
-
-.category-info h3 {
-  margin: 0 0 4px 0;
-  font-size: 15px;
-  font-weight: 600;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
   color: var(--text-primary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.category-info p {
-  margin: 0 0 8px 0;
-  font-size: 13px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+.menu-item:hover {
+  background: var(--bg-secondary);
 }
 
-.file-count {
-  font-size: 12px;
-  color: var(--text-placeholder);
-  font-weight: 500;
+.menu-item.delete {
+  color: #d32f2f;
+}
+
+.menu-item .material-icons {
+  font-size: 16px;
 }
 </style>

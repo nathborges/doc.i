@@ -1,8 +1,10 @@
 <template>
   <div>
-    <RouterView />
+    <Transition name="fade" mode="out-in">
+      <RouterView />
+    </Transition>
     <Notification 
-      v-if="notifications.length > 0" 
+      v-if="notifications.length > 0 && $route.name !== 'login'" 
       :notifications="notifications" 
       @close="() => closeNotification(index)"
       :autoClose="false"
@@ -12,15 +14,17 @@
 
 <script setup>
 import { ref, provide } from 'vue'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import Notification from './components/Notification.vue'
+
+const $route = useRoute()
 
 const notifications = ref([])
 
-const showNotification = (fileName, type = 'info', duration = 3000) => {
+const showNotification = (fileName, status = 'info', duration = 3000) => {
   notifications.value.push({
     fileName,
-    status: 'success',
+    status,
     duration
   })
 }
@@ -41,5 +45,13 @@ provide('showNotification', showNotification)
 
 * {
   font-family: 'Inter', sans-serif;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
 }
 </style>

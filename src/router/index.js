@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 import HomeView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
-import CategoryView from '@/views/CategoryView.vue'
 
 const routes = [
   {
@@ -14,7 +13,7 @@ const routes = [
   {
     path: '/categoria/:name',
     name: 'category',
-    component: CategoryView,
+    component: HomeView,
     meta: { requiresAuth: true }
   },
   {

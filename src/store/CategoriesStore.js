@@ -41,6 +41,26 @@ const getColorByName = (name) => {
   return category?.color || '#808080'
 }
 
+const deleteCategory = async (categoryId) => {
+  try {
+    await FileService.deleteCategory(categoryId)
+    categories.value = categories.value.filter(cat => cat.id !== categoryId)
+    
+    // Atualizar cache
+    for (const [name, cat] of categoryCache.entries()) {
+      if (cat.id === categoryId) {
+        categoryCache.delete(name)
+        break
+      }
+    }
+    
+    return true
+  } catch (error) {
+    console.error('Erro ao excluir categoria:', error)
+    throw error
+  }
+}
+
 export const useCategoriesStore = () => {
   return {
     categories,
@@ -48,6 +68,7 @@ export const useCategoriesStore = () => {
     error,
     fetchCategories,
     getCategoryByName,
-    getColorByName
+    getColorByName,
+    deleteCategory
   }
 }

@@ -36,14 +36,12 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
-import { FileService } from '@/services/files.service'
 import BaseButton from './BaseButton.vue'
 import UploadModal from './modal/UploadModal.vue'
 
 const router = useRouter()
 const showUserMenu = ref(false)
 const showUploadModal = ref(false)
-const showNotification = inject('showNotification')
 
 const emit = defineEmits(['file-uploaded'])
 
@@ -78,7 +76,8 @@ const handleFileUploaded = () => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 20px;
+    background-color: white;
+    padding: 30px;
 }
 
 .header-title {
@@ -87,7 +86,6 @@ const handleFileUploaded = () => {
     width: 100%;
     justify-content: flex-end;
 }
-
 
 .user-profile {
     display: flex;

@@ -3,7 +3,7 @@ import router from '@/router'
 
 axios.interceptors.request.use(
   (config) => {
-    if (config.url?.includes('/auth/login')) {
+    if (config.url?.includes('/auth/login') || config.url?.includes('/auth/signup')) {
       return config
     }
     

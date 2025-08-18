@@ -1,30 +1,34 @@
 <template>
     <div class="content">
-        <SearchBar @search-results="updateSearchResults" @refresh-page="loadCategoryFiles" :category="category" @is-loading="setLoadingState" />
+        <InsightGenerator :category="category" @insights-generated="handleInsightsGenerated" />
         <section class="results-section">
             <header class="section-header">
                 <h2>Resultados</h2>
-                <BaseButton text="Exportar" icon="download" @click="exportToExcel" />
             </header>
             <div v-if="isLoading" class="loading-container">
                 <div class="loading-spinner"></div>
                 <p>Carregando...</p>
             </div>
             <div v-else-if="searchResults.length > 0" class="files-grid">
-                <div v-for="result in searchResults" :key="result.filename" 
-                     class="file-card" 
-                     @click="openFile(result.url)"
-                     @keydown.enter="openFile(result.url)"
-                     tabindex="0"
-                     role="button">
-                    <div class="file-icon">
-                        <span class="material-icons">{{ getFileIcon(result.extension) }}</span>
-                    </div>
-                    <div class="file-info">
-                        <h3>{{ result.filename }}</h3>
-                        <p>Relevância: {{ result.probability }}%</p>
-                    </div>
-                </div>
+                <BaseCard v-for="result in searchResults" :key="result.id" :title="result.fileName"
+                    :subtitle="`${formatFileSize(result.fileSize)} • ${formatDate(result.createdAt)}`"
+                    :icon="getFileIcon(result.fileName)"
+                    :icon-style="{ background: '#fff', border: '1px solid var(--border-color)', color: '#d32f2f' }"
+                    :show-menu="true" :clickable="false" :menu-id="`file-${result.id}`"
+                    @menu-toggle="(isOpen) => handleMenuToggle(result.id, isOpen)">
+                    <template #menu-items>
+                        <button @click="openFile(result.fileLocation); closeMenu()" class="menu-item">
+                            <span class="material-icons">download</span>
+                            Baixar
+                        </button>
+                        <button @click="deleteFile(result.id); closeMenu()" class="menu-item delete">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </template>
+                    <template #tags>
+                        <span class="status-tag processed">Processado</span>
+                    </template>
+                </BaseCard>
             </div>
             <div v-else class="no-results">
                 <p>Nenhum documento encontrado.</p>
@@ -34,74 +38,136 @@
 </template>
 
 <script setup>
-import { ref, defineProps, onMounted, reactive, toRefs } from 'vue';
-import SearchBar from './SearchBar.vue';
-import { FileService } from '@/services/files.service';
-import { filterHighProbabilityFiles } from '@/utils/fileUtils';
-import { useFileIcons } from '@/composables/useFileIcons';
-import { useGlobalState } from '@/composables/useGlobalState';
-import BaseButton from './BaseButton.vue';
+import { onMounted, reactive, toRefs } from 'vue';
+import InsightGenerator from './InsightGenerator.vue'
+import BaseCard from './BaseCard.vue'
+import { FileService } from '@/services/files.service'
+import { useFileIcons } from '@/composables/useFileIcons'
+import { useGlobalState } from '@/composables/useGlobalState'
+import { useCategoriesStore } from '@/store/CategoriesStore'
+import BaseButton from './BaseButton.vue'
 
 const props = defineProps({
-  category: {
-    type: String,
-    required: true
-  }
+    category: {
+        type: String,
+        required: true
+    }
 });
 
 const state = reactive({
-  searchResults: [],
-  isLoading: false
+    searchResults: [],
+    isLoading: false,
+    activeMenu: null
 })
 
-const { searchResults, isLoading } = toRefs(state)
+const { searchResults, isLoading, activeMenu } = toRefs(state)
 const { getFileIcon } = useFileIcons()
 const { addNotification } = useGlobalState()
+const categoriesStore = useCategoriesStore()
 
 const setLoadingState = (loading) => {
-  state.isLoading = loading
+    state.isLoading = loading
 }
 
-const updateSearchResults = (data) => {
-  state.searchResults = filterHighProbabilityFiles(data)
+const updateSearchResults = (results) => {
+    state.searchResults = results
 }
+
+const handleInsightsGenerated = (insights) => {
+    console.log('Insights gerados:', insights)
+}
+
+const handleMenuToggle = (fileId, isOpen) => {
+    state.activeMenu = isOpen ? fileId : null
+}
+
+const closeMenu = () => {
+    state.activeMenu = null
+}
+
+const deleteFile = async (fileId) => {
+    if (confirm('Tem certeza que deseja excluir este arquivo?')) {
+        try {
+            await FileService.deleteFile(fileId)
+            state.searchResults = state.searchResults.filter(file => file.id !== fileId)
+            addNotification({
+                type: 'success',
+                message: 'Arquivo excluído com sucesso!'
+            })
+        } catch (error) {
+            addNotification({
+                type: 'error',
+                message: 'Erro ao excluir arquivo. Tente novamente.'
+            })
+        }
+    }
+}
+
+
 
 const openFile = (url) => {
-  if (url) {
-    window.open(url, '_blank')
-  }
+    if (url) {
+        window.open(url, '_blank')
+    }
+}
+
+const formatFileSize = (bytes) => {
+    if (!bytes) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+}
+
+const formatDate = (dateString) => {
+    if (!dateString) return '-'
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pt-BR')
 }
 
 const loadCategoryFiles = async () => {
-  state.isLoading = true
-  try {
-    const files = await FileService.getFiles()
-    state.searchResults = filterHighProbabilityFiles(files)
-  } catch (error) {
-    console.error('Error loading files:', error)
-    addNotification({
-      type: 'error',
-      message: 'Error loading files. Please try again.',
-      duration: 5000
+    state.isLoading = true
+    try {
+        const categoryId = getCategoryId(props.category)
+        if (!categoryId) {
+            throw new Error('Categoria não encontrada')
+        }
+        const files = await FileService.getFiles(categoryId)
+        state.searchResults = files
+    } catch (error) {
+        console.error('Error loading files:', error)
+        addNotification({
+            type: 'error',
+            message: 'Error loading files. Please try again.',
+            duration: 5000
+        })
+    } finally {
+        state.isLoading = false
+    }
+}
+
+const getCategoryId = (normalizedName) => {
+    const category = categoriesStore.categories.value.find(cat => {
+        const catNormalized = cat.name.toLowerCase().replace(/\s+/g, '-')
+        return catNormalized === normalizedName
     })
-  } finally {
-    state.isLoading = false
-  }
+
+    return category?.id
 }
 
 const exportToExcel = () => {
     try {
         const fileUrl = '/planilhas/relatorio.xlsx';
-        
+
         const link = document.createElement("a");
         link.setAttribute("href", fileUrl);
         link.setAttribute("download", "relatorio.xlsx");
         document.body.appendChild(link);
-        
+
         link.click();
-        
+
         document.body.removeChild(link);
-        
+
         addNotification({
             type: 'success',
             message: 'Report exported successfully!'
@@ -114,21 +180,19 @@ const exportToExcel = () => {
     }
 }
 
-onMounted(() => {
-  loadCategoryFiles()
+onMounted(async () => {
+    await categoriesStore.fetchCategories()
+    loadCategoryFiles()
 })
-
 
 </script>
 
 <style scoped>
-
 .content {
     gap: 20px;
     display: flex;
     flex-direction: column;
 }
-
 
 .results-section {
     margin-bottom: 50px;
@@ -150,59 +214,50 @@ onMounted(() => {
 
 .files-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
 }
 
-.file-card {
-    background-color: var(--bg-primary);
-    border-radius: 16px;
-    padding: 25px;
-    display: flex;
-    flex-direction: column;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
-    cursor: pointer;
-    border: 1px solid var(--border-color);
-}
-
-.file-card:hover,
-.file-card:focus {
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--primary-color);
-  outline: none;
-}
-
-.no-results {
-  text-align: center;
-  padding: 40px 0;
-  color: var(--text-secondary);
-}
-
-
-
-.file-icon {
-    width: 54px;
-    height: 54px;
-    border-radius: 12px;
+.menu-item {
     display: flex;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    background-color: var(--bg-secondary);
-}
-
-.file-info h3 {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    font-weight: 600;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
     color: var(--text-primary);
 }
 
-.file-info p {
-    margin: 0;
-    font-size: 13px;
+.menu-item:hover {
+    background: var(--bg-secondary);
+}
+
+.menu-item.delete {
+    color: #d32f2f;
+}
+
+.menu-item .material-icons {
+    font-size: 16px;
+}
+
+.status-tag {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-tag.processed {
+    background: #e8f5e8;
+    color: #2e7d32;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 0;
     color: var(--text-secondary);
 }
 
@@ -226,7 +281,12 @@ onMounted(() => {
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 </style>

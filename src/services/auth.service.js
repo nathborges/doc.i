@@ -4,6 +4,7 @@ const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000'
 
 export const AuthService = {
   login(email, password) {
+    delete axios.defaults.headers.common['Authorization'];
     return axios.post(`${API_URL}/auth/login`, {
       email,
       password

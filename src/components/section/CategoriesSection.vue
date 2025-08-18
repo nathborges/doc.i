@@ -13,10 +13,12 @@
     </div>
     <div v-else class="categories-scroll">
       <CategoryCard 
-        v-for="category in categories" 
+        v-for="(category, index) in categories" 
         :key="category.name" 
         :category="category" 
         :subtitle="category.description || 'Descrição não disponível'"
+        :style="{ animationDelay: `${index * 0.1}s` }"
+        class="category-item"
         @click="handleCategoryClick"
       />
     </div>
@@ -91,5 +93,20 @@ const handleCategoryCreated = () => {
 
 .categories-scroll::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary);
+}
+
+.category-item {
+  animation: slideInUp 0.6s ease-out both;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
