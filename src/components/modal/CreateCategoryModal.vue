@@ -1,7 +1,6 @@
 <template>
   <ModalWrapper v-if="isOpen" width="480px" title="Nova Categoria" @close="closeModal">
     <div class="modal-body">
-      <!-- Preview -->
       <div class="icon-preview-section">
         <div class="icon-preview-icon" :style="{
           backgroundColor: selectedColor.background,

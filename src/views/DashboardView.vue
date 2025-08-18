@@ -16,8 +16,7 @@ onMounted(async () => {
   <div class="home-container">
     <Menu />
     <div class="main-content">
-      <HeaderBar title="Bem vindo de volta!"/>
-      <!-- Content -->
+      <HeaderBar/>
       <div class="content">
         <BaseContent />
       </div>
@@ -33,7 +32,6 @@ onMounted(async () => {
   background-color: var(--bg-secondary);
 }
 
-/* Main Content */
 .main-content {
   flex: 2;
   padding: 50px 100px;

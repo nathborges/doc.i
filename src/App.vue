@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, provide } from 'vue'
+import { ref, provide } from 'vue'
 import { RouterView } from 'vue-router'
 import Notification from './components/Notification.vue'
 

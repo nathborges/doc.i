@@ -1,6 +1,6 @@
 import axios from '@/utils/httpClient';
 
-const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000/api';
+const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000'
 
 export const AuthService = {
   login(email, password) {
@@ -27,7 +27,7 @@ export const AuthService = {
   },
 
   signup(name, email, password, code) {
-    return axios.post('https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i/users', {
+    return axios.post(`${API_URL}/auth/signup`, {
       name,
       email,
       password,

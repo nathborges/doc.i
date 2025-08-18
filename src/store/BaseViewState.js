@@ -1,4 +1,3 @@
-// src/store/viewState.js
 import { ref } from 'vue';
 
 export const currentView = ref('home');

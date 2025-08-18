@@ -1,10 +1,8 @@
 import axios from 'axios'
 import router from '@/router'
 
-// Interceptor para requests - adiciona token automaticamente
 axios.interceptors.request.use(
   (config) => {
-    // Pula o interceptor para login
     if (config.url?.includes('/auth/login')) {
       return config
     }
@@ -18,7 +16,6 @@ axios.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// Interceptor para respostas 401
 axios.interceptors.response.use(
   (response) => response,
   (error) => {

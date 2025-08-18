@@ -20,7 +20,6 @@ onMounted(async () => {
     <Menu />
     <div class="main-content">
       <HeaderBar :title="categoryName" />
-      <!-- Content -->
       <div class="content">
         <CategoriaContent :category="categoryName" />
       </div>
@@ -36,11 +35,9 @@ onMounted(async () => {
   background-color: var(--bg-secondary);
 }
 
-/* Main Content */
 .main-content {
   flex: 2;
   padding: 50px 100px;
   overflow-y: auto;
 }
-
 </style>

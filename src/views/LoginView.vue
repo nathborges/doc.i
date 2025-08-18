@@ -214,52 +214,6 @@ button[type="submit"]:hover {
   padding-right: 15%;
 }
 
-/* Estilos do Modal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-container {
-  position: relative;
-  background-color: var(--bg-primary);
-  border-radius: 8px;
-  box-shadow: var(--shadow-lg);
-  width: 30vw;
-  max-width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 50px 45px;
-}
-
-.close-button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: none;
-  border: none;
-  color: var(--text-secondary);
-  font-size: 1.2rem;
-  cursor: pointer;
-  width: auto;
-  padding: 5px;
-  z-index: 1001;
-}
-
-.close-button:hover {
-  color: var(--primary-color);
-}
-
-
-/* Ajustes para o SignupModal dentro do modal */
 .modal-container :deep(.container) {
   height: auto;
   width: auto;

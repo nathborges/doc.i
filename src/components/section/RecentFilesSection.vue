@@ -43,7 +43,6 @@ const handleViewAll = () => {
   router.push({ name: 'files' })
 }
 
-// Função para gerar cor aleatória
 const generateRandomColor = () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)]
 
 const recentFiles = [

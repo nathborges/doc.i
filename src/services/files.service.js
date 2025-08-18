@@ -12,7 +12,6 @@ export const FileService = {
   getFiles(category = null) {
     let url = `${API_URL}/upload/files/`;
     
-    // Adiciona o parâmetro de categoria à URL se fornecido
     if (category) {
       const formattedCategory = this.formatCategory(category);
       url += `?category=${formattedCategory}`;
@@ -55,7 +54,7 @@ export const FileService = {
   getCategories() {
     const generateColor = () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)];
     const generateIcon = () => CATEGORY_ICONS[Math.floor(Math.random() * CATEGORY_ICONS.length)];
-    const generateFileCount = () => Math.floor(Math.random() * 50) + 1; // 1-50 arquivos
+    const generateFileCount = () => Math.floor(Math.random() * 50) + 1;
     
     return axios.get(`${API_URL}/categories`)
       .then(response => {
@@ -68,6 +67,7 @@ export const FileService = {
       })
       .catch(error => {
         console.error('Error getting categories:', sanitizeForLog(error.message));
+        return [];
       });
   },
   createCategory(name, description) {

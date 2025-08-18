@@ -1,17 +1,14 @@
 <template>
     <div class="header">
         <div class="header-title">
-            <h1>{{ title }}</h1>
             <div class="user-profile">
                 <div class="upload-button">
-                    <input type="file" ref="fileInput" @change="handleFileChange" style="display: none"
-                        accept=".pdf,.jpg,.png" :multiple="true" />
                     <BaseButton 
                         text="Importar" 
                         icon="upload" 
                         variant="primary" 
                         size="small" 
-                        @click="openFileSelector" 
+                        @click="openUploadModal" 
                     />
                 </div>
                 <div class="notifications">
@@ -31,6 +28,7 @@
                 </div>
             </div>
         </div>
+        <UploadModal :isOpen="showUploadModal" @close="closeUploadModal" @file-uploaded="handleFileUploaded" />
     </div>
 </template>
 
@@ -40,10 +38,11 @@ import { useRouter } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 import { FileService } from '@/services/files.service'
 import BaseButton from './BaseButton.vue'
+import UploadModal from './modal/UploadModal.vue'
 
 const router = useRouter()
 const showUserMenu = ref(false)
-const fileInput = ref(null)
+const showUploadModal = ref(false)
 const showNotification = inject('showNotification')
 
 const emit = defineEmits(['file-uploaded'])
@@ -61,24 +60,16 @@ const logout = () => {
     router.push('/login')
 }
 
-const openFileSelector = () => {
-    fileInput.value.click()
+const openUploadModal = () => {
+    showUploadModal.value = true
 }
 
-const handleFileChange = async (event) => {
-    const files = event.target.files
-    if (files && files.length > 0) {
-        for (const file of Array.from(files)) {
-            try {
-                await FileService.upload([file])
-                emit('file-uploaded')
-                showNotification(file.name, 'success', 5000)
-            } catch (error) {
-                console.error('Erro no upload:', error)
-                showNotification(file.name, 'error', 5000)
-            }
-        }
-    }
+const closeUploadModal = () => {
+    showUploadModal.value = false
+}
+
+const handleFileUploaded = () => {
+    emit('file-uploaded')
 }
 </script>
 
@@ -92,9 +83,9 @@ const handleFileChange = async (event) => {
 
 .header-title {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
+    justify-content: flex-end;
 }
 
 

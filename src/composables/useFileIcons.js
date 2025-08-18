@@ -1,4 +1,3 @@
-// Mapa de ícones criado uma única vez
 const ICON_MAP = {
   pdf: 'picture_as_pdf',
   doc: 'description',
