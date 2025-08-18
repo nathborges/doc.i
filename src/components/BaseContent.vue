@@ -46,7 +46,7 @@ const handleCategoryClick = (category) => {
       <div class="files-grid">
         <div class="file-card">
           <div class="file-icon pdf">
-            <font-awesome-icon icon="file-pdf" />
+            <span class="material-icons">picture_as_pdf</span>
           </div>
           <div class="file-info">
             <h3>Manual do Usuário</h3>
@@ -55,7 +55,7 @@ const handleCategoryClick = (category) => {
         </div>
         <div class="file-card">
           <div class="file-icon doc">
-            <font-awesome-icon icon="file-word" />
+            <span class="material-icons">description</span>
           </div>
           <div class="file-info">
             <h3>Contrato</h3>
