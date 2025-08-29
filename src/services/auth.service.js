@@ -1,6 +1,6 @@
 import axios from '@/utils/httpClient';
 
-const API_URL = import.meta.env.VITE_API_BACKEND || 'http://localhost:3000'
+const API_URL = import.meta.env.VITE_API_BACKEND
 
 export const AuthService = {
   login(email, password) {

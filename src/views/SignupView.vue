@@ -5,20 +5,29 @@ import { useRouter } from 'vue-router'
 import Carousel from '../components/Carousel.vue'
 
 const router = useRouter()
+const name = ref('')
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
+const code = ref('')
 const showPassword = ref(false)
-
+const showConfirmPassword = ref(false)
 const isLoading = ref(false)
 
-const login = async () => {
+const signup = async () => {
+  if (password.value !== confirmPassword.value) {
+    alert('As senhas não coincidem!')
+    return
+  }
+
   isLoading.value = true
   try {
-    const result = await AuthService.login(email.value, password.value);
-    console.log('Login bem-sucedido:', result.user);
-    router.push('/');
+    await AuthService.signup(name.value, email.value, password.value, code.value)
+    alert('Conta criada com sucesso!')
+    router.push('/login')
   } catch (error) {
-    console.error('Erro no login:', error.message);
+    console.error('Erro ao criar conta:', error)
+    alert('Erro ao criar conta. Tente novamente.')
   } finally {
     isLoading.value = false
   }
@@ -28,62 +37,75 @@ const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value
 }
 
-const goToSignup = () => {
-  router.push('/signup')
+const toggleConfirmPasswordVisibility = () => {
+  showConfirmPassword.value = !showConfirmPassword.value
+}
+
+const goToLogin = () => {
+  router.push('/login')
 }
 </script>
 
 <template>
   <div class="container">
-    <div class="login">
+    <div class="signup">
       <div class="logo">
         <img src="@/assets/images/doci-logo.png" alt="Doci" class="logo-image" />
       </div>
-      <div class="login-container">
-        <h1>Bem vindo!</h1>
-        <p>Transforme seus documentos em dados inteligentes prontos para análise. Aqui, sua informação trabalha por você.</p>
+      <div class="signup-container">
+        <h1>Criar Conta</h1>
+        <p>Crie sua conta para começar a organizar seus documentos de forma inteligente.</p>
       </div>
-      <form @submit.prevent="login">
+      <form @submit.prevent="signup">
         <div class="form-group">
-          <input type="email" id="email" class="input-style" v-model="email" required placeholder="Email">
+          <input type="text" class="input-style" v-model="name" required placeholder="Nome completo">
+        </div>
+
+        <div class="form-group">
+          <input type="email" class="input-style" v-model="email" required placeholder="E-mail">
         </div>
 
         <div class="form-group password-group">
-          <input :type="showPassword ? 'text' : 'password'" class="input-style" id="password" v-model="password"
+          <input :type="showPassword ? 'text' : 'password'" class="input-style" v-model="password"
             required placeholder="Senha">
           <button type="button" class="toggle-password" @click="togglePasswordVisibility">
             <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
           </button>
         </div>
 
-        <div class="forgot-password">
-          <a href="#">Esqueceu a senha?</a>
+        <div class="form-group password-group">
+          <input :type="showConfirmPassword ? 'text' : 'password'" class="input-style" v-model="confirmPassword"
+            required placeholder="Confirmar senha">
+          <button type="button" class="toggle-password" @click="toggleConfirmPasswordVisibility">
+            <span class="material-icons">{{ showConfirmPassword ? 'visibility_off' : 'visibility' }}</span>
+          </button>
         </div>
 
-        <button type="submit" class="input-style login-btn" :disabled="isLoading" :class="{ 'loading': isLoading }">
-          <span v-if="!isLoading">Entrar</span>
+        <div class="form-group">
+          <input type="text" class="input-style" v-model="code" required placeholder="Código de acesso">
+        </div>
+
+        <button type="submit" class="input-style signup-btn" :disabled="isLoading" :class="{ 'loading': isLoading }">
+          <span v-if="!isLoading">Criar Conta</span>
           <span v-if="isLoading" class="loading-content">
             <span class="spinner"></span>
-            Entrando...
+            Criando...
           </span>
         </button>
 
-        <div class="signup-link">
-          <span>Não é membro? </span><a href="#" @click.prevent="goToSignup" class="bold-link">Crie uma conta</a>
+        <div class="login-link">
+          <span>Já tem uma conta? </span><a href="#" @click.prevent="goToLogin" class="bold-link">Faça login</a>
         </div>
       </form>
     </div>
     <div class="image-container">
       <div class="image">
-        <Carousel  />
+        <Carousel />
       </div>
       <h1 class="caption animate-item" style="animation-delay: 0.2s">Use o Doc.i para transformar documentos soltos em insights de verdade.
         Organize, busque e exporte dados de forma simples e rápida.</h1>
     </div>
-
   </div>
-
-
 </template>
 
 <style scoped>
@@ -97,13 +119,13 @@ const goToSignup = () => {
   overflow: hidden;
 }
 
-.login {
+.signup {
   flex: 0.4;
   display: flex;
   flex-direction: column;
   height: 100%;
   padding: 30px 25px;
-  gap: 5%;
+  gap: 3%;
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-lg);
   z-index: 1;
@@ -131,12 +153,6 @@ const goToSignup = () => {
   line-height: 1.4;
 }
 
-.login-image {
-  width: 100%;
-  display: flex;
-  align-items: center;
-}
-
 form {
   padding-left: 15%;
   padding-right: 15%;
@@ -146,17 +162,8 @@ form {
   margin-bottom: 13px;
 }
 
-.username-group,
 .password-group {
   position: relative;
-}
-
-.input-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--secondary-color);
 }
 
 .toggle-password {
@@ -181,7 +188,6 @@ form {
 
 input {
   border: 1px solid var(--border-color);
-  padding-left: 30px;
   transition: all 0.3s ease;
 }
 
@@ -211,21 +217,16 @@ button[type="submit"]:hover {
   background-color: var(--primary-color-hover);
 }
 
-.signup-link {
+.login-link {
   text-align: center;
   margin-top: 10px;
 }
 
-.signup-link a {
+.login-link a {
   font-size: 0.9rem;
 }
 
-.forgot-password {
-  text-align: right;
-  margin-bottom: 15px;
-}
-
-.login-container {
+.signup-container {
   text-align: center;
   padding-left: 15%;
   padding-right: 15%;
@@ -243,12 +244,11 @@ button[type="submit"]:hover {
   width: auto;
 }
 
-/* Loading no botão */
-.login-btn {
+.signup-btn {
   transition: all 0.3s ease;
 }
 
-.login-btn.loading {
+.signup-btn.loading {
   background-color: var(--primary-color-hover) !important;
   cursor: not-allowed;
 }
@@ -288,5 +288,15 @@ button[type="submit"]:hover {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.bold-link {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.bold-link:hover {
+  text-decoration: underline;
 }
 </style>

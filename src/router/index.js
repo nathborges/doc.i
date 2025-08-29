@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 import HomeView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
+import SignupView from '@/views/SignupView.vue'
 
 const routes = [
   {
@@ -20,6 +21,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: LoginView
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: SignupView
   },
   {
     path: '/unauthorized',
