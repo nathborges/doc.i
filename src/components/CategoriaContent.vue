@@ -147,11 +147,16 @@ const loadCategoryFiles = async () => {
 }
 
 const getCategoryId = (normalizedName) => {
+    console.log('Looking for category:', normalizedName)
+    console.log('Available categories:', categoriesStore.categories.value)
+    
     const category = categoriesStore.categories.value.find(cat => {
         const catNormalized = cat.name.toLowerCase().replace(/\s+/g, '-')
+        console.log('Comparing:', catNormalized, 'with', normalizedName)
         return catNormalized === normalizedName
     })
 
+    console.log('Found category:', category)
     return category?.id
 }
 

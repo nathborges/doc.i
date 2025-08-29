@@ -142,7 +142,6 @@ select:focus {
   box-shadow: 0 0 0 2px var(--primary-color-light);
 }
 .form-group {
-  margin-bottom: 15px;
   position: relative;
 }
 /* ===== LAYOUT ===== */
@@ -172,4 +171,12 @@ select:focus {
 .forgot-password a:hover {
   text-decoration: underline;
   color: var(--primary-color);
+}
+
+/* ===== CATEGORIAS ===== */
+.card-title,
+.category-name,
+.icon-preview-text,
+.category-item .category-name {
+  text-transform: capitalize;
 }

@@ -14,9 +14,8 @@
     <div v-else class="categories-scroll">
       <CategoryCard 
         v-for="(category, index) in categories" 
-        :key="category.name" 
+        :key="category.id || category.name" 
         :category="category" 
-        :subtitle="category.description || 'Descrição não disponível'"
         :style="{ animationDelay: `${index * 0.1}s` }"
         class="category-item"
         @click="handleCategoryClick"
@@ -32,7 +31,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 import CategoryCard from '../CategoryCard.vue'
 import SectionWrapper from './SectionWrapper.vue'
@@ -45,12 +44,10 @@ const router = useRouter()
 const categories = computed(() => categoriesStore.categories.value)
 const isLoading = computed(() => categoriesStore.isLoading.value)
 
-onMounted(async () => {
-  await categoriesStore.fetchCategories()
-})
-
 const handleCategoryClick = (category) => {
-  router.push({ name: 'category', params: { name: category.name } })
+  if (category?.name) {
+    router.push({ name: 'category', params: { name: category.name } })
+  }
 }
 
 const showModal = ref(false)
@@ -73,9 +70,12 @@ const handleCategoryCreated = () => {
   display: flex;
   gap: 16px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding-bottom: 8px;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .categories-scroll::-webkit-scrollbar {

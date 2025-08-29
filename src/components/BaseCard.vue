@@ -167,10 +167,12 @@ onUnmounted(() => {
   right: 16px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
-  border-radius: 6px;
+  border-radius: 12px;
   box-shadow: var(--shadow-lg);
   z-index: 10;
-  min-width: 120px;
+  min-width: 140px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
 }
 
 .card-title {

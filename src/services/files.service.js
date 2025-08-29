@@ -1,16 +1,14 @@
 import axios from '@/utils/httpClient';
-import { processFile, filterHighProbabilityFiles } from '../utils/fileUtils';
 import { sanitizeForLog } from '../utils/security';
-import { CATEGORY_COLORS, CATEGORY_ICONS } from '../constants';
 
-const API_URL = import.meta.env.VITE_API_BACKEND;
+const API_URL = import.meta.env.VITE_API_BACKEND || 'https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i';
 
 export const FileService = {
   formatCategory(category) {
     return category.toLowerCase().replace(/\s+/g, '_');
   },
   getFiles(categoryId) {
-    console.log(categoryId);
+    console.log('Getting files for category:', categoryId);
     return axios.get(`${API_URL}/documents/${categoryId}`)
     .then(response => {
       if (response.data && Array.isArray(response.data)) {
@@ -25,15 +23,21 @@ export const FileService = {
     });
   },
   upload(files, categoryId) {
+    console.log('Upload params:', { filesCount: files.length, categoryId });
+    
     if (!categoryId) {
       throw new Error('Categoria é obrigatória para o upload');
     }
 
     const formData = new FormData();
-        
-    for (let i = 0; i < files.length; i++) {
-      formData.append('file', files[i]);
-    }
+    
+    files.forEach((file, index) => {
+      console.log(`Adding file ${index}:`, file.name, file.type, file.size);
+      formData.append('file', file);
+    });
+
+    console.log('Uploading to:', `${API_URL}/documents/process`);
+    console.log('Category ID:', categoryId);
 
     return axios.post(`${API_URL}/documents/process`, formData, {
       headers: {
@@ -50,28 +54,22 @@ export const FileService = {
     });
   },
   getCategories() {
-    const generateColor = () => CATEGORY_COLORS[Math.floor(Math.random() * CATEGORY_COLORS.length)];
-    const generateIcon = () => CATEGORY_ICONS[Math.floor(Math.random() * CATEGORY_ICONS.length)];
-    const generateFileCount = () => Math.floor(Math.random() * 50) + 1;
-    
+    console.log('Fetching categories from:', `${API_URL}/categories`);
     return axios.get(`${API_URL}/categories`)
       .then(response => {
-        return response.data.map(category => ({
-          ...category,
-          color: generateColor(),
-          icon: generateIcon(),
-          fileCount: generateFileCount()
-        }));
+        return response.data
       })
       .catch(error => {
         console.error('Error getting categories:', sanitizeForLog(error.message));
         return [];
       });
   },
-  createCategory(name, description) {
+  createCategory(name, description, iconName, color) {
     return axios.post(`${API_URL}/categories`, {
       name,
-      description
+      description,
+      iconName,
+      color,
     }, {
       headers: {
         'Content-Type': 'application/json'

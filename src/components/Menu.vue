@@ -19,7 +19,7 @@
           <div v-for="category in categories" class="category-item"
             :class="{ active: route.name === 'category' && route.params.name === category.name.toLowerCase().replace(/\s+/g, '-') }"
             @click="handleCategoryClick(category.name)">
-            <div class="category-dot" :style="{ backgroundColor: category.color || '#3b82f6' }"></div>
+            <div class="category-dot" :style="{ backgroundColor: category.iconColor }"></div>
             <span class="category-name">{{ category.name }}</span>
           </div>
         </div>
@@ -38,8 +38,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, computed } from 'vue'
-import { FileService } from '@/services/files.service'
+import { computed } from 'vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -80,10 +79,6 @@ const openCreateCategoryModal = () => {
   emit('open-create-category')
 }
 
-onMounted(async () => {
-  await categoriesStore.fetchCategories()
-  nextTick()
-})
 
 </script>
 
@@ -181,6 +176,27 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 1px;
+  max-height: 200px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.categories-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.categories-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categories-list::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 2px;
+}
+
+.categories-list::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }
 
 .category-item {
@@ -223,41 +239,43 @@ onMounted(async () => {
 
 
 .storage {
-  margin-top: auto;
+  margin: 16px;
   padding: 16px;
-  background-color: #f9fafb;
+  background-color: var(--bg-secondary);
   border-radius: 12px;
+  border: 1px solid var(--border-color);
 }
 
 .storage-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
   margin-bottom: 12px;
 }
 
 .storage-info h4 {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .storage-info p {
   margin: 0;
   font-size: 12px;
   color: var(--text-secondary);
+  line-height: 1.4;
 }
 
 .progress-bar {
-  height: 6px;
+  height: 8px;
   background-color: #e5e7eb;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
 }
 
 .progress {
   height: 100%;
-  background-color: #15803D;
+  background: linear-gradient(90deg, var(--primary-color) 0%, #22c55e 100%);
+  border-radius: 4px;
+  transition: width 0.3s ease;
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
     <div class="header">
         <div class="header-title">
+            <h1 v-if="pageTitle" class="page-title">{{ pageTitle }}</h1>
             <div class="user-profile">
                 <div class="upload-button">
                     <BaseButton 
@@ -33,17 +34,26 @@
 </template>
 
 <script setup>
-import { ref, inject } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { AuthService } from '@/services/auth.service'
 import BaseButton from './BaseButton.vue'
 import UploadModal from './modal/UploadModal.vue'
 
 const router = useRouter()
+const route = useRoute()
 const showUserMenu = ref(false)
 const showUploadModal = ref(false)
 
 const emit = defineEmits(['file-uploaded'])
+
+const pageTitle = computed(() => {
+  if (route.name === 'category' && route.params.name) {
+    const categoryName = route.params.name.replace(/-/g, ' ')
+    return categoryName
+  }
+  return null
+})
 
 defineProps({
     title: String
@@ -85,6 +95,15 @@ const handleFileUploaded = () => {
     align-items: center;
     width: 100%;
     justify-content: flex-end;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    flex: 1;
+    text-transform: capitalize;
 }
 
 .user-profile {
@@ -168,6 +187,4 @@ const handleFileUploaded = () => {
 .upload-button {
     position: relative;
 }
-
-
 </style>

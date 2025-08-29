@@ -14,16 +14,16 @@
       <div class="form-group">
         <label>Nome da Categoria</label>
         <input v-model="categoryName" type="text" placeholder="Ex: Contratos, Relatórios, Documentos Pessoais..."
-          class="form-input" />
+          class="form-input" maxlength="30" />
       </div>
 
       <div class="form-group">
         <label>Descrição <span class="optional">(opcional)</span></label>
         <input v-model="description" type="text" placeholder="Descreva brevemente o propósito desta categoria..."
-          class="form-input" />
+          class="form-input" maxlength="100" />
       </div>
 
-      <div class="form-group">
+      <div class="form-group-last">
         <label>Aparência</label>
         <div class="icon-appearance">
           <div class="icon-selection">
@@ -49,14 +49,19 @@
     </div>
 
     <template #footer>
-      <BaseButton text="Criar Categoria" @click="createCategory" />
+      <button class="create-btn" :disabled="isLoading" :class="{ 'loading': isLoading }" @click="createCategory">
+        <span v-if="!isLoading">Criar Categoria</span>
+        <span v-if="isLoading" class="loading-content">
+          <span class="spinner"></span>
+          Criando...
+        </span>
+      </button>
     </template>
   </ModalWrapper>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import BaseButton from '../BaseButton.vue'
 import ModalWrapper from './ModalWrapper.vue'
 import { FileService } from '@/services/files.service'
 import { CATEGORY_COLORS, CATEGORY_ICONS } from '@/constants'
@@ -74,6 +79,7 @@ const categoryName = ref('')
 const description = ref('')
 const selectedColor = ref(CATEGORY_COLORS[0])
 const selectedIcon = ref(CATEGORY_ICONS[0])
+const isLoading = ref(false)
 
 const colors = CATEGORY_COLORS
 const icons = CATEGORY_ICONS
@@ -89,13 +95,17 @@ const closeModal = () => {
 
 const createCategory = async () => {
   if (!categoryName.value.trim()) return
+  if (!selectedColor.value.item || !selectedIcon.value) return
 
+  isLoading.value = true
   try {
-    await FileService.createCategory(categoryName.value, description.value)
+    await FileService.createCategory(categoryName.value.toLowerCase(), description.value, selectedIcon.value, selectedColor.value.item)
     emit('created')
     closeModal()
   } catch (error) {
     console.error('Error creating category:', error)
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -114,12 +124,20 @@ const saveAsTemplate = () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 15px;
+}
+
+.form-group-last {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .form-group label {
   font-weight: 500;
   color: var(--text-primary);
 }
+
 
 .optional {
   color: var(--text-secondary);
@@ -131,6 +149,10 @@ const saveAsTemplate = () => {
   border: 1px solid var(--border-color);
   border-radius: 8px;
   font-size: 14px;
+}
+
+.form-input:first-of-type {
+  text-transform: capitalize;
 }
 
 
@@ -231,6 +253,49 @@ const saveAsTemplate = () => {
   background: var(--primary-color);
   color: white;
   border-color: var(--primary-color);
+}
+
+.create-btn {
+  color: var(--text-light);
+  border: none;
+  cursor: pointer;
+  padding: 12px 24px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  min-width: 120px;
+}
+
+.create-btn:hover:not(:disabled) {
+  background-color: var(--primary-color-hover);
+}
+
+.create-btn.loading {
+  background-color: var(--primary-color-hover) !important;
+  cursor: not-allowed;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 

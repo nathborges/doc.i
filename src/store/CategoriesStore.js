@@ -1,5 +1,6 @@
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
 import { FileService } from '@/services/files.service'
+import { CATEGORY_COLORS, CATEGORY_ICONS } from '@/constants'
 
 const categories = ref([])
 const isLoading = ref(false)
@@ -7,22 +8,54 @@ const error = ref(null)
 
 const categoryCache = new Map()
 
+const generateFileCount = () => Math.floor(Math.random() * 50) + 1;
+
+const getBackgroundColor = (color) => {
+  const categoryColor = CATEGORY_COLORS.find((c) => c.item === color)
+  return categoryColor ? categoryColor.background : '#808080'
+}
+
+const getIconColor = (color) => {
+  return color ? color : '#000000'
+}
+
+const getIconName = (iconName) => {
+  return CATEGORY_ICONS.includes(iconName) ? iconName : 'folder'
+}
+
 const fetchCategories = async () => {
   isLoading.value = true
   error.value = null
 
   try {
     const data = await FileService.getCategories()
-    categories.value = data || []
+
+    const categoryFormatted = data.map((each) => {
+      const iconColor = getIconColor(each.color)
+      const backgroundColor = getBackgroundColor(each.color)
+      const iconNameFormatted = getIconName(each.iconName)
+      
+      return {
+        ...each,
+        fileCount: generateFileCount(),
+        backgroundColor,
+        iconColor,
+        iconName: iconNameFormatted,
+      }
+    })
     
+    categories.value = categoryFormatted || []
+
     categoryCache.clear()
-    if (data && Array.isArray(data)) {
-      data.forEach(cat => {
-        categoryCache.set(cat.name, cat)
+    if (categoryFormatted && Array.isArray(categoryFormatted)) {
+      categoryFormatted.forEach(cat => {
+        if (cat.id) {
+          categoryCache.set(cat.id, cat)
+        }
       })
     }
 
-    return data
+    return categoryFormatted
   } catch (err) {
     error.value = 'Erro ao carregar categorias'
     console.error('Erro ao carregar categorias:', err)
@@ -32,28 +65,26 @@ const fetchCategories = async () => {
   }
 }
 
+const getCategoryById = (id) => {
+  return categoryCache.get(id) || null
+}
+
 const getCategoryByName = (name) => {
   return categoryCache.get(name) || null
 }
 
-const getColorByName = (name) => {
-  const category = categoryCache.get(name)
-  return category?.color || '#808080'
+
+const getAllCategories = () => {
+  return categoryCache;
 }
 
 const deleteCategory = async (categoryId) => {
+  if (!categoryId) throw new Error('ID da categoria é obrigatório')
+  
   try {
     await FileService.deleteCategory(categoryId)
     categories.value = categories.value.filter(cat => cat.id !== categoryId)
-    
-    // Atualizar cache
-    for (const [name, cat] of categoryCache.entries()) {
-      if (cat.id === categoryId) {
-        categoryCache.delete(name)
-        break
-      }
-    }
-    
+    categoryCache.delete(categoryId)
     return true
   } catch (error) {
     console.error('Erro ao excluir categoria:', error)
@@ -67,8 +98,8 @@ export const useCategoriesStore = () => {
     isLoading,
     error,
     fetchCategories,
+    getCategoryById,
     getCategoryByName,
-    getColorByName,
     deleteCategory
   }
 }

@@ -37,15 +37,19 @@
       </div>
     </div>
     <template #footer>
-      <BaseButton class="button" text="Fazer Upload" :disabled="files.length === 0 || !selectedCategory || isUploading"
-        @click="uploadFiles" />
+      <button class="upload-btn" :disabled="files.length === 0 || !selectedCategory || isUploading" :class="{ 'loading': isUploading }" @click="uploadFiles">
+        <span v-if="!isUploading">Fazer Upload</span>
+        <span v-if="isUploading" class="loading-content">
+          <span class="spinner"></span>
+          Enviando...
+        </span>
+      </button>
     </template>
   </ModalWrapper>
 </template>
 
 <script setup>
 import { ref, onMounted, inject } from 'vue'
-import BaseButton from '../BaseButton.vue'
 import ModalWrapper from './ModalWrapper.vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 import { FileService } from '@/services/files.service'
@@ -70,8 +74,10 @@ const categoriesStore = useCategoriesStore()
 const categories = ref([])
 
 onMounted(async () => {
+  console.log('Carregando categorias no UploadModal...')
   await categoriesStore.fetchCategories()
   categories.value = categoriesStore.categories.value || []
+  console.log('Categorias carregadas:', categories.value)
 })
 
 const triggerFileInput = () => {
@@ -128,24 +134,35 @@ const formatFileSize = (bytes) => {
 }
 
 const uploadFiles = async () => {
-  if (files.value.length === 0) return
+  console.log('Upload iniciado:', {
+    filesCount: files.value.length,
+    selectedCategory: selectedCategory.value,
+    files: files.value.map(f => ({ name: f.name, size: f.size, type: f.type }))
+  })
+  
+  if (files.value.length === 0) {
+    console.log('Nenhum arquivo selecionado')
+    return
+  }
   if (!selectedCategory.value) {
+    console.log('Nenhuma categoria selecionada')
     showNotification('Selecione uma categoria', 'error', 5000)
     return
   }
+  
   isUploading.value = true
-  for (const file of files.value) {
-    try {
-      await FileService.upload([file], selectedCategory.value)
-      emit('file-uploaded')
-      showNotification(file.name, 'success', 5000)
-    } catch (error) {
-      console.error('Erro no upload:', error)
-      showNotification(file.name, 'error', 5000)
-    }
+  try {
+    console.log('Enviando arquivos para categoria:', selectedCategory.value)
+    await FileService.upload(files.value, selectedCategory.value)
+    emit('file-uploaded')
+    showNotification('Arquivos enviados com sucesso!', 'success', 5000)
+    closeModal()
+  } catch (error) {
+    console.error('Erro no upload:', error)
+    showNotification('Erro no upload. Tente novamente.', 'error', 5000)
+  } finally {
+    isUploading.value = false
   }
-  closeModal()
-  isUploading.value = false
 }
 
 const closeModal = () => {
@@ -261,11 +278,11 @@ const closeModal = () => {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  margin-bottom: 15px;
 }
 .form-group label {
   font-weight: 500;
   color: var(--text-primary);
-  font-size: 14px;
 }
 .form-select {
   padding: 12px;
@@ -279,8 +296,47 @@ const closeModal = () => {
   outline: none;
   border-color: var(--primary-color);
 }
-.button {
-  margin-top: 15px;
+
+.upload-btn {
+  color: var(--text-light);
+  border: none;
+  cursor: pointer;
+  padding: 12px 24px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  background-color: var(--primary-color);
+  min-width: 120px;
 }
 
+.upload-btn:hover:not(:disabled) {
+  background-color: var(--primary-color-hover);
+}
+
+.upload-btn.loading {
+  background-color: var(--primary-color-hover) !important;
+  cursor: not-allowed;
+}
+
+.loading-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

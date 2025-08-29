@@ -5,10 +5,12 @@ import Menu from '@/components/Menu.vue'
 import BaseContent from '@/components/BaseContent.vue'
 import HeaderBar from '@/components/HeaderBar.vue'
 import CategoriaContent from '@/components/CategoriaContent.vue'
+import CreateCategoryModal from '@/components/modal/CreateCategoryModal.vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 
 const route = useRoute()
 const categoriesStore = useCategoriesStore()
+const showCreateCategoryModal = ref(false)
 
 const currentComponent = computed(() => {
   if (route.name === 'category') {
@@ -24,6 +26,19 @@ const componentProps = computed(() => {
   return {}
 })
 
+const handleOpenCreateCategory = () => {
+  showCreateCategoryModal.value = true
+}
+
+const handleCloseCreateCategory = () => {
+  showCreateCategoryModal.value = false
+}
+
+const handleCategoryCreated = () => {
+  categoriesStore.fetchCategories()
+  showCreateCategoryModal.value = false
+}
+
 onMounted(async () => {
   await categoriesStore.fetchCategories()
 })
@@ -31,13 +46,18 @@ onMounted(async () => {
 
 <template>
   <div class="home-container">
-    <Menu />
+    <Menu @open-create-category="handleOpenCreateCategory" />
     <div class="main-content">
       <HeaderBar class="header-fixed" />
       <div class="content-area">
         <component :is="currentComponent" v-bind="componentProps" />
       </div>
     </div>
+    <CreateCategoryModal 
+      :is-open="showCreateCategoryModal" 
+      @close="handleCloseCreateCategory"
+      @created="handleCategoryCreated"
+    />
   </div>
 </template>
 

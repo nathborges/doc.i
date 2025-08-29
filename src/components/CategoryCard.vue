@@ -1,12 +1,12 @@
 <template>
   <BaseCard
     :title="category.name"
-    :subtitle="subtitle || 'Categoria'"
-    :footer="`${category.fileCount || 0} arquivos`"
-    :icon="category.icon || 'folder'"
+    :subtitle="category.description || 'Sem descrição'"
+    :footer="`${category.fileCount} arquivos`"
+    :icon="category.iconName"
     :icon-style="{
-      backgroundColor: category.color?.background || category.color,
-      color: category.color?.item || 'white'
+      backgroundColor: category.backgroundColor,
+      color: category.iconColor
     }"
     :show-menu="true"
     :menu-id="`category-${category.id}`"
@@ -47,7 +47,9 @@ const categoriesStore = useCategoriesStore()
 const { addNotification } = useGlobalState()
 
 const handleClick = () => {
-  router.push({ name: 'category', params: { name: props.category.name } })
+  if (props.category?.name) {
+    router.push({ name: 'category', params: { name: props.category.name } })
+  }
 }
 
 const handleEdit = () => {
@@ -55,6 +57,8 @@ const handleEdit = () => {
 }
 
 const handleDelete = async () => {
+  if (!props.category?.id) return
+  
   if (confirm('Tem certeza que deseja excluir esta categoria?')) {
     try {
       await categoriesStore.deleteCategory(props.category.id)
@@ -76,25 +80,38 @@ const handleDelete = async () => {
 .menu-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   width: 100%;
-  padding: 8px 12px;
+  padding: 12px 16px;
   background: none;
   border: none;
   cursor: pointer;
   font-size: 14px;
+  font-weight: 500;
   color: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
 .menu-item:hover {
   background: var(--bg-secondary);
+  color: var(--primary-color);
 }
 
 .menu-item.delete {
-  color: #d32f2f;
+  color: var(--error-color);
+}
+
+.menu-item.delete:hover {
+  background: rgba(231, 76, 60, 0.1);
+  color: var(--error-color);
 }
 
 .menu-item .material-icons {
-  font-size: 16px;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.menu-item:hover .material-icons {
+  opacity: 1;
 }
 </style>

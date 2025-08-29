@@ -84,7 +84,7 @@ defineEmits(['close'])
 
 .modal-header {
   text-align: center;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .modal-header h1 {
@@ -100,6 +100,7 @@ defineEmits(['close'])
 .modal-footer {
   display: flex;
   justify-content: center;
+  margin-top: 20px;
 }
 
 .modal-footer button {
