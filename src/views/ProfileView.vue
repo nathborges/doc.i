@@ -25,6 +25,7 @@ import ProfileComponent from './profilecomponente.vue'
   overflow: hidden;
 }
 
+
 .header-fixed {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);

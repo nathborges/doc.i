@@ -1,6 +1,9 @@
 <template>
     <div class="header">
         <div class="header-title">
+            <div class="menu-toggle" @click="$emit('toggle-menu')">
+                <span class="material-icons">menu</span>
+            </div>
             <h1 v-if="pageTitle" class="page-title">{{ pageTitle }}</h1>
             <div class="user-profile">
                 <div class="upload-button">
@@ -111,7 +114,6 @@ const goToProfile = () => {
     width: 100%;
     justify-content: flex-end;
 }
-
 .page-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -217,5 +219,29 @@ const goToProfile = () => {
 
 .upload-button {
     position: relative;
+}
+
+.menu-toggle {
+    display: none;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    transition: background-color 0.2s;
+    margin-right: 3vw;
+}
+
+.menu-toggle:hover {
+    background-color: #e5e7eb;
+}
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex;
+    }
 }
 </style>

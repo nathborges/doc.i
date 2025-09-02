@@ -1,5 +1,6 @@
 <template>
-  <div class="sidebar">
+  <div v-if="isOpen" class="overlay" @click="$emit('close')"></div>
+  <div class="sidebar" :class="{ 'mobile-open': isOpen }">
     <div class="logo">
       <img src="@/assets/images/doci-logo.png" alt="Doci" />
     </div>
@@ -49,7 +50,14 @@ const categoriesStore = useCategoriesStore()
 const router = useRouter()
 const route = useRoute()
 
-const emit = defineEmits(['open-create-category'])
+const emit = defineEmits(['open-create-category', 'close'])
+
+const props = defineProps({
+  isOpen: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const menuItems = [
   { id: 'home', icon: 'home', label: 'Início', route: '/' },
@@ -70,6 +78,7 @@ const handleMenuClick = (itemId) => {
   const item = menuItems.find(i => i.id === itemId)
   if (item) {
     router.push(item.route)
+    emit('close')
   }
 }
 
@@ -82,6 +91,7 @@ const handleCategoryClick = (category) => {
       id: category.id
     }
   })
+  emit('close')
 }
 
 const openCreateCategoryModal = () => {
@@ -92,10 +102,34 @@ const openCreateCategoryModal = () => {
 </script>
 
 <style scoped>
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  display: none;
+}
 
 @media (max-width: 768px) {
-  .menu {
-    visibility: hidden;
+  .overlay {
+    display: block;
+  }
+  
+  .sidebar {
+    position: fixed;
+    left: -100%;
+    top: 0;
+    z-index: 1000;
+    width: 280px;
+    height: 100vh;
+    transition: left 0.3s ease;
+  }
+  
+  .sidebar.mobile-open {
+    left: 0;
   }
 }
 
@@ -260,7 +294,8 @@ const openCreateCategoryModal = () => {
   display: flex;
   flex-direction: column;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  width: 240px;
+  max-width: 15vw;
+  min-width: 250px;
 }
 
 .storage {

@@ -12,6 +12,7 @@ const route = useRoute()
 const categoriesStore = useCategoriesStore()
 const showCreateCategoryModal = ref(false)
 const showNotification = inject('showNotification')
+const isMobileMenuOpen = ref(false)
 
 const currentComponent = computed(() => {
   if (route.name === 'category') {
@@ -44,6 +45,14 @@ const handleCategoryError = (message) => {
   showNotification(message, 'error', 5000)
 }
 
+const toggleMobileMenu = () => {
+  isMobileMenuOpen.value = !isMobileMenuOpen.value
+}
+
+const closeMobileMenu = () => {
+  isMobileMenuOpen.value = false
+}
+
 onMounted(async () => {
   await categoriesStore.fetchCategories()
 })
@@ -51,9 +60,13 @@ onMounted(async () => {
 
 <template>
   <div class="home-container">
-    <Menu @open-create-category="handleOpenCreateCategory" />
+    <Menu 
+      @open-create-category="handleOpenCreateCategory" 
+      :isOpen="isMobileMenuOpen" 
+      @close="closeMobileMenu" 
+    />
     <div class="main-content">
-      <HeaderBar class="header-fixed" />
+      <HeaderBar class="header-fixed" @toggle-menu="toggleMobileMenu" />
         <component :is="currentComponent" v-bind="componentProps" />
     </div>
     <CreateCategoryModal 
@@ -69,13 +82,9 @@ onMounted(async () => {
 .header-fixed {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
-}
 
-@media (max-width: 768) {
-  .home-container {
-    height: 100vh;
-    overflow: hidden;
-    flex-direction: column;
+  .menu-toggle {
+    display: none;
   }
 }
 </style>
