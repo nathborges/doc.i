@@ -28,7 +28,7 @@ export const AuthService = {
   },
 
   signup(name, email, password, code) {
-    return axios.post(`${API_URL}/auth/signup`, {
+    return axios.post(`${API_URL}/users`, {
       name,
       email,
       password,

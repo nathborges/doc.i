@@ -9,7 +9,7 @@
 
     <div class="notification-content">
       <div v-for="notification in notifications" class="notifications">
-        <span class="filename"> {{ notification.fileName }}</span>
+        <span class="filename" :title="notification.fileName"> {{ notification.fileName }}</span>
         <span class="icon">
           <span class="material-icons" :class="notification.status">{{ getMaterialIconForStatus(notification.status) }}</span>
         </span>
@@ -77,15 +77,16 @@ defineExpose({ close });
   position: fixed;
   bottom: 20px;
   right: 20px;
-  min-width: 250px;
-  max-width: 350px;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  max-width: 400px;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   z-index: 1000;
   animation: slide-in 0.3s ease-out;
-  background-color: white;
-  border-color: #0d47a1;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  backdrop-filter: blur(8px);
 }
 
 .notification-content {
@@ -106,10 +107,12 @@ defineExpose({ close });
 }
 
 .title {
-  font-weight: 700;
-  margin-bottom: 10px;
+  font-weight: 600;
+  margin-bottom: 12px;
   align-items: center;
   justify-content: space-between;
+  color: var(--text-primary);
+  font-size: 14px;
 }
 
 .notifications {
@@ -117,17 +120,27 @@ defineExpose({ close });
   flex-direction: row;
   overflow: hidden;
   width: 100%;
-  margin-bottom: 5px;
-  gap: 5px;
-  align-items: center
+  margin-bottom: 8px;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
 }
 
 .filename {
   flex: 2;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
   width: 100%;
+  color: var(--text-primary);
+  font-size: 13px;
+  position: relative;
+}
+
+.filename:hover {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  line-height: 1.3;
 }
 
 .icon {
@@ -141,19 +154,19 @@ defineExpose({ close });
 }
 
 .icon .success {
-  color: #4caf50;
+  color: var(--success-color, #10b981);
 }
 
 .icon .error {
-  color: #f44336;
+  color: var(--error-color, #ef4444);
 }
 
 .icon .warning {
-  color: #ffc107;
+  color: var(--warning-color, #f59e0b);
 }
 
 .icon .info {
-  color: #2196f3;
+  color: var(--primary-color);
 }
 
 .close-button {

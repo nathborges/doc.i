@@ -69,26 +69,27 @@ const handleCategoryCreated = () => {
 .categories-scroll {
   display: flex;
   gap: 16px;
-  overflow-x: auto;
+  overflow-x: scroll;
   overflow-y: hidden;
-  padding-bottom: 8px;
+  padding-bottom: 12px;
   scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  scrollbar-color: var(--border-color) var(--bg-secondary);
   white-space: nowrap;
   width: 100%;
 }
 
 .categories-scroll::-webkit-scrollbar {
-  height: 6px;
+  height: 8px;
 }
 
 .categories-scroll::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--bg-secondary);
+  border-radius: 4px;
 }
 
 .categories-scroll::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .categories-scroll::-webkit-scrollbar-thumb:hover {

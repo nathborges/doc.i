@@ -18,6 +18,10 @@
                 <div class="avatar" @click="toggleUserMenu"><span class="material-icons">person</span>
                 </div>
                 <div v-if="showUserMenu" class="user-menu">
+                    <div class="user-menu-item" @click="goToProfile">
+                        <span class="material-icons">person</span>
+                        <span>Perfil</span>
+                    </div>
                     <div class="user-menu-item">
                         <span class="material-icons">settings</span>
                         <span>Configurações</span>
@@ -52,10 +56,15 @@ const pageTitle = computed(() => {
     const categoryName = route.params.name.replace(/-/g, ' ')
     return categoryName
   }
+
+  if (props.title) {
+    return props.title
+  }
+  
   return null
 })
 
-defineProps({
+const props = defineProps({
     title: String
 })
 
@@ -77,7 +86,13 @@ const closeUploadModal = () => {
 }
 
 const handleFileUploaded = () => {
+    window.location.reload()
     emit('file-uploaded')
+}
+
+const goToProfile = () => {
+    showUserMenu.value = false
+    router.push('/profile')
 }
 </script>
 
@@ -152,36 +167,52 @@ const handleFileUploaded = () => {
     position: absolute;
     top: 50px;
     right: 0;
-    background-color: var(--bg-primary);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     box-shadow: var(--shadow-lg);
-    width: 200px;
     z-index: 100;
-    border: 1px solid var(--border-color);
+    min-width: 140px;
     overflow: hidden;
+    backdrop-filter: blur(8px);
 }
 
 .user-menu-item {
-    padding: 15px;
     display: flex;
     align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 16px;
+    background: none;
+    border: none;
     cursor: pointer;
-    transition: background-color 0.2s;
+    font-size: 14px;
+    font-weight: 500;
     color: var(--text-primary);
+    transition: all 0.2s ease;
 }
 
 .user-menu-item:hover {
-    background-color: var(--bg-secondary);
+    background: var(--bg-secondary);
+    color: var(--primary-color);
 }
 
 .user-menu-item.logout {
-    border-top: 1px solid var(--border-color);
     color: var(--error-color);
 }
 
-.user-menu-item svg {
-    margin-right: 12px;
-    width: 16px;
+.user-menu-item.logout:hover {
+    background: rgba(231, 76, 60, 0.1);
+    color: var(--error-color);
+}
+
+.user-menu-item .material-icons {
+    font-size: 18px;
+    opacity: 0.8;
+}
+
+.user-menu-item:hover .material-icons {
+    opacity: 1;
 }
 
 .upload-button {

@@ -18,22 +18,25 @@
         <div class="categories-list">
           <div v-for="category in categories" class="category-item"
             :class="{ active: route.name === 'category' && route.params.name === category.name.toLowerCase().replace(/\s+/g, '-') }"
-            @click="handleCategoryClick(category.name)">
+            @click="handleCategoryClick(category)">
             <div class="category-dot" :style="{ backgroundColor: category.iconColor }"></div>
             <span class="category-name">{{ category.name }}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="storage">
-      <div class="storage-info">
-        <h4>Armazenamento</h4>
-        <p>7.5GB de 15GB usado</p>
-      </div>
-      <div class="progress-bar">
-        <div class="progress" style="width: 50%"></div>
+    <div class="storage-container">
+      <div class="storage">
+        <div class="storage-info">
+          <h4>Armazenamento</h4>
+          <p>7.5GB de 15GB usado</p>
+        </div>
+        <div class="progress-bar">
+          <div class="progress" style="width: 50%"></div>
+        </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -70,9 +73,15 @@ const handleMenuClick = (itemId) => {
   }
 }
 
-const handleCategoryClick = (categoryName) => {
-  const normalizedName = categoryName.toLowerCase().replace(/\s+/g, '-')
-  router.push({ name: 'category', params: { name: normalizedName } })
+const handleCategoryClick = (category) => {
+  const normalizedName = category.name.toLowerCase().replace(/\s+/g, '-')
+  router.push({
+    name: 'category',
+    params: {
+      name: normalizedName,
+      id: category.id
+    }
+  })
 }
 
 const openCreateCategoryModal = () => {
@@ -83,93 +92,25 @@ const openCreateCategoryModal = () => {
 </script>
 
 <style scoped>
-.sidebar {
-  width: 240px;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #e5e7eb;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.logo {
-  padding: 30px;
-  max-height: 100px;
-  display: flex;
-  justify-content: center;
-}
-
-.logo img {
-  height: 100%;
-}
-
-.menu {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 16px;
-}
-
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-primary);
-  gap: 8px;
-}
-
-.menu-item:hover {
-  background-color: var(--bg-secondary);
-}
-
-.menu-item.active {
-  background-color: #f0f9f0;
-  font-weight: 500;
-  color: #4a7c59;
-}
-
-.menu-item .material-icons {
-  font-size: 16px;
-  color: var(--text-secondary);
-}
-
-
-
-.categories-section {
-  margin-top: 24px;
-}
-
-.categories-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  margin-bottom: 8px;
-}
-
-.categories-title {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-secondary);
-}
-
 .add-icon {
-  font-size: 16px;
+  border-radius: 4px;
   color: var(--primary-color);
   cursor: pointer;
+  font-size: 16px;
   padding: 2px;
-  border-radius: 4px;
   transition: all 0.2s;
 }
 
 .add-icon:hover {
   background-color: var(--bg-secondary);
+}
+
+.categories-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 12px;
 }
 
 .categories-list {
@@ -178,16 +119,12 @@ const openCreateCategoryModal = () => {
   gap: 1px;
   max-height: 200px;
   overflow-y: auto;
-  scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
+  scrollbar-width: thin;
 }
 
 .categories-list::-webkit-scrollbar {
   width: 4px;
-}
-
-.categories-list::-webkit-scrollbar-track {
-  background: transparent;
 }
 
 .categories-list::-webkit-scrollbar-thumb {
@@ -199,51 +136,139 @@ const openCreateCategoryModal = () => {
   background: var(--text-secondary);
 }
 
-.category-item {
-  display: flex;
-  align-items: center;
-  padding: 6px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
+.categories-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.categories-section {
+  margin-top: 24px;
+}
+
+.categories-title {
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
+}
+
+.category-dot {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  flex-shrink: 0;
+  height: 10px;
+  width: 10px;
+}
+
+.category-item {
+  align-items: center;
+  border-radius: 6px;
   color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
   gap: 8px;
+  padding: 6px 12px;
+  transition: all 0.2s;
+}
+
+.category-item.active {
+  background-color: #f0f9f0;
+  color: #4a7c59;
+  font-weight: 500;
 }
 
 .category-item:hover {
   background-color: var(--bg-secondary);
 }
 
-.category-item.active {
-  background-color: #f0f9f0;
-  font-weight: 500;
-  color: #4a7c59;
-}
-
 .category-name {
   flex: 1;
 }
 
-
-
-.category-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+.logo {
+  display: flex;
+  justify-content: center;
+  max-height: 100px;
+  padding: 30px;
 }
 
+.logo img {
+  height: 100%;
+}
 
+.menu {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 2px;
+  padding: 16px;
+}
+
+.menu-item {
+  align-items: center;
+  border-radius: 6px;
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 8px;
+  padding: 8px 12px;
+  transition: all 0.2s;
+}
+
+.menu-item.active {
+  background-color: #f0f9f0;
+  color: #4a7c59;
+  font-weight: 500;
+}
+
+.menu-item .material-icons {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+.menu-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.progress {
+  background: linear-gradient(90deg, var(--primary-color) 0%, #22c55e 100%);
+  border-radius: 4px;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.progress-bar {
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  height: 8px;
+  overflow: hidden;
+}
+
+.sidebar {
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  width: 240px;
+}
 
 .storage {
-  margin: 16px;
-  padding: 16px;
   background-color: var(--bg-secondary);
-  border-radius: 12px;
   border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.storage-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px;
+  width: 100%;
 }
 
 .storage-info {
@@ -251,31 +276,16 @@ const openCreateCategoryModal = () => {
 }
 
 .storage-info h4 {
-  margin: 0 0 4px 0;
+  color: var(--text-primary);
   font-size: 14px;
   font-weight: 600;
-  color: var(--text-primary);
+  margin: 0 0 4px 0;
 }
 
 .storage-info p {
-  margin: 0;
-  font-size: 12px;
   color: var(--text-secondary);
+  font-size: 12px;
   line-height: 1.4;
-}
-
-.progress-bar {
-  height: 8px;
-  background-color: #e5e7eb;
-  border-radius: 4px;
-  overflow: hidden;
-  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.progress {
-  height: 100%;
-  background: linear-gradient(90deg, var(--primary-color) 0%, #22c55e 100%);
-  border-radius: 4px;
-  transition: width 0.3s ease;
+  margin: 0;
 }
 </style>

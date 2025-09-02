@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, inject } from 'vue'
 import { useRoute } from 'vue-router'
 import Menu from '@/components/Menu.vue'
 import BaseContent from '@/components/BaseContent.vue'
@@ -11,6 +11,7 @@ import { useCategoriesStore } from '@/store/CategoriesStore'
 const route = useRoute()
 const categoriesStore = useCategoriesStore()
 const showCreateCategoryModal = ref(false)
+const showNotification = inject('showNotification')
 
 const currentComponent = computed(() => {
   if (route.name === 'category') {
@@ -39,6 +40,10 @@ const handleCategoryCreated = () => {
   showCreateCategoryModal.value = false
 }
 
+const handleCategoryError = (message) => {
+  showNotification(message, 'error', 5000)
+}
+
 onMounted(async () => {
   await categoriesStore.fetchCategories()
 })
@@ -57,37 +62,34 @@ onMounted(async () => {
       :is-open="showCreateCategoryModal" 
       @close="handleCloseCreateCategory"
       @created="handleCategoryCreated"
+      @error="handleCategoryError"
     />
   </div>
 </template>
 
 <style scoped>
-.home-container {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg-secondary);
-}
-
-.main-content {
-  flex: 2;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.content-area {
+  flex: 1;
+  padding: 30px;
 }
 
 .header-fixed {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
 }
 
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-  padding: 30px;
+.home-container {
+  background-color: var(--bg-secondary);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
 }
 
+.main-content {
+  display: flex;
+  flex: 10;
+  flex-direction: column;
+  height: 100vh;
+}
 </style>

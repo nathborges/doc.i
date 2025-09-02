@@ -10,6 +10,9 @@ const password = ref('')
 const showPassword = ref(false)
 
 const isLoading = ref(false)
+const hasError = ref(false)
+const errorMessage = ref('')
+const shakeForm = ref(false)
 
 const login = async () => {
   isLoading.value = true
@@ -19,6 +22,10 @@ const login = async () => {
     router.push('/');
   } catch (error) {
     console.error('Erro no login:', error.message);
+    hasError.value = true
+    errorMessage.value = 'Email ou senha incorretos'
+    shakeForm.value = true
+    setTimeout(() => shakeForm.value = false, 400)
   } finally {
     isLoading.value = false
   }
@@ -31,6 +38,10 @@ const togglePasswordVisibility = () => {
 const goToSignup = () => {
   router.push('/signup')
 }
+
+const clearError = () => {
+  hasError.value = false
+}
 </script>
 
 <template>
@@ -41,23 +52,25 @@ const goToSignup = () => {
       </div>
       <div class="login-container">
         <h1>Bem vindo!</h1>
-        <p>Transforme seus documentos em dados inteligentes prontos para análise. Aqui, sua informação trabalha por você.</p>
+        <p>Transforme seus documentos em dados inteligentes prontos para análise. Aqui, sua informação trabalha por
+          você.</p>
       </div>
       <form @submit.prevent="login">
         <div class="form-group">
-          <input type="email" id="email" class="input-style" v-model="email" required placeholder="Email">
+          <input type="email" id="email" class="input-style" :class="{ 'error': hasError, 'shake': shakeForm }" v-model="email" required
+            placeholder="Email" @input="clearError">
         </div>
 
         <div class="form-group password-group">
-          <input :type="showPassword ? 'text' : 'password'" class="input-style" id="password" v-model="password"
-            required placeholder="Senha">
+          <input :type="showPassword ? 'text' : 'password'" class="input-style" :class="{ 'error': hasError, 'shake': shakeForm }"
+            id="password" v-model="password" required placeholder="Senha" @input="clearError">
           <button type="button" class="toggle-password" @click="togglePasswordVisibility">
             <span class="material-icons">{{ showPassword ? 'visibility_off' : 'visibility' }}</span>
           </button>
         </div>
 
-        <div class="forgot-password">
-          <a href="#">Esqueceu a senha?</a>
+        <div v-if="hasError" class="error-message">
+          {{ errorMessage }}
         </div>
 
         <button type="submit" class="input-style login-btn" :disabled="isLoading" :class="{ 'loading': isLoading }">
@@ -69,15 +82,19 @@ const goToSignup = () => {
         </button>
 
         <div class="signup-link">
+          <div class="forgot-password">
+            <a href="#">Esqueceu a senha?</a>
+          </div>
           <span>Não é membro? </span><a href="#" @click.prevent="goToSignup" class="bold-link">Crie uma conta</a>
         </div>
       </form>
     </div>
     <div class="image-container">
       <div class="image">
-        <Carousel  />
+        <Carousel />
       </div>
-      <h1 class="caption animate-item" style="animation-delay: 0.2s">Use o Doc.i para transformar documentos soltos em insights de verdade.
+      <h1 class="caption animate-item" style="animation-delay: 0.2s">Use o Doc.i para transformar documentos soltos em
+        insights de verdade.
         Organize, busque e exporte dados de forma simples e rápida.</h1>
     </div>
 
@@ -185,10 +202,23 @@ input {
   transition: all 0.3s ease;
 }
 
+input.error {
+  border: 1px solid #e53e3e;
+}
+
 input:focus {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   border-color: var(--primary-color);
+}
+
+.error-message {
+color: #e53e3e;
+    font-weight: 500;
+    font-size: 15px;
+    margin-top: 5px;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 button {
@@ -204,7 +234,7 @@ button {
 
 button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
 button[type="submit"]:hover {
@@ -218,6 +248,22 @@ button[type="submit"]:hover {
 
 .signup-link a {
   font-size: 0.9rem;
+}
+
+.bold-link {
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.toggle-password:hover {
+  transform: translateY(-50%) !important;
+  box-shadow: none !important;
+}
+
+
+.bold-link:hover {
+  text-decoration: underline;
 }
 
 .forgot-password {
@@ -284,9 +330,20 @@ button[type="submit"]:hover {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+input.shake {
+  animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
 }
 </style>

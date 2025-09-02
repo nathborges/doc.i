@@ -5,21 +5,24 @@
         <label>Categoria</label>
         <select v-model="selectedCategory" class="form-select">
           <option value="">Selecione uma categoria</option>
-          <option v-for="category in categories" :key="category.id" :value="category.id">
-            {{ category.name }}
+          <option v-for="category in categories" :key="category.id" :value="category.id" class="category-option">
+            {{ capitalizeFirst(category.name) }}
           </option>
         </select>
       </div>
+
       <div class="upload-area" :class="{ 'drag-over': isDragOver, 'has-files': files.length > 0 }" @drop="handleDrop"
         @dragover.prevent="isDragOver = true" @dragleave="isDragOver = false" @click="triggerFileInput">
         <input ref="fileInput" type="file" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
           @change="handleFileSelect" style="display: none">
+
         <div v-if="files.length === 0" class="upload-placeholder">
           <span class="material-icons upload-icon">cloud_upload</span>
           <h3>Arraste arquivos aqui ou clique para selecionar</h3>
           <p>Suporte para PDF, DOC, DOCX, TXT, JPG, PNG</p>
           <p class="size-limit">Tamanho máximo: 10MB por arquivo</p>
         </div>
+
         <div v-else class="files-list">
           <div v-for="(file, index) in files" :key="index" class="file-item">
             <div class="file-info">
@@ -36,8 +39,10 @@
         </div>
       </div>
     </div>
+
     <template #footer>
-      <button class="upload-btn" :disabled="files.length === 0 || !selectedCategory || isUploading" :class="{ 'loading': isUploading }" @click="uploadFiles">
+      <button class="upload-btn" :disabled="files.length === 0 || !selectedCategory || isUploading"
+        :class="{ 'loading': isUploading }" @click="uploadFiles">
         <span v-if="!isUploading">Fazer Upload</span>
         <span v-if="isUploading" class="loading-content">
           <span class="spinner"></span>
@@ -49,10 +54,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, inject } from 'vue'
+import { ref, computed, inject, onMounted, onUnmounted } from 'vue'
 import ModalWrapper from './ModalWrapper.vue'
 import { useCategoriesStore } from '@/store/CategoriesStore'
 import { FileService } from '@/services/files.service'
+import { useRoute } from 'vue-router'
 
 const props = defineProps({
   isOpen: {
@@ -71,13 +77,18 @@ const selectedCategory = ref('')
 const isUploading = ref(false)
 
 const categoriesStore = useCategoriesStore()
-const categories = ref([])
+const route = useRoute()
+
+const categories = computed(() => categoriesStore.categories.value)
 
 onMounted(async () => {
-  console.log('Carregando categorias no UploadModal...')
-  await categoriesStore.fetchCategories()
-  categories.value = categoriesStore.categories.value || []
-  console.log('Categorias carregadas:', categories.value)
+  if (categoriesStore.categories.value.length === 0) {
+    await categoriesStore.fetchCategories()
+  }
+
+  if (route.name === 'category' && route.params.id) {
+    selectedCategory.value = route.params.id
+  }
 })
 
 const triggerFileInput = () => {
@@ -125,6 +136,12 @@ const getFileIcon = (fileType) => {
   return 'insert_drive_file'
 }
 
+
+const capitalizeFirst = (text) => {
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
+}
+
+
 const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes'
   const k = 1024
@@ -134,35 +151,26 @@ const formatFileSize = (bytes) => {
 }
 
 const uploadFiles = async () => {
-  console.log('Upload iniciado:', {
-    filesCount: files.value.length,
-    selectedCategory: selectedCategory.value,
-    files: files.value.map(f => ({ name: f.name, size: f.size, type: f.type }))
-  })
-  
-  if (files.value.length === 0) {
-    console.log('Nenhum arquivo selecionado')
-    return
-  }
+  if (files.value.length === 0) return
   if (!selectedCategory.value) {
-    console.log('Nenhuma categoria selecionada')
     showNotification('Selecione uma categoria', 'error', 5000)
     return
   }
-  
+
   isUploading.value = true
-  try {
-    console.log('Enviando arquivos para categoria:', selectedCategory.value)
-    await FileService.upload(files.value, selectedCategory.value)
-    emit('file-uploaded')
-    showNotification('Arquivos enviados com sucesso!', 'success', 5000)
-    closeModal()
-  } catch (error) {
-    console.error('Erro no upload:', error)
-    showNotification('Erro no upload. Tente novamente.', 'error', 5000)
-  } finally {
-    isUploading.value = false
+
+  for (const file of files.value) {
+    try {
+      await FileService.upload(file, selectedCategory.value)
+      showNotification(file.name, 'success', 5000)
+    } catch (error) {
+      showNotification(file.name, 'error', 5000)
+    };
   }
+  isUploading.value = false
+
+  emit('file-uploaded')
+  closeModal()
 }
 
 const closeModal = () => {
@@ -172,6 +180,7 @@ const closeModal = () => {
   isUploading.value = false
   emit('close')
 }
+
 </script>
 
 <style scoped>
@@ -179,6 +188,33 @@ const closeModal = () => {
   display: flex;
   flex-direction: column;
 }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.form-select {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.form-select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
 .upload-area {
   border: 2px dashed var(--border-color);
   border-radius: 12px;
@@ -188,48 +224,58 @@ const closeModal = () => {
   transition: all 0.3s ease;
   background: var(--bg-secondary);
 }
+
 .upload-area:hover {
   border-color: var(--primary-color);
   background: var(--bg-primary);
 }
+
 .upload-area.drag-over {
   border-color: var(--primary-color);
   background: var(--primary-color-light, rgba(21, 128, 61, 0.1));
 }
+
 .upload-area.has-files {
   padding: 20px;
   text-align: left;
 }
+
 .upload-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
 }
+
 .upload-icon {
   font-size: 48px;
   color: var(--primary-color);
 }
+
 .upload-placeholder h3 {
   margin: 0;
   color: var(--text-primary);
   font-size: 18px;
   font-weight: 600;
 }
+
 .upload-placeholder p {
   margin: 0;
   color: var(--text-secondary);
   font-size: 14px;
 }
+
 .size-limit {
   font-size: 12px !important;
   color: var(--text-secondary);
 }
+
 .files-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .file-item {
   display: flex;
   align-items: center;
@@ -239,28 +285,34 @@ const closeModal = () => {
   border: 1px solid var(--border-color);
   border-radius: 8px;
 }
+
 .file-info {
   display: flex;
   align-items: center;
   gap: 12px;
 }
+
 .file-icon {
   color: var(--primary-color);
   font-size: 24px;
 }
+
 .file-details {
   display: flex;
   flex-direction: column;
 }
+
 .file-name {
   font-weight: 500;
   color: var(--text-primary);
   font-size: 14px;
 }
+
 .file-size {
   font-size: 12px;
   color: var(--text-secondary);
 }
+
 .remove-file {
   background: none;
   border: none;
@@ -270,31 +322,10 @@ const closeModal = () => {
   border-radius: 4px;
   transition: all 0.2s;
 }
+
 .remove-file:hover {
   background: var(--bg-secondary);
   color: var(--error-color);
-}
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-.form-group label {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-.form-select {
-  padding: 12px;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 14px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
-.form-select:focus {
-  outline: none;
-  border-color: var(--primary-color);
 }
 
 .upload-btn {

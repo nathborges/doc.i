@@ -6,7 +6,7 @@ axios.interceptors.request.use(
     if (config.url?.includes('/auth/login') || config.url?.includes('/auth/signup')) {
       return config
     }
-    
+
     const token = localStorage.getItem('token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -23,8 +23,12 @@ axios.interceptors.response.use(
       localStorage.removeItem('token')
       localStorage.removeItem('user')
       localStorage.removeItem('isAuthenticated')
-      router.push('/login')
+
+      if (!config.url?.includes('/auth/signup')) {
+        router.push('/login')
+      }
     }
+
     return Promise.reject(error)
   }
 )

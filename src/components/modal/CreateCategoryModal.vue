@@ -73,7 +73,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'created'])
+const emit = defineEmits(['close', 'created', 'error'])
 
 const categoryName = ref('')
 const description = ref('')
@@ -104,6 +104,7 @@ const createCategory = async () => {
     closeModal()
   } catch (error) {
     console.error('Error creating category:', error)
+    emit('error', 'Erro ao criar categoria. Tente novamente.')
   } finally {
     isLoading.value = false
   }
@@ -151,10 +152,9 @@ const saveAsTemplate = () => {
   font-size: 14px;
 }
 
-.form-input:first-of-type {
-  text-transform: capitalize;
+.form-input:first-of-type::first-letter {
+  text-transform: uppercase;
 }
-
 
 .icon-appearance {
   display: flex;

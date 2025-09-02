@@ -188,8 +188,15 @@ form {
 
 input {
   border: 1px solid var(--border-color);
+  padding-left: 30px;
   transition: all 0.3s ease;
 }
+
+.toggle-password:hover {
+  transform: translateY(-50%) !important;
+  box-shadow: none !important;
+}
+
 
 input:focus {
   transform: translateY(-2px);

@@ -1,7 +1,7 @@
 import axios from '@/utils/httpClient';
 import { sanitizeForLog } from '../utils/security';
 
-const API_URL = import.meta.env.VITE_API_BACKEND || 'https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i';
+const API_URL = import.meta.env.VITE_API_BACKEND;
 
 export const FileService = {
   formatCategory(category) {
@@ -22,22 +22,16 @@ export const FileService = {
       return [];
     });
   },
-  upload(files, categoryId) {
-    console.log('Upload params:', { filesCount: files.length, categoryId });
-    
+  upload(file, categoryId) {    
     if (!categoryId) {
       throw new Error('Categoria é obrigatória para o upload');
     }
 
+    console.log(file)
+
     const formData = new FormData();
     
-    files.forEach((file, index) => {
-      console.log(`Adding file ${index}:`, file.name, file.type, file.size);
-      formData.append('file', file);
-    });
-
-    console.log('Uploading to:', `${API_URL}/documents/process`);
-    console.log('Category ID:', categoryId);
+    formData.append('file', file);
 
     return axios.post(`${API_URL}/documents/process`, formData, {
       headers: {
@@ -90,6 +84,20 @@ export const FileService = {
       })
       .catch(error => {
         console.error('Error deleting category:', sanitizeForLog(error.message));
+        throw error;
+      });
+  },
+  deleteFile(fileId, categoryId) {
+    return axios.delete(`${API_URL}/documents/${fileId}`, {
+      headers: {
+        'X-Category-Id': categoryId
+      }
+    })
+      .then(response => {
+        return response.data;
+      })
+      .catch(error => {
+        console.error('Error deleting file:', sanitizeForLog(error.message));
         throw error;
       });
   },

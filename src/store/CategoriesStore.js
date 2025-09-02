@@ -8,7 +8,7 @@ const error = ref(null)
 
 const categoryCache = new Map()
 
-const generateFileCount = () => Math.floor(Math.random() * 50) + 1;
+const generateFileCount = () => Math.floor(Math.random() * 10) + 1;
 
 const getBackgroundColor = (color) => {
   const categoryColor = CATEGORY_COLORS.find((c) => c.item === color)
@@ -55,6 +55,8 @@ const fetchCategories = async () => {
       })
     }
 
+    await countAllFilesPerCategory()
+
     return categoryFormatted
   } catch (err) {
     error.value = 'Erro ao carregar categorias'
@@ -92,6 +94,22 @@ const deleteCategory = async (categoryId) => {
   }
 }
 
+const countAllFilesPerCategory = async() => {
+  const fileCounts = {}
+
+  for (const category of categories.value) {
+    const categoryId = category.id
+    const files = await FileService.getFiles(categoryId)
+    fileCounts[categoryId] = files.length
+    
+    const cachedCategory = categoryCache.get(categoryId)
+    if (cachedCategory) {
+      cachedCategory.fileCount = files.length
+      categoryCache.set(categoryId, cachedCategory)
+    }
+  }
+}
+
 export const useCategoriesStore = () => {
   return {
     categories,
@@ -100,6 +118,6 @@ export const useCategoriesStore = () => {
     fetchCategories,
     getCategoryById,
     getCategoryByName,
-    deleteCategory
+    deleteCategory,
   }
 }

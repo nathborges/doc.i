@@ -47,8 +47,15 @@ const categoriesStore = useCategoriesStore()
 const { addNotification } = useGlobalState()
 
 const handleClick = () => {
-  if (props.category?.name) {
-    router.push({ name: 'category', params: { name: props.category.name } })
+  console.log(props)
+  if (props.category?.name && props.category?.id) {
+    router.push({ 
+      name: 'category', 
+      params: { 
+        name: props.category.name.toLowerCase().replace(/\s+/g, '-'),
+        id: props.category.id 
+      }
+    })
   }
 }
 

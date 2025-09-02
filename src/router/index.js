@@ -3,6 +3,7 @@ import { AuthService } from '@/services/auth.service'
 import HomeView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignupView from '@/views/SignupView.vue'
+import ProfileView from '@/views/ProfileView.vue'
 
 const routes = [
   {
@@ -12,7 +13,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/categoria/:name',
+    path: '/categoria/:name/:id',
     name: 'category',
     component: HomeView,
     meta: { requiresAuth: true }
@@ -23,9 +24,35 @@ const routes = [
     component: LoginView
   },
   {
+    path: '/favorites',
+    name: 'favorites',
+    redirect: '/'
+  },
+    {
+    path: '/shared',
+    name: 'shared',
+    redirect: '/'
+  },
+      {
+    path: '/trash',
+    name: 'trash',
+    redirect: '/'
+  },
+        {
+    path: '/recent',
+    name: 'recent',
+    redirect: '/'
+  },
+  {
     path: '/signup',
     name: 'signup',
     component: SignupView
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
+    meta: { requiresAuth: true }
   },
   {
     path: '/unauthorized',

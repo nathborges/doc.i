@@ -9,26 +9,33 @@
                 <div class="loading-spinner"></div>
                 <p>Carregando...</p>
             </div>
-            <div v-else-if="searchResults.length > 0" class="files-grid">
-                <BaseCard v-for="result in searchResults" :key="result.id" :title="result.fileName"
-                    :subtitle="`${formatFileSize(result.fileSize)} • ${formatDate(result.createdAt)}`"
-                    :icon="getFileIcon(result.fileName)"
-                    :icon-style="{ background: '#fff', border: '1px solid var(--border-color)', color: '#d32f2f' }"
-                    :show-menu="true" :clickable="false" :menu-id="`file-${result.id}`"
-                    @menu-toggle="(isOpen) => handleMenuToggle(result.id, isOpen)">
-                    <template #menu-items>
-                        <button @click="openFile(result.fileLocation); closeMenu()" class="menu-item">
+            <div v-else-if="searchResults.length > 0" class="files-table">
+                <div class="table-header">
+                    <div class="col-name">Nome</div>
+                    <div class="col-status">Status</div>
+                    <div class="col-modified">Modificado</div>
+                    <div class="col-size">Tamanho</div>
+                    <div class="col-actions">Ações</div>
+                </div>
+                <div class="table-row" v-for="result in searchResults" :key="result.id">
+                    <div class="col-name">
+                        <span class="material-icons file-type-icon">{{ getFileIcon(result.fileName) }}</span>
+                        {{ result.fileName }}
+                    </div>
+                    <div class="col-status">
+                        <span class="status-tag processed">Processado</span>
+                    </div>
+                    <div class="col-modified">{{ formatDate(result.createdAt) }}</div>
+                    <div class="col-size">{{ formatFileSize(result.fileSize) }}</div>
+                    <div class="col-actions">
+                        <button @click="openFile(result.fileLocation)" class="action-btn">
                             <span class="material-icons">download</span>
-                            Baixar
                         </button>
-                        <button @click="deleteFile(result.id); closeMenu()" class="menu-item delete">
+                        <button @click="deleteFile(result.id)" class="action-btn delete">
                             <span class="material-icons">delete</span>
                         </button>
-                    </template>
-                    <template #tags>
-                        <span class="status-tag processed">Processado</span>
-                    </template>
-                </BaseCard>
+                    </div>
+                </div>
             </div>
             <div v-else class="no-results">
                 <p>Nenhum documento encontrado.</p>
@@ -38,21 +45,21 @@
 </template>
 
 <script setup>
-import { onMounted, reactive, toRefs } from 'vue';
+import { onMounted, reactive, toRefs, watch } from 'vue';
 import InsightGenerator from './InsightGenerator.vue'
 import BaseCard from './BaseCard.vue'
 import { FileService } from '@/services/files.service'
 import { useFileIcons } from '@/composables/useFileIcons'
 import { useGlobalState } from '@/composables/useGlobalState'
-import { useCategoriesStore } from '@/store/CategoriesStore'
-import BaseButton from './BaseButton.vue'
+import { useRoute } from 'vue-router';
 
-const props = defineProps({
-    category: {
-        type: String,
-        required: true
-    }
-});
+const router = useRoute();
+
+watch(() => router.params.id, async (newId) => {
+  if (newId) {
+    await loadCategoryFiles()
+  }
+})
 
 const state = reactive({
     searchResults: [],
@@ -63,22 +70,10 @@ const state = reactive({
 const { searchResults, isLoading, activeMenu } = toRefs(state)
 const { getFileIcon } = useFileIcons()
 const { addNotification } = useGlobalState()
-const categoriesStore = useCategoriesStore()
 
-const setLoadingState = (loading) => {
-    state.isLoading = loading
-}
-
-const updateSearchResults = (results) => {
-    state.searchResults = results
-}
 
 const handleInsightsGenerated = (insights) => {
     console.log('Insights gerados:', insights)
-}
-
-const handleMenuToggle = (fileId, isOpen) => {
-    state.activeMenu = isOpen ? fileId : null
 }
 
 const closeMenu = () => {
@@ -88,7 +83,7 @@ const closeMenu = () => {
 const deleteFile = async (fileId) => {
     if (confirm('Tem certeza que deseja excluir este arquivo?')) {
         try {
-            await FileService.deleteFile(fileId)
+            await FileService.deleteFile(fileId, router.params.id)
             state.searchResults = state.searchResults.filter(file => file.id !== fileId)
             addNotification({
                 type: 'success',
@@ -102,7 +97,6 @@ const deleteFile = async (fileId) => {
         }
     }
 }
-
 
 
 const openFile = (url) => {
@@ -128,11 +122,10 @@ const formatDate = (dateString) => {
 const loadCategoryFiles = async () => {
     state.isLoading = true
     try {
-        const categoryId = getCategoryId(props.category)
-        if (!categoryId) {
+        if (!router.params.id) {
             throw new Error('Categoria não encontrada')
         }
-        const files = await FileService.getFiles(categoryId)
+        const files = await FileService.getFiles(router.params.id)
         state.searchResults = files
     } catch (error) {
         console.error('Error loading files:', error)
@@ -146,48 +139,9 @@ const loadCategoryFiles = async () => {
     }
 }
 
-const getCategoryId = (normalizedName) => {
-    console.log('Looking for category:', normalizedName)
-    console.log('Available categories:', categoriesStore.categories.value)
-    
-    const category = categoriesStore.categories.value.find(cat => {
-        const catNormalized = cat.name.toLowerCase().replace(/\s+/g, '-')
-        console.log('Comparing:', catNormalized, 'with', normalizedName)
-        return catNormalized === normalizedName
-    })
-
-    console.log('Found category:', category)
-    return category?.id
-}
-
-const exportToExcel = () => {
-    try {
-        const fileUrl = '/planilhas/relatorio.xlsx';
-
-        const link = document.createElement("a");
-        link.setAttribute("href", fileUrl);
-        link.setAttribute("download", "relatorio.xlsx");
-        document.body.appendChild(link);
-
-        link.click();
-
-        document.body.removeChild(link);
-
-        addNotification({
-            type: 'success',
-            message: 'Report exported successfully!'
-        })
-    } catch (error) {
-        addNotification({
-            type: 'error',
-            message: 'Error exporting report. Please try again.'
-        })
-    }
-}
 
 onMounted(async () => {
-    await categoriesStore.fetchCategories()
-    loadCategoryFiles()
+    await loadCategoryFiles()
 })
 
 </script>
@@ -217,34 +171,84 @@ onMounted(async () => {
     color: var(--text-primary);
 }
 
-.files-grid {
+.files-table {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.table-header {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
     gap: 16px;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
 }
 
-.menu-item {
-    display: flex;
+.table-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+    gap: 16px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border-color);
     align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 12px;
-    background: none;
-    border: none;
-    cursor: pointer;
+    transition: background-color 0.2s;
     font-size: 14px;
-    color: var(--text-primary);
 }
 
-.menu-item:hover {
+.table-row:hover {
     background: var(--bg-secondary);
 }
 
-.menu-item.delete {
+.col-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.col-status,
+.col-modified,
+.col-size {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.col-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.file-type-icon {
+    font-size: 18px;
+    color: #ef4444;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    color: var(--text-secondary);
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: var(--bg-secondary);
+    color: var(--primary-color);
+}
+
+.action-btn.delete:hover {
     color: #d32f2f;
 }
 
-.menu-item .material-icons {
+.action-btn .material-icons {
     font-size: 16px;
 }
 
