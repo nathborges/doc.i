@@ -115,7 +115,6 @@ const exportInsights = () => {
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
-  margin-bottom: 20px;
 }
 
 .generator-header {

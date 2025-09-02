@@ -54,9 +54,7 @@ onMounted(async () => {
     <Menu @open-create-category="handleOpenCreateCategory" />
     <div class="main-content">
       <HeaderBar class="header-fixed" />
-      <div class="content-area">
         <component :is="currentComponent" v-bind="componentProps" />
-      </div>
     </div>
     <CreateCategoryModal 
       :is-open="showCreateCategoryModal" 
@@ -68,28 +66,16 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.content-area {
-  flex: 1;
-  padding: 30px;
-}
-
 .header-fixed {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
 }
 
-.home-container {
-  background-color: var(--bg-secondary);
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-  width: 100vw;
-}
-
-.main-content {
-  display: flex;
-  flex: 10;
-  flex-direction: column;
-  height: 100vh;
+@media (max-width: 768) {
+  .home-container {
+    height: 100vh;
+    overflow: hidden;
+    flex-direction: column;
+  }
 }
 </style>

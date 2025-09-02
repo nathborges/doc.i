@@ -82,9 +82,6 @@ const route = useRoute()
 const categories = computed(() => categoriesStore.categories.value)
 
 onMounted(async () => {
-  // if (categoriesStore.categories.value.length === 0) {
-  //   await categoriesStore.fetchCategories()
-  // }
 
   if (route.name === 'category' && route.params.id) {
     selectedCategory.value = route.params.id
@@ -223,6 +220,9 @@ const closeModal = () => {
   cursor: pointer;
   transition: all 0.3s ease;
   background: var(--bg-secondary);
+  height: 35vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .upload-area:hover {

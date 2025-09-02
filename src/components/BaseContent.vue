@@ -12,8 +12,12 @@ import RecentFilesSection from './section/RecentFilesSection.vue'
 
 <style scoped>
 .content {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+    flex: 10;
+    overflow: hidden;
+    padding: 40px;
 }
 </style>

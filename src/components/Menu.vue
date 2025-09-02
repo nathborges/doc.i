@@ -92,6 +92,13 @@ const openCreateCategoryModal = () => {
 </script>
 
 <style scoped>
+
+@media (max-width: 768px) {
+  .menu {
+    visibility: hidden;
+  }
+}
+
 .add-icon {
   border-radius: 4px;
   color: var(--primary-color);

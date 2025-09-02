@@ -1,5 +1,4 @@
 <template>
-  <div>
     <Transition name="fade" mode="out-in">
       <RouterView />
     </Transition>
@@ -9,7 +8,6 @@
       @close="() => closeNotification(index)"
       :autoClose="false"
     />
-  </div>
 </template>
 
 <script setup>
@@ -54,4 +52,37 @@ provide('showNotification', showNotification)
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
+
+/* Layout Global */
+.home-container {
+  background-color: var(--bg-secondary);
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  width: 100vw;
+}
+
+.main-content {
+  display: flex;
+  flex: 10;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header-fixed {
+  background: var(--bg-primary);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.content-area {
+  flex: 1;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: row;
+  max-height: 100vh;
+}
+
 </style>

@@ -25,13 +25,6 @@ import ProfileComponent from './profilecomponente.vue'
   overflow: hidden;
 }
 
-.main-content {
-  flex: 10;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
 .header-fixed {
   background: var(--bg-primary);
   border-bottom: 1px solid var(--border-color);
