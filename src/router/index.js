@@ -57,6 +57,10 @@ const routes = [
   {
     path: '/unauthorized',
     redirect: '/login'
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: '/'
   }
 ]
 

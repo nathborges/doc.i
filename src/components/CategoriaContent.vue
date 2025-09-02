@@ -5,41 +5,46 @@
             <header class="section-header">
                 <h2>Resultados</h2>
             </header>
-            <div v-if="isLoading" class="loading-container">
-                <div class="loading-spinner"></div>
-                <p>Carregando...</p>
-            </div>
-            <div v-else-if="searchResults.length > 0" class="files-table">
-                <div class="table-header">
-                    <div class="col-name">Nome</div>
-                    <div class="col-status">Status</div>
-                    <div class="col-modified">Modificado</div>
-                    <div class="col-size">Tamanho</div>
-                    <div class="col-actions">Ações</div>
+            <div class="files-container">
+                <div v-if="isLoading" class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Carregando...</p>
                 </div>
-                <div class="table-row" v-for="result in searchResults" :key="result.id">
-                    <div class="col-name">
-                        <span class="material-icons file-type-icon">{{ getFileIcon(result.fileName) }}</span>
-                        {{ result.fileName }}
+                <div v-else-if="searchResults.length > 0" class="files-table">
+                    <div class="table-header">
+                        <div class="col-name">Nome</div>
+                        <div class="col-status">Status</div>
+                        <div class="col-modified">Modificado</div>
+                        <div class="col-size">Tamanho</div>
+                        <div class="col-actions">Ações</div>
                     </div>
-                    <div class="col-status">
-                        <span class="status-tag processed">Processado</span>
-                    </div>
-                    <div class="col-modified">{{ formatDate(result.createdAt) }}</div>
-                    <div class="col-size">{{ formatFileSize(result.fileSize) }}</div>
-                    <div class="col-actions">
-                        <button @click="openFile(result.fileLocation)" class="action-btn">
-                            <span class="material-icons">download</span>
-                        </button>
-                        <button @click="deleteFile(result.id)" class="action-btn delete">
-                            <span class="material-icons">delete</span>
-                        </button>
+                    <div class="table-row" v-for="result in searchResults" :key="result.id">
+                        <div class="col-name">
+                            <span class="material-icons file-type-icon">{{ getFileIcon(result.fileName) }}</span>
+                            {{ result.fileName }}
+                        </div>
+                        <div class="col-status">
+                            <span class="status-tag processed">Processado</span>
+                        </div>
+                        <div class="col-modified">{{ formatDate(result.createdAt) }}</div>
+                        <div class="col-size">{{ formatFileSize(result.fileSize) }}</div>
+                        <div class="col-actions">
+                            <button @click="openFile(result.fileLocation)" class="action-btn">
+                                <span class="material-icons">download</span>
+                            </button>
+                            <button @click="deleteFile(result.id)" class="action-btn delete">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+                <div v-else class="no-results">
+                    <p>Nenhum documento encontrado.</p>
+                </div>
+
             </div>
-            <div v-else class="no-results">
-                <p>Nenhum documento encontrado.</p>
-            </div>
+
         </section>
     </div>
 </template>
@@ -56,9 +61,9 @@ import { useRoute } from 'vue-router';
 const router = useRoute();
 
 watch(() => router.params.id, async (newId) => {
-  if (newId) {
-    await loadCategoryFiles()
-  }
+    if (newId) {
+        await loadCategoryFiles()
+    }
 })
 
 const state = reactive({
@@ -287,6 +292,10 @@ onMounted(async () => {
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
+}
+
+.files-container {
+    overflow-x: scroll;
 }
 
 @keyframes spin {

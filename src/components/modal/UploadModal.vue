@@ -82,9 +82,9 @@ const route = useRoute()
 const categories = computed(() => categoriesStore.categories.value)
 
 onMounted(async () => {
-  if (categoriesStore.categories.value.length === 0) {
-    await categoriesStore.fetchCategories()
-  }
+  // if (categoriesStore.categories.value.length === 0) {
+  //   await categoriesStore.fetchCategories()
+  // }
 
   if (route.name === 'category' && route.params.id) {
     selectedCategory.value = route.params.id

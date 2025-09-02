@@ -112,6 +112,7 @@ const countAllFilesPerCategory = async() => {
 
 export const useCategoriesStore = () => {
   return {
+    categoryCache,
     categories,
     isLoading,
     error,

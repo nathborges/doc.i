@@ -60,8 +60,8 @@ const handleModalClose = () => {
   showModal.value = false
 }
 
-const handleCategoryCreated = () => {
-  categoriesStore.fetchCategories()
+const handleCategoryCreated = async() => {
+  await categoriesStore.fetchCategories()
 }
 </script>
 
