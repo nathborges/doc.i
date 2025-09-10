@@ -4,7 +4,7 @@ meta:
   id: wrk_5d10dac41c4e41319f567f8ccdee9adb
   created: 1755484947826
   modified: 1755484947826
-  description: ""
+  description: ''
 collection:
   - name: Auth
     meta:
@@ -12,16 +12,16 @@ collection:
       created: 1640995200000
       modified: 1756342359311
       sortKey: -1640995200000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/auth/login"
+      - url: '{{ _.base_url }}/auth/login'
         name: Login
         meta:
           id: req_67ae9068b3ff4768add96ea5f645537f
           created: 1640995200000
           modified: 1756342357763
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: POST
         body:
@@ -72,16 +72,16 @@ collection:
       created: 1640995200000
       modified: 1640995200000
       sortKey: -1640995100000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/users"
+      - url: '{{ _.base_url }}/users'
         name: Create User
         meta:
           id: req_51eb4f4bb56b43db8daf62030dfe3be6
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: POST
         body:
@@ -104,19 +104,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/users"
+      - url: '{{ _.base_url }}/users'
         name: List Users
         meta:
           id: req_ea19ad7cbcbb4892bb4ea552fe11c4fd
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995100000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -125,19 +125,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/users/profile"
+      - url: '{{ _.base_url }}/users/profile'
         name: Get Profile
         meta:
           id: req_f30a47671d4145598adf863f1e1a0a2b
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995000000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -152,21 +152,21 @@ collection:
       created: 1640995200000
       modified: 1640995200000
       sortKey: -1640994700000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/admin/codes/available"
+      - url: '{{ _.base_url }}/admin/codes/available'
         name: Get Available Codes
         meta:
           id: req_1096cc8b87124fb5a97d5cbae4166a9e
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995000000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -175,19 +175,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/admin/codes"
+      - url: '{{ _.base_url }}/admin/codes'
         name: Get All Codes
         meta:
           id: req_9cdaf3db2bf748f9b99ef09c7ff010b3
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -196,19 +196,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/admin/codes"
+      - url: '{{ _.base_url }}/admin/codes'
         name: Create Code
         meta:
           id: req_caba334c4bec4a4f94e0c056093aca9c
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995100000
         method: POST
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -223,31 +223,31 @@ collection:
       created: 1640995200000
       modified: 1640995200000
       sortKey: -1640994900000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/documents/process"
+      - url: '{{ _.base_url }}/documents/process'
         name: Process PDF
         meta:
           id: req_0db68e3612894708a9533eb49b909a0c
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: POST
         body:
           mimeType: multipart/form-data
           params:
             - name: file
-              value: ""
-              description: ""
+              value: ''
+              description: ''
               type: file
         headers:
           - name: X-Category-Id
-            value: "{{ _.category_id }}"
+            value: '{{ _.category_id }}'
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -256,22 +256,22 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/documents/{{ _.document_id }}"
+      - url: '{{ _.base_url }}/documents/{{ _.document_id }}'
         name: Delete Document
         meta:
           id: req_2a63581e25a0400d94d83802957114a7
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995000000
         method: DELETE
         headers:
           - name: X-Category-Id
-            value: "{{ _.category_id }}"
+            value: '{{ _.category_id }}'
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -280,19 +280,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/documents/{{ _.category_id }}"
+      - url: '{{ _.base_url }}/documents/{{ _.category_id }}'
         name: Get Documents by Category
         meta:
           id: req_50c2d6e97bd940438c8e209a38fc99a6
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995100000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -307,21 +307,21 @@ collection:
       created: 1640995200000
       modified: 1640995200000
       sortKey: -1640995000000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/categories/{{ _.category_id }}"
+      - url: '{{ _.base_url }}/categories/{{ _.category_id }}'
         name: Delete Category
         meta:
           id: req_8885080dca234000a7a1c5f0108dfd47
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640994800000
         method: DELETE
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -330,19 +330,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/categories/{{ _.category_id }}"
+      - url: '{{ _.base_url }}/categories/{{ _.category_id }}'
         name: Get Category
         meta:
           id: req_9e64ef7a278449f98d0fdfafd502a8ce
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995000000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -351,14 +351,14 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/categories"
+      - url: '{{ _.base_url }}/categories'
         name: Create Category
         meta:
           id: req_b2d311541bff44599c573c530cc62685
           created: 1640995200000
           modified: 1756341801157
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995100000
         method: POST
         body:
@@ -375,7 +375,7 @@ collection:
             value: application/json
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -384,19 +384,19 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/categories"
+      - url: '{{ _.base_url }}/categories'
         name: Get All Categories
         meta:
           id: req_cb613736147847d9860b5c1395531465
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: GET
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -405,14 +405,14 @@ collection:
             send: true
             store: true
           rebuildPath: true
-      - url: "{{ _.base_url }}/categories/{{ _.category_id }}"
+      - url: '{{ _.base_url }}/categories/{{ _.category_id }}'
         name: Update Category
         meta:
           id: req_e5308e207eff43aa9a39ce03b1971c2c
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640994900000
         method: PUT
         body:
@@ -427,7 +427,7 @@ collection:
             value: application/json
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -442,16 +442,16 @@ collection:
       created: 1640995200000
       modified: 1640995200000
       sortKey: -1640994800000
-      description: ""
+      description: ''
     children:
-      - url: "{{ _.base_url }}/search/semantic"
+      - url: '{{ _.base_url }}/search/semantic'
         name: Semantic Search
         meta:
           id: req_2b31dfb7b09841b598b8e5cc59da3039
           created: 1640995200000
           modified: 1640995200000
           isPrivate: false
-          description: ""
+          description: ''
           sortKey: -1640995200000
         method: POST
         body:
@@ -469,7 +469,7 @@ collection:
             value: application/json
         authentication:
           type: bearer
-          token: "{{ _.access_token }}"
+          token: '{{ _.access_token }}'
         settings:
           renderRequestBody: true
           encodeUrl: true
@@ -494,5 +494,5 @@ environments:
   data:
     base_url: https://doc-i-backend-sd55w5k3ga-uc.a.run.app/doc-i
     access_token: eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJkb2MtaSIsInN1YiI6ImJmNjMxZjQ1LTdmM2QtNDcyZC04YThiLTE4ZjJlYjc2YTZjYyIsImV4cCI6MTc1NjQyODc1OSwiaWF0IjoxNzU2MzQyMzU5LCJzY29wZSI6IkFETUlOIn0.S7q8eSUFaU-FlUth5Qjdz-vhwc0rmmorJnm4_XzC6YfQms0dC7y5HK-rNPvQifBey2Rp2aqLHTmaJeWZZahTrK3QJY_V7l9pAHCdxbr7hwPU897Zt5-9dkJ7_owaSBPr-fUpU-F0GD7htbMEbeA2_GqSPauZEbErWapjZIT_dSlxvT3kRmtn8X6S8jFDs5O7XtgKHDYbjbtuJPCSDQd3Q2zouIhh0Md5R1TLWd4N5th24SMm9mQl_vV9rEnsj9lXnUZFsEaIo_gCXGrF7WRH6AsIPTekpJuRSLq5KMOZbKBr6wB_luSafQ37wzzqX7YQTcNhe5nd1CXC1vfzKwZOmg
-    category_id: ""
-    document_id: ""
+    category_id: ''
+    document_id: ''

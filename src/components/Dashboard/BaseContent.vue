@@ -1,6 +1,6 @@
 <script setup>
-import CategoriesSection from './section/CategoriesSection.vue'
-import RecentFilesSection from './section/RecentFilesSection.vue'
+  import CategoriesSection from './CategoriesSection.vue'
+  import RecentFilesSection from './RecentFilesSection.vue'
 </script>
 
 <template>
@@ -11,7 +11,7 @@ import RecentFilesSection from './section/RecentFilesSection.vue'
 </template>
 
 <style scoped>
-.content {
+  .content {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -19,5 +19,5 @@ import RecentFilesSection from './section/RecentFilesSection.vue'
     flex: 10;
     overflow: hidden;
     padding: 40px;
-}
+  }
 </style>

@@ -4,10 +4,10 @@
 /* ===== CORES DO SISTEMA ===== */
 :root {
   /* Cores primárias */
-  --primary-color: #15803D;
-  --primary-color-hover: #0F5D2E;
+  --primary-color: #15803d;
+  --primary-color-hover: #0f5d2e;
   --primary-color-light: rgba(66, 103, 178, 0.1);
-  --accent-green: #15803D;
+  --accent-green: #15803d;
   /* Cores secundárias */
   --secondary-color: #666666;
   --secondary-color-hover: #444444;
@@ -21,7 +21,7 @@
   --text-light: #ffffff;
   /* Cores de borda */
   --border-color: #e0e0e0;
-  --border-color-focus: #4267B2;
+  --border-color-focus: #4267b2;
   /* Cores de estado */
   --error-color: #e74c3c;
   --success-color: #2ecc71;
@@ -90,7 +90,7 @@ a:hover {
   padding: 3px;
 }
 /* ===== BOTÕES ===== */
-button, 
+button,
 .btn {
   background: var(--accent-green);
   border-radius: 12px;
@@ -102,7 +102,7 @@ button,
   border: none;
   color: white;
 }
-button[type="submit"]:hover {
+button[type='submit']:hover {
   background-color: var(--primary-color-hover);
 }
 .input-style {
@@ -122,8 +122,8 @@ button[type="submit"]:hover {
   background-color: var(--primary-color-light);
 }
 /* ===== FORMULÁRIOS ===== */
-input, 
-textarea, 
+input,
+textarea,
 select {
   width: 100%;
   padding: 12px 16px;
@@ -134,8 +134,8 @@ select {
   background-color: var(--bg-primary);
   color: var(--text-primary);
 }
-input:focus, 
-textarea:focus, 
+input:focus,
+textarea:focus,
 select:focus {
   outline: none;
   border-color: var(--border-color-focus);
@@ -151,7 +151,8 @@ select:focus {
 }
 /* ===== COMPONENTES ESPECÍFICOS ===== */
 /* Login e Signup */
-.login, .signup {
+.login,
+.signup {
   background-color: var(--bg-primary);
   box-shadow: var(--shadow-md);
 }

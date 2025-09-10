@@ -12,11 +12,11 @@ const globalState = reactive({
 })
 
 export const useGlobalState = () => {
-  const isLoading = computed(() => 
+  const isLoading = computed(() =>
     Object.values(globalState.loading).some(loading => loading)
   )
 
-  const setUser = (user) => {
+  const setUser = user => {
     globalState.user = user
     globalState.isAuthenticated = !!user
   }
@@ -27,10 +27,10 @@ export const useGlobalState = () => {
     }
   }
 
-  const addNotification = (notification) => {
+  const addNotification = notification => {
     const id = Date.now()
     globalState.notifications.push({ ...notification, id })
-    
+
     if (notification.autoClose !== false) {
       setTimeout(() => {
         removeNotification(id)
@@ -38,7 +38,7 @@ export const useGlobalState = () => {
     }
   }
 
-  const removeNotification = (id) => {
+  const removeNotification = id => {
     const index = globalState.notifications.findIndex(n => n.id === id)
     if (index > -1) {
       globalState.notifications.splice(index, 1)

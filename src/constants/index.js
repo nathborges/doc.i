@@ -10,8 +10,14 @@ export const CATEGORY_COLORS = [
 ]
 
 export const CATEGORY_ICONS = [
-  'folder', 'description', 'business', 'assignment',
-  'account_balance', 'receipt', 'people', 'settings'
+  'folder',
+  'description',
+  'business',
+  'assignment',
+  'account_balance',
+  'receipt',
+  'people',
+  'settings'
 ]
 
 export const APP_CONFIG = {
@@ -19,10 +25,22 @@ export const APP_CONFIG = {
   NOTIFICATION_DURATION: 5000,
   MAX_FILE_SIZE: 10 * 1024 * 1024,
   SUPPORTED_FILE_TYPES: [
-    'pdf', 'doc', 'docx', 'txt', 'rtf',
-    'xls', 'xlsx', 'csv',
-    'ppt', 'pptx',
-    'jpg', 'jpeg', 'png', 'gif', 'bmp', 'svg'
+    'pdf',
+    'doc',
+    'docx',
+    'txt',
+    'rtf',
+    'xls',
+    'xlsx',
+    'csv',
+    'ppt',
+    'pptx',
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'svg'
   ]
 }
 

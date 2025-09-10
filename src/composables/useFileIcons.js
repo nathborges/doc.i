@@ -33,9 +33,9 @@ const ICON_MAP = {
 }
 
 export const useFileIcons = () => {
-  const getFileIcon = (extension) => {
+  const getFileIcon = extension => {
     if (!extension) return 'insert_drive_file'
-    
+
     const ext = extension.toLowerCase()
     return ICON_MAP[ext] || 'insert_drive_file'
   }

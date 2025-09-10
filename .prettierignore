@@ -1,0 +1,7 @@
+dist/
+node_modules/
+.nuxt/
+.output/
+.vite/
+*.min.js
+*.min.css

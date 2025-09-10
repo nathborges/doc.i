@@ -11,28 +11,27 @@
 </template>
 
 <script setup>
-import Menu from '@/components/Menu.vue'
-import HeaderBar from '@/components/HeaderBar.vue'
-import ProfileComponent from './profilecomponente.vue'
+  import Menu from '@/components/Menu.vue'
+  import HeaderBar from '@/components/HeaderBar.vue'
+  import ProfileComponent from './profilecomponente.vue'
 </script>
 
 <style scoped>
-.home-container {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  background-color: var(--bg-secondary);
-  overflow: hidden;
-}
+  .home-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--bg-secondary);
+    overflow: hidden;
+  }
 
+  .header-fixed {
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
+  }
 
-.header-fixed {
-  background: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.content-area {
-  flex: 1;
-  overflow-y: auto;
-}
+  .content-area {
+    flex: 1;
+    overflow-y: auto;
+  }
 </style>

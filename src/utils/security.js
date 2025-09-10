@@ -5,7 +5,7 @@
 /**
  * Sanitiza dados antes de fazer log para prevenir Log Injection
  */
-export const sanitizeForLog = (data) => {
+export const sanitizeForLog = data => {
   if (typeof data === 'string') {
     return encodeURIComponent(data)
   }
@@ -19,16 +19,16 @@ export const sanitizeForLog = (data) => {
  * Valida parâmetros de entrada
  */
 export const validateInput = {
-  email: (email) => {
+  email: email => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return email && typeof email === 'string' && emailRegex.test(email)
   },
-  
-  password: (password) => {
+
+  password: password => {
     return password && typeof password === 'string' && password.length >= 6
   },
-  
-  required: (value) => {
+
+  required: value => {
     return value !== null && value !== undefined && value !== ''
   }
 }

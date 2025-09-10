@@ -28,17 +28,17 @@ const routes = [
     name: 'favorites',
     redirect: '/'
   },
-    {
+  {
     path: '/shared',
     name: 'shared',
     redirect: '/'
   },
-      {
+  {
     path: '/trash',
     name: 'trash',
     redirect: '/'
   },
-        {
+  {
     path: '/recent',
     name: 'recent',
     redirect: '/'
