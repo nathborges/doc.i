@@ -34,13 +34,16 @@
   import { FileService } from '@/services/files.service'
   import { useGlobalState } from '@/composables/useGlobalState'
   import { useRoute } from 'vue-router'
+  import { useCategoriesStore } from '@/store/categories'
 
   const router = useRoute()
+  const categoriesStore = useCategoriesStore()
 
   watch(
     () => router.params.id,
     async newId => {
       if (newId) {
+        localStorage.setItem('lastSelectedCategory', newId)
         await loadCategoryFiles()
       }
     }
@@ -48,12 +51,10 @@
 
   const state = reactive({
     searchResults: [],
-    isLoading: false,
-    activeMenu: null
+    isLoading: false
   })
 
-  const { searchResults, isLoading, activeMenu } = toRefs(state)
-  const { addNotification } = useGlobalState()
+  const { searchResults, isLoading } = toRefs(state)
 
   const handleInsightsGenerated = insights => {
     console.log('Insights gerados:', insights)
@@ -66,15 +67,10 @@
         state.searchResults = state.searchResults.filter(
           file => file.id !== fileId
         )
-        addNotification({
-          type: 'success',
-          message: 'Arquivo excluído com sucesso!'
-        })
+        window.showToast('Arquivo excluído com sucesso!', 'success')
       } catch (error) {
-        addNotification({
-          type: 'error',
-          message: 'Erro ao excluir arquivo. Tente novamente.'
-        })
+        console.error('Error deleting files:', error)
+        window.showToast('Erro ao excluir arquivo', 'error')
       }
     }
   }
@@ -87,19 +83,34 @@
 
   const loadCategoryFiles = async () => {
     state.isLoading = true
-    try {
-      if (!router.params.id) {
-        throw new Error('Categoria não encontrada')
+
+    if (categoriesStore.categories.length === 0) {
+      await categoriesStore.fetchCategories()
+    }
+
+    let categoryId = router.params.id
+    if (!categoryId) {
+      categoryId = localStorage.getItem('lastSelectedCategory')
+      if (!categoryId && categoriesStore.categories.length > 0) {
+        categoryId = categoriesStore.categories[0].id
       }
-      const files = await FileService.getFiles(router.params.id)
-      state.searchResults = files
+    }
+
+    try {
+      let files = []
+      if (categoryId) {
+        files = await FileService.getFiles(categoryId)
+      }
+
+      if (files.length === 0) {
+        files = await FileService.getFilesFromAnyCategory(
+          categoriesStore.categories
+        )
+      }
+
+      state.searchResults = files.slice(0, 5)
     } catch (error) {
       console.error('Error loading files:', error)
-      addNotification({
-        type: 'error',
-        message: 'Error loading files. Please try again.',
-        duration: 5000
-      })
     } finally {
       state.isLoading = false
     }

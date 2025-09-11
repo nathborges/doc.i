@@ -128,8 +128,14 @@
   }
 
   const createCategory = async () => {
-    if (!categoryName.value.trim()) return
-    if (!selectedColor.value.item || !selectedIcon.value) return
+    if (!categoryName.value.trim()) {
+      window.showToast('Digite o nome da categoria', 'warning')
+      return
+    }
+    if (!selectedColor.value.item || !selectedIcon.value) {
+      window.showToast('Selecione cor e ícone', 'warning')
+      return
+    }
 
     isLoading.value = true
     try {
@@ -139,18 +145,15 @@
         selectedIcon.value,
         selectedColor.value.item
       )
+      window.showToast('Categoria criada com sucesso!', 'success')
       emit('created')
       closeModal()
     } catch (error) {
       console.error('Error creating category:', error)
-      emit('error', 'Erro ao criar categoria. Tente novamente.')
+      window.showToast('Erro ao criar categoria', 'error')
     } finally {
       isLoading.value = false
     }
-  }
-
-  const saveAsTemplate = () => {
-    console.log('Save as template clicked')
   }
 </script>
 

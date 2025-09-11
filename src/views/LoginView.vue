@@ -1,4 +1,3 @@
-
 <template>
   <div class="container">
     <div class="login">
@@ -186,12 +185,6 @@
     line-height: 1.4;
   }
 
-  .login-image {
-    width: 100%;
-    display: flex;
-    align-items: center;
-  }
-
   form {
     padding-left: 15%;
     padding-right: 15%;
@@ -201,17 +194,8 @@
     margin-bottom: 13px;
   }
 
-  .username-group,
   .password-group {
     position: relative;
-  }
-
-  .input-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--secondary-color);
   }
 
   .toggle-password {
@@ -232,6 +216,8 @@
   .toggle-password:hover {
     background: none !important;
     color: var(--secondary-color-hover);
+    transform: translateY(-50%) !important;
+    box-shadow: none !important;
   }
 
   .content-holder {
@@ -240,7 +226,7 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    gap: 2vh;
+    gap: 5vh;
   }
 
   input {
@@ -303,11 +289,6 @@
     text-decoration: none;
   }
 
-  .toggle-password:hover {
-    transform: translateY(-50%) !important;
-    box-shadow: none !important;
-  }
-
   .bold-link:hover {
     text-decoration: underline;
   }
@@ -335,7 +316,6 @@
     width: auto;
   }
 
-  /* Loading no botão */
   .login-btn {
     transition: all 0.3s ease;
   }

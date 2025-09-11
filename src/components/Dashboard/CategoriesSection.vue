@@ -32,7 +32,7 @@
 
 <script setup>
   import { computed, ref } from 'vue'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
+  import { useCategoriesStore } from '@/store/categories'
   import CategoryCard from '../card/CategoryCard.vue'
   import SectionWrapper from './SectionWrapper.vue'
   import CreateCategoryModal from '../modal/CreateCategoryModal.vue'
@@ -41,8 +41,8 @@
   const categoriesStore = useCategoriesStore()
   const router = useRouter()
 
-  const categories = computed(() => categoriesStore.categories.value)
-  const isLoading = computed(() => categoriesStore.isLoading.value)
+  const categories = computed(() => categoriesStore.categories)
+  const isLoading = computed(() => categoriesStore.isLoading)
 
   const handleCategoryClick = category => {
     if (category?.name) {

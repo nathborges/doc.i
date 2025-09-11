@@ -6,7 +6,7 @@
     :icon="category.iconName"
     :icon-style="{
       backgroundColor: category.backgroundColor,
-      color: category.iconColor
+      color: category.color
     }"
     :show-menu="true"
     :menu-id="`category-${category.id}`"
@@ -28,8 +28,7 @@
 <script setup>
   import BaseCard from '../card/BaseCard.vue'
   import { useRouter } from 'vue-router'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
-  import { useGlobalState } from '@/composables/useGlobalState'
+  import { useCategoriesStore } from '@/store/categories'
 
   const props = defineProps({
     category: {
@@ -65,7 +64,20 @@
   const handleDelete = async () => {
     if (!props.category?.id) return
 
-    await categoriesStore.deleteCategory(props.category.id)
+    if (
+      !confirm(
+        `Tem certeza que deseja excluir a categoria "${props.category.name}"?`
+      )
+    )
+      return
+
+    try {
+      await categoriesStore.deleteCategory(props.category.id)
+      await categoriesStore.fetchCategories()
+      window.showToast('Categoria excluída com sucesso!', 'success')
+    } catch (error) {
+      window.showToast('Erro ao excluir categoria', 'error')
+    }
   }
 </script>
 

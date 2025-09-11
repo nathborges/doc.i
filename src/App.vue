@@ -8,12 +8,14 @@
     @close="() => closeNotification(index)"
     :autoClose="false"
   />
+  <Toast />
 </template>
 
 <script setup>
   import { ref, provide, onMounted, onUnmounted } from 'vue'
   import { RouterView, useRoute, useRouter } from 'vue-router'
   import Notification from './components/Notification.vue'
+  import Toast from './components/Toast.vue'
   import { AuthService } from './services/auth.service'
 
   const $route = useRoute()

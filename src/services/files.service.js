@@ -5,7 +5,10 @@ const API_URL = import.meta.env.VITE_API_BACKEND
 
 export const FileService = {
   formatCategory(category) {
-    return category.toLowerCase().replace(/\s+/g, '_')
+    return (
+      category.charAt(0).toUpperCase() +
+      category.slice(1).toLowerCase().replace(/\s+/g, '_')
+    )
   },
   getFiles(categoryId) {
     console.log('Getting files for category:', categoryId)
@@ -52,8 +55,25 @@ export const FileService = {
         throw error
       })
   },
+
+  async getFileCount(categoryId) {
+    try {
+      const files = await this.getFiles(categoryId)
+      return files.length
+    } catch (error) {
+      console.error('Error getting file count:', error)
+      return 0
+    }
+  },
+
+  async getFileCountsForCategories(categories) {
+    const counts = {}
+    for (const category of categories) {
+      counts[category.id] = await this.getFileCount(category.id)
+    }
+    return counts
+  },
   getCategories() {
-    console.log('Fetching categories from:', `${API_URL}/categories`)
     return axios
       .get(`${API_URL}/categories`)
       .then(response => {
@@ -115,6 +135,43 @@ export const FileService = {
       .catch(error => {
         console.error('Error deleting file:', sanitizeForLog(error.message))
         throw error
+      })
+  },
+  async getFilesFromAnyCategory(categories) {
+    console.log('Getting files from any category', categories)
+    for (const category of categories) {
+      console.log(`Getting files for category ${category.id}`)
+      try {
+        const files = await this.getRecentFiles(category.id)
+        console.log(`Files for category ${category.id}:`, files)
+        if (files.length > 0) {
+          return files
+        }
+      } catch (error) {
+        console.error(`Error getting files for category ${category.id}:`, error)
+      }
+    }
+    return []
+  },
+  getRecentFiles(categoryId) {
+    return axios
+      .get(`${API_URL}/documents/${categoryId}`)
+      .then(response => {
+        if (response.data && Array.isArray(response.data)) {
+          return response.data.map(file => ({
+            ...file,
+            categoryName: this.formatCategory(file.category?.name) || '',
+            categoryColor: file.category?.color || ''
+          }))
+        }
+        return response.data || []
+      })
+      .catch(error => {
+        console.error(
+          'Error getting recent files:',
+          sanitizeForLog(error.message)
+        )
+        return []
       })
   }
 }

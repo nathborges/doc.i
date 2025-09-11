@@ -7,7 +7,7 @@
       <div
         v-if="pageTitle"
         class="category-icon"
-        :style="{ color: currentCategoryColor }"
+        :style="{ color: categoryStore.selectedCategoryColor }"
       >
         <span class="material-icons">label</span>
       </div>
@@ -58,7 +58,7 @@
   import { AuthService } from '@/services/auth.service'
   import BaseButton from './BaseButton.vue'
   import UploadModal from './modal/UploadModal.vue'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
+  import { useCategoriesStore } from '@/store/categories'
 
   const router = useRouter()
   const route = useRoute()
@@ -70,9 +70,9 @@
   const emit = defineEmits(['toggle-menu', 'files-updated'])
 
   watch(
-    () => route.params.name,
-    newName => {
-      categoryStore.setSelectedCategory(newName)
+    () => route.params.id,
+    newId => {
+      categoryStore.setSelectedCategory(newId)
     },
     { immediate: true }
   )
@@ -88,10 +88,6 @@
     }
 
     return null
-  })
-
-  const currentCategoryColor = computed(() => {
-    return categoryStore.selectedCategory.value?.iconColor || '#6b7280'
   })
 
   const props = defineProps({
@@ -142,6 +138,7 @@
     align-items: center;
     width: 100%;
     justify-content: flex-end;
+    gap: 5px;
   }
   .page-title {
     font-size: 20px;

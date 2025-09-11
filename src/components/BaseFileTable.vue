@@ -4,7 +4,7 @@
       <div class="col-name">Nome</div>
       <div class="col-category" v-if="showCategory">Categoria</div>
       <div class="col-status" v-if="showStatus">Status</div>
-      <div class="col-modified">Modificado</div>
+      <div class="col-modified">Criado</div>
       <div class="col-size">Tamanho</div>
       <div class="col-actions" v-if="showActions">Ações</div>
     </div>
@@ -20,11 +20,11 @@
           <span
             class="category-tag"
             :style="{
-              backgroundColor: file.categoryColor?.item || file.categoryColor,
+              backgroundColor: file.categoryColor,
               color: 'white'
             }"
           >
-            {{ file.category }}
+            {{ file.categoryName }}
           </span>
         </div>
         <div class="col-status" v-if="showStatus">
@@ -34,7 +34,7 @@
           {{ formatDate(file.createdAt || file.modified) }}
         </div>
         <div class="col-size">
-          {{ formatFileSize(file.fileSize || file.size) }}
+          {{ file.fileSize }}
         </div>
         <div class="col-actions" v-if="showActions">
           <button @click="$emit('open-file', file)" class="action-btn">

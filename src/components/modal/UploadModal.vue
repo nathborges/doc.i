@@ -1,6 +1,7 @@
 <template>
   <ModalWrapper
     v-if="isOpen"
+    :key="isOpen"
     width="520px"
     title="Upload de Arquivos"
     @close="closeModal"
@@ -11,10 +12,9 @@
         <select v-model="selectedCategory" class="form-select">
           <option value="">Selecione uma categoria</option>
           <option
-            v-for="category in categories"
+            v-for="category in categoriesStore.categories"
             :key="category.id"
             :value="category.id"
-            class="category-option"
           >
             {{ capitalizeFirst(category.name) }}
           </option>
@@ -82,9 +82,9 @@
 </template>
 
 <script setup>
-  import { ref, computed, inject, onMounted, onUnmounted } from 'vue'
+  import { ref, inject, watch } from 'vue'
   import ModalWrapper from './ModalWrapper.vue'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
+  import { useCategoriesStore } from '@/store/categories'
   import { FileService } from '@/services/files.service'
   import { useRoute } from 'vue-router'
 
@@ -103,17 +103,24 @@
   const isDragOver = ref(false)
   const selectedCategory = ref('')
   const isUploading = ref(false)
-
-  const categoriesStore = useCategoriesStore()
   const route = useRoute()
 
-  const categories = computed(() => categoriesStore.categories.value)
+  const categoriesStore = useCategoriesStore()
 
-  onMounted(async () => {
-    if (route.name === 'category' && route.params.id) {
+  watch(
+    () => props.isOpen,
+    newValue => {
+      if (newValue) {
+        onModalOpen()
+      }
+    }
+  )
+
+  const onModalOpen = async () => {
+    if (route.params.id) {
       selectedCategory.value = route.params.id
     }
-  })
+  }
 
   const triggerFileInput = () => {
     fileInput.value?.click()
@@ -162,6 +169,7 @@
   }
 
   const capitalizeFirst = text => {
+    if (!text) return ''
     return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase()
   }
 
@@ -176,7 +184,6 @@
   const uploadFiles = async () => {
     if (files.value.length === 0) return
     if (!selectedCategory.value) {
-      showNotification('Selecione uma categoria', 'error', 5000)
       return
     }
 
@@ -184,7 +191,11 @@
 
     for (const file of files.value) {
       try {
-        await FileService.upload(file, selectedCategory.value)
+        const sanitizedName = file.name.replace(/\s+/g, '_')
+        const sanitizedFile = new File([file], sanitizedName, {
+          type: file.type
+        })
+        await FileService.upload(sanitizedFile, selectedCategory.value)
         showNotification(`${file.name}`, 'success', 5000)
       } catch (error) {
         showNotification(`${file.name}`, 'error', 5000)

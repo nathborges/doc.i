@@ -37,7 +37,7 @@
           >
             <div
               class="category-dot"
-              :style="{ backgroundColor: category.iconColor }"
+              :style="{ backgroundColor: category.color }"
             ></div>
             <span class="category-name">{{ category.name }}</span>
           </div>
@@ -60,7 +60,7 @@
 
 <script setup>
   import { computed } from 'vue'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
+  import { useCategoriesStore } from '@/store/categories'
   import { useRouter, useRoute } from 'vue-router'
 
   const categoriesStore = useCategoriesStore()
@@ -84,8 +84,8 @@
     { id: 'trash', icon: 'delete', label: 'Lixeira', route: '/trash' }
   ]
 
-  const categories = computed(() => categoriesStore.categories.value)
-  const isLoading = computed(() => categoriesStore.isLoading.value)
+  const categories = computed(() => categoriesStore.categories)
+  const isLoading = computed(() => categoriesStore.isLoading)
   const hasCategories = computed(
     () => categories.value && categories.value.length > 0 && !isLoading.value
   )

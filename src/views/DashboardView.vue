@@ -1,18 +1,19 @@
 <script setup>
-  import { ref, computed, onMounted, inject } from 'vue'
+  import { ref, computed, onMounted, inject, nextTick } from 'vue'
   import { useRoute } from 'vue-router'
   import Menu from '@/components/Menu.vue'
   import BaseContent from '@/components/Dashboard/BaseContent.vue'
   import HeaderBar from '@/components/HeaderBar.vue'
   import CategoriaContent from '@/components/Category/CategoriaContent.vue'
   import CreateCategoryModal from '@/components/modal/CreateCategoryModal.vue'
-  import { useCategoriesStore } from '@/store/CategoriesStore'
+  import { useCategoriesStore } from '@/store/categories'
 
   const route = useRoute()
   const categoriesStore = useCategoriesStore()
   const showCreateCategoryModal = ref(false)
   const showNotification = inject('showNotification')
   const isMobileMenuOpen = ref(false)
+  const showComponent = ref(true)
 
   const currentComponent = computed(() => {
     if (route.name === 'category') {
@@ -36,8 +37,8 @@
     showCreateCategoryModal.value = false
   }
 
-  const handleCategoryCreated = () => {
-    categoriesStore.fetchCategories()
+  const handleCategoryCreated = async () => {
+    await categoriesStore.fetchCategories()
     showCreateCategoryModal.value = false
   }
 
@@ -53,6 +54,12 @@
     isMobileMenuOpen.value = false
   }
 
+  const refreshComponent = async () => {
+    showComponent.value = false
+    await nextTick()
+    showComponent.value = true
+  }
+
   onMounted(async () => {
     await categoriesStore.fetchCategories()
   })
@@ -66,8 +73,16 @@
       @close="closeMobileMenu"
     />
     <div class="main-content">
-      <HeaderBar class="header-fixed" @toggle-menu="toggleMobileMenu" />
-      <component :is="currentComponent" v-bind="componentProps" />
+      <HeaderBar
+        class="header-fixed"
+        @toggle-menu="toggleMobileMenu"
+        @files-updated="refreshComponent"
+      />
+      <component
+        :is="currentComponent"
+        v-bind="componentProps"
+        v-if="showComponent"
+      />
     </div>
     <CreateCategoryModal
       :is-open="showCreateCategoryModal"
