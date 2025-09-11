@@ -3,7 +3,6 @@ import { AuthService } from '@/services/auth.service'
 import HomeView from '@/views/DashboardView.vue'
 import LoginView from '@/views/LoginView.vue'
 import SignupView from '@/views/SignupView.vue'
-import ProfileView from '@/views/ProfileView.vue'
 
 const routes = [
   {
@@ -51,7 +50,7 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: ProfileView,
+    component: HomeView,
     meta: { requiresAuth: true }
   },
   {

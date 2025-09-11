@@ -53,7 +53,7 @@
                 v-for="(color, index) in colors"
                 :key="index"
                 class="color-option"
-                :class="{ active: selectedColor === color }"
+                :class="{ active: selectedColor.item === color.item }"
                 :style="{ backgroundColor: color.item }"
                 @click="selectedColor = color"
               ></div>
@@ -257,10 +257,11 @@
 
   .color-option:hover {
     transform: scale(1.1);
-  }
+    border: 1px solid var(--border-color);
+}
 
   .color-option.active {
-    border-color: var(--text-primary);
+    box-shadow: 2px;
     transform: scale(1.1);
   }
 
@@ -286,13 +287,14 @@
   }
 
   .icon-option:hover {
-    background: var(--bg-secondary);
-    border-color: var(--primary-color);
+    transform: scale(1.1);
+    border: 1px solid var(--border-color);
   }
 
   .icon-option.active {
-    background: var(--primary-color);
+    background: var(--text-secondary);
     color: white;
+    transform: scale(1.1);
     border-color: var(--primary-color);
   }
 

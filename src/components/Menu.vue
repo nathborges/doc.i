@@ -48,10 +48,10 @@
       <div class="storage">
         <div class="storage-info">
           <h4>Armazenamento</h4>
-          <p>7.5GB de 15GB usado</p>
+          <p>{{ storageText }}</p>
         </div>
         <div class="progress-bar">
-          <div class="progress" style="width: 50%"></div>
+          <div class="progress" :style="{ width: storagePercentage }"></div>
         </div>
       </div>
     </div>
@@ -89,6 +89,24 @@
   const hasCategories = computed(
     () => categories.value && categories.value.length > 0 && !isLoading.value
   )
+
+  const storageUsed = computed(() => {
+    return import.meta.env.VITE_USER_STORAGE_USED || '7.5GB'
+  })
+
+  const storageTotal = computed(() => {
+    return import.meta.env.VITE_USER_STORAGE_TOTAL || '15GB'
+  })
+
+  const storageText = computed(() => {
+    return `${storageUsed.value} de ${storageTotal.value} usado`
+  })
+
+  const storagePercentage = computed(() => {
+    const used = parseFloat(storageUsed.value.replace('GB', ''))
+    const total = parseFloat(storageTotal.value.replace('GB', ''))
+    return `${Math.round((used / total) * 100)}%`
+  })
 
   const isActiveRoute = routePath => {
     return route.path === routePath

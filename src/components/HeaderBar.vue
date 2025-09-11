@@ -276,5 +276,9 @@
     .menu-toggle {
       display: flex;
     }
+
+    .category-icon {
+      display: none;
+    }
   }
 </style>

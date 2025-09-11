@@ -210,6 +210,21 @@
     .table-body {
       max-height: 50vh;
     }
+
+    .profile-content {
+      margin: 0 auto !important;
+      padding: 30px !important;
+      width: 100vw !important;
+      overflow-x: auto;
+    }
+
+    .profile-header {
+      flex-direction: column;
+    }
+
+    .profile-stats {
+      grid-template-columns: repeat(1, 1fr) !important;
+    }
   }
 
   /* Scrollbar Global */
