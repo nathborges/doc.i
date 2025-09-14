@@ -71,6 +71,8 @@
     background-color: var(--bg-primary);
     border-radius: 8px;
     box-shadow: var(--shadow-md);
+    max-width: 100vw;
+
   }
 
   .close-btn {
@@ -116,6 +118,13 @@
     background-color: var(--primary-color);
     min-width: 120px;
   }
+
+  :deep(.file-name) {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
   .modal-footer button:hover {
     opacity: 0.9;
@@ -179,4 +188,65 @@
     color: var(--text-primary);
     font-size: 15px;
   }
+
+  :deep(.loading-content) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  :deep(.spinner) {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  :deep(.modal-btn) {
+    color: var(--text-light);
+    border: none;
+    cursor: pointer;
+    padding: 12px 24px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    min-width: 120px;
+  }
+
+  :deep(.modal-btn:hover:not(:disabled)) {
+    background-color: var(--primary-color-hover);
+  }
+
+  :deep(.modal-btn.loading) {
+    background-color: var(--primary-color-hover) !important;
+    cursor: not-allowed;
+  }
+
+@media (max-width: 768px) {
+  .modal-wrapper {
+    align-items: flex-start;
+    padding-top: 20px;
+  }
+  
+  .modal-content {
+    margin-top: 0;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  :deep(select) {
+    position: relative;
+  }
+}
+
 </style>

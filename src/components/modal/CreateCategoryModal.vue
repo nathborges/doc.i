@@ -82,7 +82,7 @@
 
     <template #footer>
       <button
-        class="create-btn"
+        class="modal-btn"
         :disabled="isLoading"
         :class="{ loading: isLoading }"
         @click="createCategory"
@@ -167,10 +167,7 @@
     gap: 8px;
   }
 
-  .form-group label {
-    font-weight: 500;
-    color: var(--text-primary);
-  }
+
 
   .optional {
     color: var(--text-secondary);
@@ -285,46 +282,5 @@
     border-color: var(--primary-color);
   }
 
-  .create-btn {
-    color: var(--text-light);
-    border: none;
-    cursor: pointer;
-    padding: 12px 24px;
-    font-weight: var(--font-bold);
-    transition: all 0.3s ease;
-    border-radius: 8px;
-    background-color: var(--primary-color);
-    min-width: 120px;
-  }
 
-  .create-btn:hover:not(:disabled) {
-    background-color: var(--primary-color-hover);
-  }
-
-  .create-btn.loading {
-    background-color: var(--primary-color-hover) !important;
-    cursor: not-allowed;
-  }
-
-  .loading-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid currentColor;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
 </style>

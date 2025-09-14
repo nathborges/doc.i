@@ -241,6 +241,10 @@
     .icon-preview-section {
       display: none !important;
     }
+
+    .upload-area {
+      padding: 2vh 2vw !important;
+    }
   }
 
   /* Scrollbar Global */
