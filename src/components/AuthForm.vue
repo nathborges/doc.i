@@ -1,7 +1,7 @@
 <template>
   <form @submit.prevent="$emit('submit')">
     <slot />
-    
+
     <button
       type="submit"
       class="input-style submit-btn"
@@ -20,44 +20,44 @@
 </template>
 
 <script setup>
-defineProps({
-  isLoading: Boolean,
-  submitText: String,
-  loadingText: String
-})
+  defineProps({
+    isLoading: Boolean,
+    submitText: String,
+    loadingText: String
+  })
 
-defineEmits(['submit'])
+  defineEmits(['submit'])
 </script>
 
 <style scoped>
-.submit-btn {
-  transition: all 0.3s ease;
-}
-
-.submit-btn.loading {
-  background-color: var(--primary-color-hover) !important;
-  cursor: not-allowed;
-}
-
-.loading-content {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid currentColor;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  .submit-btn {
+    transition: all 0.3s ease;
   }
-}
+
+  .submit-btn.loading {
+    background-color: var(--primary-color-hover) !important;
+    cursor: not-allowed;
+  }
+
+  .loading-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
 </style>
