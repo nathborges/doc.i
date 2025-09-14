@@ -225,6 +225,18 @@
     .profile-stats {
       grid-template-columns: repeat(1, 1fr) !important;
     }
+
+    .container {
+      flex-direction: column;
+    }
+
+    .forgot-password {
+      text-align: center;
+    }
+
+    .image-container {
+      display: none !important;
+    }
   }
 
   /* Scrollbar Global */

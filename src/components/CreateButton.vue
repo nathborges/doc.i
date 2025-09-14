@@ -23,8 +23,8 @@
     border: none;
     border-radius: 8px;
     padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;

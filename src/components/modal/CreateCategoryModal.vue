@@ -158,18 +158,6 @@
 </script>
 
 <style scoped>
-  .modal-body {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 15px;
-  }
-
   .form-group-last {
     display: flex;
     flex-direction: column;
@@ -183,7 +171,6 @@
 
   .optional {
     color: var(--text-secondary);
-    font-weight: 400;
   }
 
   .form-input {
@@ -212,7 +199,6 @@
     gap: 12px;
     padding: 12px;
     border-radius: 8px;
-    margin-bottom: 15px;
     border: 1px solid var(--border-color);
   }
 
@@ -258,7 +244,7 @@
   .color-option:hover {
     transform: scale(1.1);
     border: 1px solid var(--border-color);
-}
+  }
 
   .color-option.active {
     box-shadow: 2px;
@@ -303,7 +289,7 @@
     border: none;
     cursor: pointer;
     padding: 12px 24px;
-    font-weight: 700;
+    font-weight: var(--font-bold);
     transition: all 0.3s ease;
     border-radius: 8px;
     background-color: var(--primary-color);

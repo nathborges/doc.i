@@ -116,7 +116,8 @@ const user = ref({
   phone: '(11) 99999-9999',
   role: 'Usuário',
   department: 'Geral',
-  avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face',
+  avatar:
+    'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150&h=150&fit=crop&crop=face',
   createdAt: new Date().toISOString(),
   stats: {
     categories: 0,
@@ -151,7 +152,6 @@ const loadProfile = async () => {
       documents: 248,
       insights: 34
     }
-
   } catch (error) {
     console.error('Erro ao carregar perfil:', error)
     // Manter dados mockados em caso de erro
@@ -162,7 +162,7 @@ const loadProfile = async () => {
   }
 }
 
-const formatDate = (dateString) => {
+const formatDate = dateString => {
   const date = new Date(dateString)
   return date.toLocaleDateString('pt-BR')
 }
@@ -232,7 +232,7 @@ onMounted(() => {
 .profile-info h1 {
   margin: 0 0 5px 0;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .profile-email {
@@ -289,7 +289,7 @@ onMounted(() => {
 .stat-info h3 {
   margin: 0 0 4px 0;
   font-size: 24px;
-  font-weight: 600;
+  font-weight: var(--font-semibold);
 }
 
 .stat-info p {
@@ -310,12 +310,6 @@ onMounted(() => {
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--shadow-sm);
-}
-
-.section h2 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
 }
 
 .info-grid {
@@ -406,7 +400,7 @@ onMounted(() => {
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 18px;
   width: 18px;
   left: 3px;
@@ -416,11 +410,11 @@ onMounted(() => {
   border-radius: 50%;
 }
 
-input:checked + .slider {
+input:checked+.slider {
   background-color: var(--primary-color);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(20px);
 }
 </style>

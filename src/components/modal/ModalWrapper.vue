@@ -108,7 +108,6 @@
   .modal-footer {
     display: flex;
     justify-content: center;
-    margin-top: 20px;
   }
 
   .modal-footer button {
@@ -164,5 +163,25 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  /* Estilos globais para formulários em modais */
+  :deep(.form-group) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7vh;
+  }
+
+  :deep(.modal-body) {
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    margin-bottom: 2vh;
+  }
+
+  :deep(label) {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 15px;
   }
 </style>
