@@ -46,6 +46,24 @@
       <div class="form-group-last">
         <label>Aparência</label>
         <div class="icon-appearance">
+                    <div class="icon-selection">
+            <div class="icon-grid">
+              <div
+                v-for="icon in icons"
+                :key="icon"
+                class="icon-option"
+                :class="{ active: selectedIcon === icon }"
+                :style="
+                  selectedIcon === icon
+                    ? { backgroundColor: selectedColor.item, color: 'white' }
+                    : {}
+                "
+                @click="selectedIcon = icon"
+              >
+                <span class="material-icons">{{ icon }}</span>
+              </div>
+            </div>
+          </div>
           <div class="icon-selection">
             <div class="color-grid">
               <div
@@ -56,19 +74,6 @@
                 :style="{ backgroundColor: color.item }"
                 @click="selectedColor = color"
               ></div>
-            </div>
-          </div>
-          <div class="icon-selection">
-            <div class="icon-grid">
-              <div
-                v-for="icon in icons"
-                :key="icon"
-                class="icon-option"
-                :class="{ active: selectedIcon === icon }"
-                @click="selectedIcon = icon"
-              >
-                <span class="material-icons">{{ icon }}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -276,8 +281,6 @@
   }
 
   .icon-option.active {
-    background: var(--text-secondary);
-    color: white;
     transform: scale(1.1);
     border-color: var(--primary-color);
   }

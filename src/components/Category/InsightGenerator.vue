@@ -7,7 +7,6 @@
         </div>
         <div class="header-text">
           <h3>Gerador de Insights</h3>
-          <p>Gere insights automáticos sobre os documentos desta categoria</p>
         </div>
       </div>
     </div>

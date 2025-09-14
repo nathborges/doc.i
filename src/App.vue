@@ -237,6 +237,10 @@
     .image-container {
       display: none !important;
     }
+
+    .icon-preview-section {
+      display: none !important;
+    }
   }
 
   /* Scrollbar Global */
