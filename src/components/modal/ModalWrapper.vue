@@ -95,11 +95,6 @@
     margin-bottom: 20px;
   }
 
-  .modal-header h1 {
-    margin: 0 0 10px 0;
-    color: var(--text-primary);
-  }
-
   .modal-header p {
     margin: 0;
     color: var(--text-secondary);

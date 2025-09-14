@@ -22,9 +22,6 @@
             @click="openUploadModal"
           />
         </div>
-        <div class="notifications">
-          <span class="material-icons">notifications</span>
-        </div>
         <div class="avatar" @click="toggleUserMenu">
           <span class="material-icons">person</span>
         </div>

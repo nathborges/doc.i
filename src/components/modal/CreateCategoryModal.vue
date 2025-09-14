@@ -26,7 +26,7 @@
         <input
           v-model="categoryName"
           type="text"
-          placeholder="Ex: Contratos, Relatórios, Documentos Pessoais..."
+          placeholder=""
           class="form-input"
           maxlength="30"
         />
@@ -37,7 +37,7 @@
         <input
           v-model="description"
           type="text"
-          placeholder="Descreva brevemente o propósito desta categoria..."
+          placeholder=""
           class="form-input"
           maxlength="100"
         />
@@ -47,7 +47,6 @@
         <label>Aparência</label>
         <div class="icon-appearance">
           <div class="icon-selection">
-            <h4>Cor</h4>
             <div class="color-grid">
               <div
                 v-for="(color, index) in colors"
@@ -60,7 +59,6 @@
             </div>
           </div>
           <div class="icon-selection">
-            <h4>Ícone</h4>
             <div class="icon-grid">
               <div
                 v-for="icon in icons"
@@ -187,7 +185,7 @@
   .icon-appearance {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 2vh;
     padding: 16px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
