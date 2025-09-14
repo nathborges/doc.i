@@ -72,7 +72,6 @@
     border-radius: 8px;
     box-shadow: var(--shadow-md);
     max-width: 100vw;
-
   }
 
   .close-btn {
@@ -233,19 +232,11 @@
   }
 
 @media (max-width: 768px) {
-  .modal-wrapper {
-    align-items: flex-start;
-    padding-top: 20px;
-  }
-  
-  .modal-content {
-    margin-top: 0;
-    max-height: 90vh;
-    overflow-y: auto;
-  }
-  
   :deep(select) {
     position: relative;
+  }
+  .modal-content {
+    padding: 40px 30px;
   }
 }
 
