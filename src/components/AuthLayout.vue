@@ -19,15 +19,6 @@
         <slot name="form-content" />
       </div>
     </div>
-    <div class="image-container">
-      <div class="image">
-        <Carousel />
-      </div>
-      <h1 class="caption animate-item" style="animation-delay: 0.2s">
-        Use o Doc.i para transformar documentos soltos em insights de verdade.
-        Organize, busque e exporte dados de forma simples e rápida.
-      </h1>
-    </div>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="insight-generator">
-    <div class="generator-header">
+    <!-- <div class="generator-header">
       <div class="header-content">
         <div class="icon-wrapper">
           <span class="material-icons">lightbulb</span>
@@ -9,7 +9,7 @@
           <h3>Gerador de Insights</h3>
         </div>
       </div>
-    </div>
+    </div> -->
 
     <div class="generator-container">
       <div class="text-area">
@@ -22,7 +22,7 @@
       <div class="action-buttons">
         <BaseButton
           class="generate-btn"
-          :text="isGenerating ? 'Gerando...' : 'Gerar Insight'"
+          :text="isGenerating ? 'Gerando...' : 'Enviar'"
           :icon="isGenerating ? 'refresh' : 'auto_awesome'"
           :disabled="isGenerating"
           @click="generateInsights"
@@ -37,6 +37,8 @@
         />
       </div>
     </div>
+        <BaseSwitch :model-value="false" label="Pesquisa inteligente"/>
+
   </div>
 </template>
 
@@ -44,6 +46,7 @@
   import { ref, onMounted } from 'vue'
   import { useGlobalState } from '@/composables/useGlobalState'
   import BaseButton from '../BaseButton.vue'
+import BaseSwitch from '../BaseSwitch.vue'
 
   const props = defineProps({
     category: {
@@ -137,8 +140,8 @@
   .icon-wrapper {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
+
+    background: linear-gradient(135deg, #FF9800 0%, #FF7043 100%);    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -196,13 +199,11 @@
   }
 
   :deep(.generate-btn) {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-    color: white !important;
+background: linear-gradient(135deg, #FF9800 0%, #FF7043 100%);    color: white !important;
   }
 
   :deep(.generate-btn:hover:not(:disabled)) {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
-    transform: translateY(-1px);
+background: linear-gradient(135deg, #FF9800 0%, #FF7043 100%);    transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
   }
 

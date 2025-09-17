@@ -1,61 +1,6 @@
 <template>
-  <div v-if="isOpen" class="overlay" @click="$emit('close')"></div>
-  <div class="sidebar" :class="{ 'mobile-open': isOpen }">
-    <div class="logo" @click="goToHome">
-      <img src="@/assets/images/doci-logo.png" alt="Doci" />
-    </div>
-    <div class="menu">
-      <div
-        v-for="item in menuItems"
-        :key="item.id"
-        class="menu-item title"
-        :class="{ active: isActiveRoute(item.route) }"
-        :data-mobile-only="item.mobileOnly"
-        @click="handleMenuClick(item.id)"
-      >
-        <span class="material-icons">{{ item.icon }}</span>
-        <span>{{ item.label }}</span>
-      </div>
-
-      <div v-if="hasCategories" class="categories-section">
-        <div class="categories-header">
-          <span class="categories-title title">Categorias</span>
-          <span class="material-icons add-icon" @click="openCreateCategoryModal"
-            >add</span
-          >
-        </div>
-        <div class="categories-list">
-          <div
-            v-for="category in categories"
-            class="category-item"
-            :class="{
-              active:
-                route.name === 'category' &&
-                route.params.name ===
-                  category.name.toLowerCase().replace(/\s+/g, '-')
-            }"
-            @click="handleCategoryClick(category)"
-          >
-            <div
-              class="category-dot"
-              :style="{ backgroundColor: category.color }"
-            ></div>
-            <span class="category-name">{{ category.name }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- <div class="storage-container">
-      <div class="storage">
-        <div class="storage-info">
-          <h4>Armazenamento</h4>
-          <p>{{ storageText }}</p>
-        </div>
-        <div class="progress-bar">
-          <div class="progress" :style="{ width: storagePercentage }"></div>
-        </div>
-      </div>
-    </div> -->
+  <div class="chat-container" :class="{ 'mobile-open': isOpen }">
+  aaaaaa
   </div>
 </template>
 
