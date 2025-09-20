@@ -56,7 +56,7 @@
         <v-row v-if="!loading" style="min-height: 200px">
           <v-col
             v-for="category in categories"
-            :key="category.id"
+            :key="category"
             cols="12"
             sm="6"
             md="4"
