@@ -5,6 +5,11 @@ import {
   FileSpreadsheetIcon,
   FolderIcon,
   PresentationIcon,
+  BriefcaseIcon,
+  HeartIcon,
+  HomeIcon,
+  SettingsIcon,
+  BookIcon,
 } from 'vue-tabler-icons';
 
 const iconMap = {
@@ -25,6 +30,16 @@ const iconMap = {
   zip: FolderIcon,
   rar: FolderIcon,
   '7z': FolderIcon,
+};
+
+export const categoryIconMap = {
+  FolderIcon,
+  FileIcon,
+  BookIcon,
+  BriefcaseIcon,
+  HeartIcon,
+  HomeIcon,
+  SettingsIcon,
 };
 
 export const getFileIcon = (fileName: string) => {

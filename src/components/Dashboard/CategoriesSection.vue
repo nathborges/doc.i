@@ -1,43 +1,24 @@
 <script setup lang="ts">
-  import { ref, shallowRef, onMounted } from 'vue';
+  import { shallowRef, onMounted } from 'vue';
   import { TrashIcon, DotsIcon } from 'vue-tabler-icons';
-  import { CategoriesService } from '@/services/categories.service';
+  import { useCategoriesStore } from '@/stores/categories';
   import iconCard from '@/assets/images/icons/icon-card.svg';
+  import { categoryIconMap } from '@/utils/fileIcons';
+  import { useRouter } from 'vue-router';
 
-  const categories = ref([]);
-  const loading = ref(true);
-
-  const loadCategories = async () => {
-    try {
-      const data = await CategoriesService.getCategories();
-      categories.value = data.map((cat: any) => ({
-        id: cat.id,
-        title: cat.name.charAt(0).toUpperCase() + cat.name.slice(1).toLowerCase(),
-        subtitle: cat.description,
-        value: '0',
-        backgroundColor: cat.color,
-        iconColor: cat.color,
-        iconName: cat.iconName,
-      }));
-    } catch (error) {
-      console.error('Erro ao carregar categorias:', error);
-    } finally {
-      loading.value = false;
-    }
-  };
+  const categoriesStore = useCategoriesStore();
+  const router = useRouter();
 
   const deleteCategory = async (categoryId: string) => {
-    try {
-      await CategoriesService.deleteCategory(categoryId);
-      // Remove da lista local sem recarregar
-      categories.value = categories.value.filter((cat: any) => cat.id !== categoryId);
-    } catch (error) {
-      console.error('Erro ao deletar categoria:', error);
-    }
+    await categoriesStore.deleteCategory(categoryId);
+  };
+
+  const navigateToCategory = (categoryId: string) => {
+    router.push(`/category/${categoryId}`);
   };
 
   onMounted(() => {
-    loadCategories();
+    categoriesStore.loadCategories();
   });
 
   const menuItems = shallowRef([{ title: 'Deletar', icon: TrashIcon, action: 'delete' }]);
@@ -46,32 +27,27 @@
 <template>
   <v-card elevation="0">
     <v-card variant="outlined">
-      <v-card-text>
+      <v-card-text class="d-flex ga-2 flex-column">
         <v-row>
           <v-col cols="12" sm="9">
             <span class="text-subtitle-1 text-disabled font-weight-bold">Categorias</span>
           </v-col>
         </v-row>
 
-        <v-row v-if="!loading" style="min-height: 200px">
-          <v-col
-            v-for="category in categories"
-            :key="category"
-            cols="12"
-            sm="6"
-            md="4"
-            lg="3"
-            xl="2"
-          >
+        <div v-if="!categoriesStore.loading" class="categories-scroll-container">
+          <div class="categories-horizontal">
             <v-card
+              v-for="category in categoriesStore.categories"
+              :key="category.id"
               elevation="0"
-              class="bg-containerBg overflow-hidden bubble-shape"
-              :style="`--bubble-color: ${category.backgroundColor}; --icon-color: ${category.iconColor}`"
+              class="overflow-hidden bubble-shape category-card cursor-pointer"
+              :style="`backgroundColor: ${category.backgroundColor}; --bubble-color: ${category.iconColor}; --icon-color: ${category.iconColor}`"
+              @click="navigateToCategory(category.id)"
             >
               <v-card-text class="pa-4">
                 <div class="d-flex align-start mb-4">
                   <v-btn icon rounded="sm" variant="flat" class="icon-btn">
-                    <img :src="iconCard" width="25" />
+                    <component :is="categoryIconMap[category.iconName]" size="20" color="white" />
                   </v-btn>
                   <div class="ml-auto z-1">
                     <v-menu :close-on-content-click="false">
@@ -98,27 +74,42 @@
                     </v-menu>
                   </div>
                 </div>
-                <h2 class="text-h3 font-weight-medium text-darkText">
+                <h2 class="text-h3 font-weight-medium text-white text-capitalize">
                   {{ category.title }}
                 </h2>
-                <div class="text-subtitle-1 text-lightText">{{ category.subtitle }}</div>
-                <div class="text-caption text-disabled mt-1">{{ category.value }} arquivos</div>
+
+                <v-tooltip :text="category.subtitle" location="top">
+                  <template v-slot:activator="{ props }">
+                    <div v-bind="props" class="text-subtitle-1 text-white description-truncate">
+                      {{ category.subtitle }}
+                    </div>
+                  </template>
+                </v-tooltip>
+                <!-- <div class="text-subtitle-1 text-white">{{ category.subtitle }}</div> -->
+                <div class="text-caption text-disabled mt-1 text-lightText">
+                  {{ category.value }} arquivos
+                </div>
               </v-card-text>
             </v-card>
-          </v-col>
-          <v-col
-            v-if="categories.length === 0"
-            cols="12"
+          </div>
+          <div
+            v-if="categoriesStore.categories.length === 0"
             class="d-flex align-center justify-center"
             style="height: 160px"
           >
             <div class="text-body-1 font-weight-regular">Nenhuma categoria encontrada</div>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
 
-        <v-row v-if="loading" style="min-height: 200px">
-          <v-col v-for="n in 5" :key="n" cols="12" sm="6" md="4" lg="3" xl="2">
-            <v-card elevation="0" class="bg-containerBg" height="160">
+        <div v-if="categoriesStore.loading" class="categories-scroll-container">
+          <div class="categories-horizontal">
+            <v-card
+              v-for="n in 5"
+              :key="n"
+              elevation="0"
+              class="bg-containerBg category-card"
+              height="160"
+            >
               <v-card-text class="pa-4">
                 <div class="d-flex align-start mb-4">
                   <v-skeleton-loader type="avatar" width="32" height="32" class="mr-3" />
@@ -130,8 +121,8 @@
                 <v-skeleton-loader type="text" width="60%" height="12" />
               </v-card-text>
             </v-card>
-          </v-col>
-        </v-row>
+          </div>
+        </div>
       </v-card-text>
     </v-card>
   </v-card>
@@ -141,6 +132,7 @@
   .bubble-shape::before,
   .bubble-shape::after {
     background: var(--bubble-color) !important;
+    z-index: 0;
   }
 
   .icon-btn {
@@ -149,5 +141,42 @@
 
   :deep(.v-btn) {
     text-transform: none !important;
+  }
+
+  .categories-scroll-container {
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+
+  .bubble-shape .v-card-text {
+    position: relative;
+    z-index: 1;
+  }
+
+  .categories-horizontal {
+    display: flex;
+    gap: 16px;
+  }
+
+  .description-truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  .category-card {
+    width: 180px;
+    flex-shrink: 1;
+    height: 160px;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .cursor-pointer:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
   }
 </style>

@@ -1,80 +1,76 @@
 <template>
-  <v-row>
-    <v-col cols="12">
-      <UiParentCard :title="`${categoryName} - ${documents.length} arquivos`">
-        <template v-slot:action></template>
-        <div
-          v-if="loading"
-          class="text-center py-8 d-flex flex-column justify-center align-center ga-4"
-          style="height: 60vh"
-        >
-          <v-progress-circular indeterminate color="primary" />
-          <div class="text-h5 mt-2">Carregando documentos...</div>
+  <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
+    <template v-slot:action></template>
+    <div
+      v-if="loading"
+      class="text-center py-8 d-flex flex-column justify-center align-center ga-4 h-100"
+      style="height: 60vh"
+    >
+      <v-progress-circular indeterminate color="primary" />
+      <div class="text-h5 mt-2">Carregando documentos...</div>
+    </div>
+
+    <div v-else-if="false" class="text-center py-8">
+      <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-file-outline</v-icon>
+      <div class="text-h5 text-disabled">Nenhum documento encontrado</div>
+      <div class="text-body-2 text-disabled mt-2">Esta categoria ainda não possui arquivos</div>
+    </div>
+    <v-data-table
+      v-else
+      :headers="headers"
+      :items="documents"
+      :items-per-page="10"
+      :loading="loading"
+      class="elevation-0"
+      hover
+      density="comfortable"
+    >
+      <template v-slot:item.fileName="{ item }">
+        <div class="d-flex align-center py-2">
+          <v-avatar size="32" variant="tonal" class="mr-3">
+            <FileFilledIcon size="16" stroke-width="1.5" />
+          </v-avatar>
+          <div>
+            <div class="text-body-1">{{ item.fileName }}</div>
+          </div>
         </div>
+      </template>
 
-        <div v-else-if="false" class="text-center py-8">
-          <v-icon size="64" color="grey-lighten-1" class="mb-4">mdi-file-outline</v-icon>
-          <div class="text-h5 text-disabled">Nenhum documento encontrado</div>
-          <div class="text-body-2 text-disabled mt-2">Esta categoria ainda não possui arquivos</div>
+      <template v-slot:item.fileSize="{ item }">
+        <div class="text-body-2">{{ formatFileSize(item.fileSize) }}</div>
+      </template>
+
+      <template v-slot:item.owner="{ item }">
+        <div class="d-flex align-center">
+          <v-avatar size="24" class="mr-2">
+            <img src="@/assets/images/profile/user-round.svg" alt="Eu" />
+          </v-avatar>
+          <span class="text-body-2">eu</span>
         </div>
-        <v-data-table
-          v-else
-          :headers="headers"
-          :items="documents"
-          :items-per-page="10"
-          :loading="loading"
-          class="elevation-0"
-          hover
-          density="comfortable"
+      </template>
+
+      <template v-slot:item.createdAt="{ item }">
+        <div class="text-body-2">{{ formatDate(item.createdAt) }}</div>
+      </template>
+
+      <template v-slot:item.actions="{ item }">
+        <v-btn
+          icon
+          size="small"
+          variant="text"
+          :href="item.fileLocation"
+          target="_blank"
+          color="primary"
+          class="mr-1"
         >
-          <template v-slot:item.fileName="{ item }">
-            <div class="d-flex align-center py-2">
-              <v-avatar size="32" variant="tonal" class="mr-3">
-                <FileFilledIcon size="16" stroke-width="1.5" />
-              </v-avatar>
-              <div>
-                <div class="text-body-1">{{ item.fileName }}</div>
-              </div>
-            </div>
-          </template>
-
-          <template v-slot:item.fileSize="{ item }">
-            <div class="text-body-2">{{ item.fileSize }}</div>
-          </template>
-
-          <template v-slot:item.owner="{ item }">
-            <div class="d-flex align-center">
-              <v-avatar size="24" class="mr-2">
-                <img src="@/assets/images/profile/user-round.svg" alt="Eu" />
-              </v-avatar>
-              <span class="text-body-2">eu</span>
-            </div>
-          </template>
-
-          <template v-slot:item.createdAt="{ item }">
-            <div class="text-body-2">{{ formatDate(item.createdAt) }}</div>
-          </template>
-
-          <template v-slot:item.actions="{ item }">
-            <v-btn
-              icon
-              size="small"
-              variant="text"
-              :href="item.fileLocation"
-              target="_blank"
-              color="primary"
-              class="mr-1"
-            >
-              <DownloadIcon size="16" stroke-width="1.5" />
-            </v-btn>
-            <v-btn icon size="small" variant="text" color="error" @click="deleteDocument(item.id)">
-              <TrashIcon size="16" stroke-width="1.5" />
-            </v-btn>
-          </template>
-        </v-data-table>
-      </UiParentCard>
-    </v-col>
-  </v-row>
+          <DownloadIcon size="16" stroke-width="1.5" />
+        </v-btn>
+        <v-btn icon size="small" variant="text" color="error" @click="deleteDocument(item.id)">
+          <TrashIcon size="16" stroke-width="1.5" />
+        </v-btn>
+      </template>
+    </v-data-table>
+  </UiParentCard>
 
   <UploadModal
     :is-open="uploadModalOpen"
@@ -91,7 +87,7 @@
   import { DownloadIcon, TrashIcon, FileFilledIcon } from 'vue-tabler-icons';
   import UiParentCard from '@/components/shared/UiParentCard.vue';
   import UploadModal from '@/components/shared/UploadModal.vue';
-  import { getFileIcon } from '@/utils/fileIcons';
+  import { formatFileSize } from '@/utils/formatter';
 
   const route = useRoute();
   const categoryId = ref(route.params.id as string);
@@ -161,3 +157,18 @@
     loadCategoryAndDocuments();
   });
 </script>
+<style lang="css" scoped>
+  :deep(.v-container > div:first-child) {
+    background-color: aquamarine !important;
+  }
+
+  /* Todas as divs filhas diretas */
+  :deep(.page-wrapper > div:not([class])) {
+    background-color: aquamarine !important;
+  }
+
+  /* Se for mais aninhada */
+  :deep(.page-wrapper div:not([class])) {
+    background-color: aquamarine !important;
+  }
+</style>

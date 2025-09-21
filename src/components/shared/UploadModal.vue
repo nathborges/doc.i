@@ -1,252 +1,222 @@
-<template>
-  <v-dialog :model-value="isOpen" @update:model-value="closeModal" max-width="600px" persistent>
-    <v-card elevation="12" rounded="lg">
-      <v-card-title class="d-flex align-center pa-6 pb-4">
-        <v-icon color="primary" class="mr-3" size="24">mdi-cloud-upload</v-icon>
-        <span class="text-h5 font-weight-medium">Upload de Arquivos</span>
-        <v-spacer />
-        <v-btn icon variant="text" size="small" @click="closeModal">
-          <v-icon size="20">mdi-close</v-icon>
-        </v-btn>
-      </v-card-title>
-
-      <v-divider />
-
-      <v-card-text class="pa-6">
-        <div
-          class="upload-area"
-          :class="{ 'drag-over': isDragOver }"
-          @drop="handleDrop"
-          @dragover.prevent="isDragOver = true"
-          @dragleave="isDragOver = false"
-          @click="triggerFileInput"
-        >
-          <input
-            ref="fileInput"
-            type="file"
-            multiple
-            accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-            @change="handleFileSelect"
-            style="display: none"
-          />
-
-          <div v-if="files.length === 0" class="upload-placeholder text-center">
-            <v-icon size="48" color="primary" class="mb-4">mdi-cloud-upload-outline</v-icon>
-            <div class="text-h6 font-weight-medium mb-2">
-              Arraste arquivos aqui ou clique para selecionar
-            </div>
-            <div class="text-body-2 text-medium-emphasis mb-2">
-              Suporte para PDF, DOC, DOCX, TXT, JPG, PNG
-            </div>
-            <v-chip size="small" variant="outlined" color="primary">
-              Tamanho máximo: 10MB por arquivo
-            </v-chip>
-          </div>
-
-          <div v-else class="files-list">
-            <v-card
-              v-for="(file, index) in files"
-              :key="index"
-              variant="outlined"
-              class="mb-3 file-card"
-              hover
-            >
-              <v-card-text class="d-flex align-center pa-4">
-                <v-avatar size="40" :color="getFileColor(file.name)" variant="tonal" class="mr-4">
-                  <component
-                    :is="getFileIcon(file.name)"
-                    :size="20"
-                    :color="getFileColor(file.name)"
-                  />
-                </v-avatar>
-                <div class="flex-grow-1">
-                  <div class="text-body-1 font-weight-medium mb-1">{{ file.name }}</div>
-                  <div class="text-caption text-medium-emphasis">
-                    {{ formatFileSize(file.size) }}
-                  </div>
-                </div>
-                <v-btn
-                  icon
-                  size="small"
-                  variant="text"
-                  color="error"
-                  @click.stop="removeFile(index)"
-                >
-                  <v-icon size="18">mdi-close</v-icon>
-                </v-btn>
-              </v-card-text>
-            </v-card>
-          </div>
-        </div>
-      </v-card-text>
-
-      <v-divider />
-      <v-card-actions class="pa-6">
-        <v-spacer />
-        <v-btn variant="text" @click="closeModal" class="mr-3">Cancelar</v-btn>
-        <v-btn
-          color="primary"
-          variant="elevated"
-          :disabled="files.length === 0 || isUploading"
-          :loading="isUploading"
-          @click="uploadFiles"
-          class="text-none"
-        >
-          Fazer Upload
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
-</template>
-
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { getFileIcon, getFileColor } from '@/utils/fileIcons';
+  import { ref, watch } from 'vue';
+  import ModalWrapper from './ModalWrapper.vue';
+  import LoadingOverlay from './LoadingOverlay.vue';
+  import { useCategoriesStore } from '@/stores/categories';
+  import { useDocumentsStore } from '@/stores/documents';
+  import { CloudUploadIcon, XIcon } from 'vue-tabler-icons';
+  import { getFileIcon } from '@/utils/fileIcons';
+  import { formatFileSize } from '@/utils/formatter';
 
-  const props = defineProps({
-    isOpen: {
-      type: Boolean,
-      default: false,
-    },
-    categoryId: {
-      type: String,
-      required: true,
-    },
-  });
+  interface Props {
+    modelValue: boolean;
+  }
 
-  const emit = defineEmits(['close', 'file-uploaded']);
+  interface Emits {
+    (e: 'update:modelValue', value: boolean): void;
+    (e: 'upload', data: { files: File[]; categoryId: string }): void;
+  }
 
+  const props = defineProps<Props>();
+  const emit = defineEmits<Emits>();
+  const categoriesStore = useCategoriesStore();
+  const documentsStore = useDocumentsStore();
+
+  const selectedFiles = ref<File[]>([]);
+  const selectedCategory = ref('');
   const fileInput = ref<HTMLInputElement>();
-  const files = ref<File[]>([]);
-  const isDragOver = ref(false);
-  const isUploading = ref(false);
 
-  const triggerFileInput = () => {
+  const closeModal = () => {
+    emit('update:modelValue', false);
+    resetForm();
+  };
+
+  const selectFiles = () => {
     fileInput.value?.click();
   };
 
   const handleFileSelect = (event: Event) => {
     const target = event.target as HTMLInputElement;
-    if (target.files) {
-      const selectedFiles = Array.from(target.files);
-      addFiles(selectedFiles);
+    const files = target.files;
+    if (files && files.length > 0) {
+      const fileArray = Array.from(files);
+      if (fileArray.length > 10) {
+        selectedFiles.value = fileArray.slice(0, 10);
+        console.warn(
+          'Máximo de 10 arquivos permitidos. Apenas os primeiros 10 foram selecionados.'
+        );
+      } else {
+        selectedFiles.value = fileArray;
+      }
     }
   };
 
-  const handleDrop = (event: DragEvent) => {
-    event.preventDefault();
-    isDragOver.value = false;
-    if (event.dataTransfer?.files) {
-      const droppedFiles = Array.from(event.dataTransfer.files);
-      addFiles(droppedFiles);
+  const uploadFiles = () => {
+    if (selectedFiles.value.length > 0 && selectedCategory.value) {
+      emit('upload', {
+        files: selectedFiles.value,
+        categoryId: selectedCategory.value,
+      });
+      closeModal();
     }
   };
 
-  const addFiles = (newFiles: File[]) => {
-    const maxSize = 10 * 1024 * 1024; // 10MB
-    const allowedTypes = [
-      'application/pdf',
-      'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-      'text/plain',
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-    ];
-
-    const validFiles = newFiles.filter((file) => {
-      return file.size <= maxSize && allowedTypes.includes(file.type);
-    });
-
-    files.value = [...files.value, ...validFiles];
+  const resetForm = () => {
+    selectedFiles.value = [];
+    selectedCategory.value = '';
+    if (fileInput.value) {
+      fileInput.value.value = '';
+    }
   };
 
   const removeFile = (index: number) => {
-    files.value.splice(index, 1);
+    selectedFiles.value.splice(index, 1);
   };
 
-  const formatFileSize = (bytes: number): string => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-  };
-
-  const uploadFiles = async () => {
-    if (files.value.length === 0) return;
-
-    isUploading.value = true;
-
-    try {
-      // Aqui você faria o upload real para a API
-      // const formData = new FormData()
-      // files.value.forEach(file => formData.append('files', file))
-      // await FileService.upload(formData, props.categoryId)
-
-      // Simulando upload
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      emit('file-uploaded');
-      closeModal();
-    } catch (error) {
-      console.error('Erro no upload:', error);
-    } finally {
-      isUploading.value = false;
+  // Load categories when modal opens
+  watch(
+    () => props.modelValue,
+    (isOpen) => {
+      if (isOpen) {
+        categoriesStore.loadCategories();
+      }
     }
-  };
-
-  const closeModal = () => {
-    files.value = [];
-    isDragOver.value = false;
-    isUploading.value = false;
-    emit('close');
-  };
+  );
 </script>
+
+<template>
+  <ModalWrapper :is-open="props.modelValue" title="Upload de Arquivos" @close="closeModal">
+    <input
+      ref="fileInput"
+      type="file"
+      multiple
+      style="display: none"
+      @change="handleFileSelect"
+      accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+    />
+
+    <v-select
+      v-model="selectedCategory"
+      :items="categoriesStore.categories"
+      item-title="title"
+      item-value="id"
+      label="Categoria"
+      variant="outlined"
+      :hide-details="true"
+      class="mb-4"
+    />
+
+    <v-card variant="outlined" class="upload-area mb-4">
+      <v-card-text class="text-center pa-8" @click="selectFiles">
+        <CloudUploadIcon size="48" class="mb-4 text-primary" />
+        <div class="text-h6 mb-2">Clique para selecionar arquivos</div>
+        <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
+        <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
+      </v-card-text>
+      
+      <div v-if="selectedFiles.length > 0" class="pa-4 pt-0">
+        <v-divider class="mb-3" />
+        <div class="text-subtitle-2 mb-3">
+          {{ selectedFiles.length }} arquivo(s) selecionado(s)
+          <span v-if="selectedFiles.length === 10" class="text-warning ml-2">(máximo atingido)</span>
+        </div>
+        <div class="files-tags">
+          <perfect-scrollbar class="files-scroll">
+            <div class="pa-2">
+              <v-chip
+                v-for="(file, index) in selectedFiles"
+                :key="index"
+                class="ma-1"
+                size="small"
+                variant="outlined"
+              >
+                <template v-slot:prepend>
+                  <component :is="getFileIcon(file.name)" size="16" class="mr-1" />
+                </template>
+                <span class="file-name">{{ file.name }}</span>
+                <span class="file-size ml-2">({{ formatFileSize(file.size) }})</span>
+                <template v-slot:append>
+                  <v-btn
+                    icon
+                    size="x-small"
+                    variant="text"
+                    color="error"
+                    @click="removeFile(index)"
+                    class="ml-1"
+                  >
+                    <XIcon size="12" />
+                  </v-btn>
+                </template>
+              </v-chip>
+            </div>
+          </perfect-scrollbar>
+        </div>
+      </div>
+    </v-card>
+
+    <template #footer>
+      <v-btn
+        color="primary"
+        class="pr-5 pl-5"
+        variant="flat"
+        size="large"
+        rounded="sm"
+        :disabled="selectedFiles.length === 0 || !selectedCategory || documentsStore.uploading"
+        @click="uploadFiles"
+      >
+        <v-progress-circular
+          v-if="documentsStore.uploading"
+          indeterminate
+          size="16"
+          width="2"
+          color="white"
+          class="mr-2"
+        />
+        {{
+          documentsStore.uploading
+            ? `Enviando... ${documentsStore.uploadProgress}%`
+            : 'Enviar arquivos'
+        }}
+      </v-btn>
+    </template>
+  </ModalWrapper>
+  
+  <LoadingOverlay 
+    :is-visible="documentsStore.uploading" 
+    :message="`Enviando arquivos... ${documentsStore.uploadProgress}%`" 
+  />
+</template>
 
 <style scoped>
   .upload-area {
-    border: 2px dashed rgba(var(--v-theme-primary), 0.3);
-    border-radius: 16px;
-    padding: 48px 24px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    min-height: 240px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(var(--v-theme-surface), 0.5);
+    transition: all 0.3s ease;
+    border-style: dashed !important;
   }
 
   .upload-area:hover {
-    background: rgba(var(--v-theme-primary), 0.04);
-    border-color: rgba(var(--v-theme-primary), 0.6);
-    transform: translateY(-1px);
+    border-color: rgb(var(--v-theme-primary)) !important;
   }
 
-  .upload-area.drag-over {
-    background: rgba(var(--v-theme-primary), 0.08);
-    border-color: rgb(var(--v-theme-primary));
-    transform: scale(1.02);
+  .files-tags {
+    border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
+    border-radius: 4px;
+    max-height: 120px;
   }
 
-  .files-list {
-    width: 100%;
-    max-height: 320px;
-    overflow-y: auto;
-    padding: 8px 0;
+  .files-scroll {
+    max-height: 120px;
   }
 
-  .file-card {
-    transition: all 0.2s ease;
+  .file-name {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .file-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
-  }
-
-  :deep(.v-card-title) {
-    border-bottom: 1px solid rgba(var(--v-theme-on-surface), 0.08);
+  .file-size {
+    font-size: 0.75rem;
+    opacity: 0.7;
   }
 </style>

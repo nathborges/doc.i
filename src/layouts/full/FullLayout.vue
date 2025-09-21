@@ -2,7 +2,7 @@
   import { RouterView } from 'vue-router';
   import VerticalSidebarVue from './vertical-sidebar/VerticalSidebar.vue';
   import VerticalHeaderVue from './vertical-header/VerticalHeader.vue';
-  import Customizer from './customizer/CustomizerPanel.vue';
+  import AssistentAiDrawer from './drawer/AssistentAiDrawer.vue';
   import { RobotIcon } from 'vue-tabler-icons';
   import { useDrawerStore } from '@/stores/drawer';
   const drawer = useDrawerStore();
@@ -11,7 +11,7 @@
 <template>
   <v-locale-provider>
     <v-app theme="PurpleTheme">
-      <Customizer />
+      <AssistentAiDrawer />
       <VerticalSidebarVue />
       <VerticalHeaderVue />
 

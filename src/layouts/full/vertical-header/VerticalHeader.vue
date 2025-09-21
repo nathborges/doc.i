@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import { ref, computed } from 'vue';
   import { useDrawerStore } from '../../../stores/drawer';
-  // Icon Imports
   import { SettingsIcon, SearchIcon, Menu2Icon } from 'vue-tabler-icons';
 
   import ProfileDD from './ProfileDD.vue';

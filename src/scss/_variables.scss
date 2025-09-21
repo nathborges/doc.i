@@ -37,13 +37,13 @@ $typography: map-deep-merge(
     'h1': (
       'size': 2.125rem,
       'weight': 700,
-      'line-height': 3.5rem,
+      'line-height': 2rem,
       'font-family': inherit,
     ),
     'h2': (
       'size': 1.5rem,
       'weight': 700,
-      'line-height': 2.5rem,
+      'line-height': 2rem,
       'font-family': inherit,
     ),
     'h3': (
@@ -55,13 +55,13 @@ $typography: map-deep-merge(
     'h4': (
       'size': 1rem,
       'weight': 600,
-      'line-height': 1.5rem,
+      'line-height': 1.2rem,
       'font-family': inherit,
     ),
     'h5': (
       'size': 0.875rem,
       'weight': 500,
-      'line-height': 1.2rem,
+      'line-height': 1.9rem,
       'font-family': inherit,
     ),
     'h6': (

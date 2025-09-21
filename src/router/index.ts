@@ -24,10 +24,12 @@ interface User {
 
 // Assuming you have a type/interface for your authentication store
 interface AuthStore {
-  user: User | null;
+  user: string | null;
   returnUrl: string | null;
+  isAuthenticated: boolean;
   login(username: string, password: string): Promise<void>;
   logout(): void;
+  checkAuth(): Promise<boolean>;
 }
 
 router.beforeEach(async (to, from, next) => {
@@ -37,9 +39,9 @@ router.beforeEach(async (to, from, next) => {
 
   const isPublicPage = publicPages.includes(to.path);
   const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
+  const isAuthenticated = await auth.checkAuth();
 
-  // User not logged in and trying to access a restricted page
-  if (authRequired && !auth.user) {
+  if (authRequired && !auth.isAuthenticated) {
     auth.returnUrl = to.fullPath; // Save the intended page
     next('/login');
   } else if (auth.user && to.path === '/login') {

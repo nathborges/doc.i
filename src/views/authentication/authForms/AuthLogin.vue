@@ -1,12 +1,10 @@
 <script setup lang="ts">
   import { ref } from 'vue';
-  import Google from '@/assets/images/auth/social-google.svg';
   import { useAuthStore } from '@/stores/auth';
   import { Form } from 'vee-validate';
 
   const valid = ref(false);
   const show1 = ref(false);
-  //const logform = ref();
   const password = ref('doc123');
   const username = ref('nahfborges@hotmail.com');
   const passwordRules = ref([
@@ -22,8 +20,12 @@
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   function validate(values: any, { setErrors }: any) {
+    if (!username.value || !password.value) {
+      setErrors({ apiError: 'Preencha todos os campos para fazer o login.' });
+      return;
+    }
     return authStore.login(username.value, password.value).catch((error) => {
-      setErrors({ apiError: error.response?.data?.message || 'Erro no login' });
+      setErrors({ apiError: 'Erro no login.' });
     });
   }
 </script>
@@ -34,10 +36,10 @@
       v-model="username"
       :rules="emailRules"
       label="Usuário"
-      class="mt-4 mb-8"
+      class="mt-4 mb-4 pa-0"
       required
       density="comfortable"
-      hide-details="auto"
+      :hide-details="false"
       variant="outlined"
       color="primary"
     ></v-text-field>
@@ -49,7 +51,7 @@
       density="comfortable"
       variant="outlined"
       color="primary"
-      hide-details="auto"
+      :hide-details="false"
       :append-icon="show1 ? '$eye' : '$eyeOff'"
       :type="show1 ? 'text' : 'password'"
       @click:append="show1 = !show1"
@@ -73,7 +75,7 @@
     >
       Entrar
     </v-btn>
-    <div v-if="errors.apiError" class="mt-2">
+    <div v-show="errors.apiError" class="mt-2">
       <v-alert color="error">{{ errors.apiError }}</v-alert>
     </div>
   </Form>

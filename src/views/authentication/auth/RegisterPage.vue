@@ -8,7 +8,7 @@
     <!---Left Part-->
     <v-col cols="12" class="d-flex align-center bg-lightprimary">
       <v-container>
-        <div class="pa-7 pa-sm-12">
+        <div class="pa-3 pa-sm-12">
           <v-row justify="center">
             <v-col cols="12" lg="10" xl="6" md="7">
               <v-card elevation="0" class="loginBox">
@@ -18,9 +18,10 @@
                     <v-row>
                       <v-col cols="12" class="text-center">
                         <Logo />
-                        <h2 class="text-secondary text-h2 mt-8">Cadastrar</h2>
+                        <h2 class="text-secondary text-h2 mt-8">Criar uma conta</h2>
                         <h4 class="text-disabled text-h4 mt-3">
-                          Digite suas credenciais para continuar
+                          Crie sua conta para começar a organizar seus documentos de forma
+                          inteligente.
                         </h4>
                       </v-col>
                     </v-row>

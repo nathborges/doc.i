@@ -17,6 +17,18 @@ export default defineConfig({
       autoImport: true
     })
   ],
+  server: {
+    host: 'localhost',
+    port: 5174,
+    proxy: {
+      '/api': {
+        target: 'https://doc-i-backend-sd55w5k3ga-uc.a.run.app',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, '/doc-i')
+      }
+    }
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

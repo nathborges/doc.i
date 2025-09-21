@@ -12,14 +12,10 @@
   const route = useRoute();
   const searchStore = useSearchStore();
   const drawer = useDrawerStore();
-  const usingIa = ref(true);
   const searchQuery = ref('');
   const isExpanded = ref(false);
 
   const categoryId = computed(() => route.params.id || null);
-  const toggleIa = () => {
-    usingIa.value = !usingIa.value;
-  };
 
   const handleFocus = () => {
     isExpanded.value = true;
@@ -35,7 +31,7 @@
     if (!searchQuery.value.trim() || searchStore.isLoading) return;
 
     try {
-      await searchStore.performSearch(searchQuery.value, usingIa.value, categoryId.value);
+      await searchStore.performSearch(searchQuery.value, categoryId.value);
       searchQuery.value = '';
       drawer.SET_IA_DRAWER(true);
       isExpanded.value = false;

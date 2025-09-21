@@ -2,11 +2,9 @@ import { SearchService } from '@/services/search.service';
 import { defineStore } from 'pinia';
 
 interface SearchResult {
-  id: string;
-  query: string;
   answer: string;
   files: any[];
-  usingIA: boolean;
+  id: string;
   timestamp: Date;
 }
 
@@ -18,26 +16,23 @@ export const useSearchStore = defineStore('search', {
   }),
 
   actions: {
-    async performSearch(query: string, usingIA: boolean, categoryId: string | null) {
+    async performSearch(query: string, categoryId: string | null) {
       this.isLoading = true;
 
       try {
-        // Aqui você chamaria o SearchService
-        const response = await SearchService.search(query, usingIA, categoryId);
+        const response = await SearchService.search(query, categoryId);
+        console.log(response);
 
         const result: SearchResult = {
           id: Date.now().toString(),
-          query,
           answer: response.answer,
-          files: response.files,
-          usingIA,
+          files: response.fileNames,
           timestamp: new Date(),
         };
 
         this.currentResult = result;
-        this.searchHistory.unshift(result); // Adiciona no início
+        this.searchHistory.unshift(result);
 
-        // Limita histórico a 10 itens
         if (this.searchHistory.length > 10) {
           this.searchHistory = this.searchHistory.slice(0, 10);
         }
@@ -62,14 +57,19 @@ export const useSearchStore = defineStore('search', {
     hasCurrentResult: (state) => state.currentResult !== null,
     currentAnswer: (state) => state.currentResult?.answer || '',
     currentFiles: (state) => state.currentResult?.files || [],
-    allAnswers: (state) => state.searchHistory.map((r) => r.answer).filter(Boolean),
     formattedAnswers: (state) =>
-      state.searchHistory.map((r) =>
-        r.answer
+      state.searchHistory.map((r) => ({
+        content: r.answer
           .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
           .replace(/\\_/g, '_')
-          .replace(/\n/g, '<br>')
-      ),
-    recentSearches: (state) => state.searchHistory.slice(0, 5),
+          .replace(/\n/g, '<br>'),
+        timestamp: r.timestamp.toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+        }),
+      })),
   },
 });

@@ -8,7 +8,7 @@
     <!---Left Part-->
     <v-col cols="12" class="d-flex align-center bg-lightprimary">
       <v-container>
-        <div class="pa-7 pa-sm-12">
+        <div class="pa-3 pa-sm-12">
           <v-row justify="center">
             <v-col cols="12" lg="10" xl="6" md="7">
               <v-card elevation="0" class="loginBox">
@@ -20,7 +20,8 @@
                         <Logo />
                         <h2 class="text-secondary text-h2 mt-8">Bem-vindo de volta</h2>
                         <h4 class="text-disabled text-h4 mt-3">
-                          Digite suas credenciais para continuar
+                          Transforme seus documentos em dados inteligentes prontos para análise.
+                          Aqui, sua informação trabalha por você.
                         </h4>
                       </v-col>
                     </v-row>

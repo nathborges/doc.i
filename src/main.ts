@@ -9,9 +9,13 @@ import VueApexCharts from 'vue3-apexcharts';
 import VueTablerIcons from 'vue-tabler-icons';
 import { useAuthStore } from '@/stores/auth';
 
+import { fakeBackend } from '@/utils/helpers/fake-backend';
+
+// print
 import print from 'vue3-print-nb';
 
 const app = createApp(App);
+fakeBackend();
 app.use(router);
 app.use(PerfectScrollbarPlugin);
 const pinia = createPinia();
@@ -21,6 +25,7 @@ app.use(print);
 app.use(VueApexCharts);
 app.use(vuetify);
 
+// Inicializa autenticação após Pinia estar configurado
 const authStore = useAuthStore();
 authStore.initializeAuth();
 

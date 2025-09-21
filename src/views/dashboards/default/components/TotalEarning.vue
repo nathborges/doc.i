@@ -11,7 +11,7 @@
 </script>
 
 <template>
-  <v-card elevation="0" class="bg-secondary overflow-hidden bubble-shape bubble-secondary-shape">
+  <v-card elevation="0" class="bg-aaa overflow-hidden bubble-shape bubble-secondary-shape">
     <v-card-text>
       <div class="d-flex align-start mb-6">
         <v-btn icon rounded="sm" color="darksecondary" variant="flat">
@@ -45,3 +45,8 @@
     </v-card-text>
   </v-card>
 </template>
+<style>
+  .bg-aa {
+    background-color: aqua !important;
+  }
+</style>

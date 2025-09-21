@@ -39,24 +39,8 @@ const sidebarItem: menu[] = [
     title: 'Categorias',
     icon: CategoryIcon,
     to: '/auth',
-    children: [
-      {
-        title: 'Login',
-        icon: CircleIcon,
-        to: '/login1',
-      },
-      {
-        title: 'Cadastro',
-        icon: CircleIcon,
-        to: '/register',
-      },
-    ],
   },
-  {
-    title: 'Erro 404',
-    icon: BugIcon,
-    to: '/error',
-  },
+
   { divider: true },
 ];
 

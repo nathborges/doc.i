@@ -24,7 +24,7 @@ export const useAuthStore = defineStore({
       AuthService.logout();
       this.user = null;
       this.isAuthenticated = false;
-      router.push('/login1');
+      router.push('/login');
     },
     async checkAuth() {
       const isValid = await AuthService.checkAuth();
