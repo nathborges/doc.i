@@ -1,6 +1,35 @@
 import axios from '@/utils/httpClient';
+import { isAxiosError } from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+const handleError = (error: any, context: string) => {
+  console.error(`${context} error:`, error);
+
+  if (isAxiosError(error)) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    switch (status) {
+      case 400:
+        throw new Error(message || 'Dados inválidos');
+      case 401:
+        throw new Error('Email ou senha incorretos');
+      case 403:
+        throw new Error('Acesso negado');
+      case 404:
+        throw new Error('Recurso não encontrado');
+      case 409:
+        throw new Error('Email já está em uso');
+      case 500:
+        throw new Error('Erro interno do servidor');
+      default:
+        throw new Error('Erro de conexão');
+    }
+  }
+
+  throw error;
+};
 
 export const AuthService = {
   init() {
@@ -12,15 +41,9 @@ export const AuthService = {
 
   async login(email: string, password: string) {
     try {
-      if (!email || !email.trim()) {
-        throw new Error('Email é obrigatório');
-      }
-      if (!password || !password.trim()) {
-        throw new Error('Senha é obrigatória');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!email?.trim()) throw new Error('Email é obrigatório');
+      if (!password?.trim()) throw new Error('Senha é obrigatória');
+      if (!API_URL) throw new Error('API URL não configurada');
 
       delete axios.defaults.headers.common['Authorization'];
 
@@ -29,7 +52,7 @@ export const AuthService = {
         password: password.trim(),
       });
 
-      if (!response || !response.data || !response.data.accessToken) {
+      if (!response?.data?.accessToken) {
         throw new Error('Resposta inválida do servidor');
       }
 
@@ -41,24 +64,12 @@ export const AuthService = {
 
       return response.data;
     } catch (error) {
-      console.error('Authentication error:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          throw new Error('Email ou senha incorretos');
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Authentication');
     }
   },
 
   setAuthHeader(token: string) {
-    if (!token || !token.trim()) {
-      throw new Error('Token inválido');
-    }
+    if (!token?.trim()) throw new Error('Token inválido');
     axios.defaults.headers.common['Authorization'] = `Bearer ${token.trim()}`;
   },
 
@@ -69,9 +80,7 @@ export const AuthService = {
         return false;
       }
 
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!API_URL) throw new Error('API URL não configurada');
 
       this.setAuthHeader(storedToken);
       await axios.get(`${API_URL}/users/profile`);
@@ -84,21 +93,11 @@ export const AuthService = {
 
   async createUser(userData: { name: string; email: string; password: string; code: string }) {
     try {
-      if (!userData.name || !userData.name.trim()) {
-        throw new Error('Nome é obrigatório');
-      }
-      if (!userData.email || !userData.email.trim()) {
-        throw new Error('Email é obrigatório');
-      }
-      if (!userData.password || !userData.password.trim()) {
-        throw new Error('Senha é obrigatória');
-      }
-      if (!userData.code || !userData.code.trim()) {
-        throw new Error('Código é obrigatório');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!userData.name?.trim()) throw new Error('Nome é obrigatório');
+      if (!userData.email?.trim()) throw new Error('Email é obrigatório');
+      if (!userData.password?.trim()) throw new Error('Senha é obrigatória');
+      if (!userData.code?.trim()) throw new Error('Código é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
 
       const sanitizedData = {
         name: userData.name.trim(),
@@ -109,25 +108,13 @@ export const AuthService = {
 
       const response = await axios.post(`${API_URL}/users`, sanitizedData);
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Resposta inválida do servidor');
       }
 
       return response.data;
     } catch (error) {
-      console.error('Error creating user:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          throw new Error('Dados do usuário inválidos');
-        } else if (error.response?.status === 409) {
-          throw new Error('Email já está em uso');
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'User creation');
     }
   },
 

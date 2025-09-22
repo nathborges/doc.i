@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { CategoriesService } from '@/services/categories.service';
 import type { Category, CategoryDisplay } from '@/types/categories/Category';
 
-const darkenColor = (hex, percent) => {
+const darkenColor = (hex: string, percent) => {
   const num = parseInt(hex.replace('#', ''), 16);
   const amt = Math.round(2.55 * percent);
   const R = (num >> 16) - amt;
@@ -45,10 +45,10 @@ export const useCategoriesStore = defineStore({
           id: cat.id,
           title: cat.name,
           subtitle: cat.description,
-          value: '0',
           backgroundColor: darkenColor(cat.color, 50),
           iconColor: cat.color,
           iconName: cat.iconName,
+          totalDocuments: cat.totalDocuments,
         }));
       } catch (error) {
         this.error = 'Erro ao carregar categorias';
@@ -65,9 +65,8 @@ export const useCategoriesStore = defineStore({
       iconName: string;
     }) {
       try {
-        const newCategory: Category = await CategoriesService.createCategory(categoryData);
+        await CategoriesService.createCategory(categoryData);
         this.loadCategories();
-        return newCategory;
       } catch (error) {
         this.error = 'Erro ao criar categoria';
         throw error;

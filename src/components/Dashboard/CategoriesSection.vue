@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import { shallowRef, onMounted } from 'vue';
-  import { TrashIcon, DotsIcon } from 'vue-tabler-icons';
+  import { TrashIcon, DotsIcon, FolderIcon } from 'vue-tabler-icons';
   import { useCategoriesStore } from '@/stores/categories';
-  import iconCard from '@/assets/images/icons/icon-card.svg';
   import { categoryIconMap } from '@/utils/fileIcons';
   import { useRouter } from 'vue-router';
 
@@ -15,6 +14,10 @@
 
   const navigateToCategory = (categoryId: string) => {
     router.push(`/category/${categoryId}`);
+  };
+
+  const getIcon = (iconName: string) => {
+    return categoryIconMap[iconName as keyof typeof categoryIconMap] || FolderIcon;
   };
 
   onMounted(() => {
@@ -47,7 +50,7 @@
               <v-card-text class="pa-4">
                 <div class="d-flex align-start mb-4">
                   <v-btn icon rounded="sm" variant="flat" class="icon-btn">
-                    <component :is="categoryIconMap[category.iconName]" size="20" color="white" />
+                    <component :is="getIcon(category.iconName)" size="20" color="white" />
                   </v-btn>
                   <div class="ml-auto z-1">
                     <v-menu :close-on-content-click="false">
@@ -85,9 +88,8 @@
                     </div>
                   </template>
                 </v-tooltip>
-                <!-- <div class="text-subtitle-1 text-white">{{ category.subtitle }}</div> -->
                 <div class="text-caption text-disabled mt-1 text-lightText">
-                  {{ category.value }} arquivos
+                  {{ category.totalDocuments }} arquivos
                 </div>
               </v-card-text>
             </v-card>

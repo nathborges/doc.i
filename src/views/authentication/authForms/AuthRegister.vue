@@ -26,11 +26,16 @@
     if (!name || !email.value || !password.value || !code.value) {
       return setErrors({ apiError: 'Preencha todos os campos para continuar.' });
     }
-    return AuthService.signup(name, email.value, password.value, code.value)
+    return AuthService.createUser({
+      name,
+      email: email.value,
+      password: password.value,
+      code: code.value,
+    })
       .then(() => {
         router.push('/login');
       })
-      .catch((error) => {
+      .catch((error: any) => {
         setErrors({ apiError: 'Erro no cadastro.' });
       });
   }

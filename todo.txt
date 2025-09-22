@@ -1,0 +1,4 @@
+- timer do upload
+- aumentar rela
+- adiconar relatorio 
+- filtrar arquivos

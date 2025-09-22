@@ -1,81 +1,73 @@
 import axios from '@/utils/httpClient';
+import { isAxiosError } from 'axios';
+import type { Category, CreateCategoryData, Document } from '@/types';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const handleError = (error: any, context: string) => {
+  console.error(`${context} error:`, error);
+
+  if (isAxiosError(error)) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    switch (status) {
+      case 400:
+        throw new Error(message || 'Dados inválidos');
+      case 401:
+        throw new Error('Não autorizado');
+      case 403:
+        throw new Error('Acesso negado');
+      case 404:
+        throw new Error('Recurso não encontrado');
+      case 409:
+        throw new Error('Conflito - recurso já existe');
+      case 500:
+        throw new Error('Erro interno do servidor');
+      default:
+        throw new Error('Erro de conexão');
+    }
+  }
+
+  throw error;
+};
+
 export const CategoriesService = {
-  async getCategories() {
+  async getCategories(): Promise<Category[]> {
     try {
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!API_URL) throw new Error('API URL não configurada');
 
       const response = await axios.get(`${API_URL}/categories`);
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Resposta inválida do servidor');
       }
 
       return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
-      console.error('Error getting categories:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          return [];
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Get categories');
+      return [];
     }
   },
 
-  async deleteCategory(id: string) {
+  async deleteCategory(id: string): Promise<any> {
     try {
-      if (!id || !id.trim()) {
-        throw new Error('ID da categoria é obrigatório');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!id?.trim()) throw new Error('ID da categoria é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
 
       const response = await axios.delete(`${API_URL}/categories/${id.trim()}`);
       return response.data;
     } catch (error) {
-      console.error('Error deleting category:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          throw new Error('Categoria não encontrada');
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Delete category');
     }
   },
 
-  async createCategory(categoryData: {
-    name: string;
-    description: string;
-    color: string;
-    iconName: string;
-  }) {
+  async createCategory(categoryData: CreateCategoryData): Promise<boolean> {
     try {
-      if (!categoryData || !categoryData.name || !categoryData.name.trim()) {
-        throw new Error('Nome da categoria é obrigatório');
-      }
-      if (!categoryData.color || !categoryData.color.trim()) {
-        throw new Error('Cor da categoria é obrigatória');
-      }
-      if (!categoryData.iconName || !categoryData.iconName.trim()) {
-        throw new Error('Ícone da categoria é obrigatório');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!categoryData?.name?.trim()) throw new Error('Nome da categoria é obrigatório');
+      if (!categoryData?.color?.trim()) throw new Error('Cor da categoria é obrigatória');
+      if (!categoryData?.iconName?.trim()) throw new Error('Ícone da categoria é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
 
       const sanitizedData = {
         name: categoryData.name.trim(),
@@ -85,51 +77,28 @@ export const CategoriesService = {
       };
 
       await axios.post(`${API_URL}/categories`, sanitizedData);
-
       return true;
     } catch (error) {
-      console.error('Error creating category:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          throw new Error('Dados da categoria inválidos');
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Create category');
+      return false;
     }
   },
 
-  async getDocumentsByCategory(categoryId: string) {
+  async getDocumentsByCategory(categoryId: string): Promise<Document[]> {
     try {
-      if (!categoryId || !categoryId.trim()) {
-        throw new Error('ID da categoria é obrigatório');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+      if (!categoryId?.trim()) throw new Error('ID da categoria é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
 
       const response = await axios.get(`${API_URL}/documents/${categoryId.trim()}`);
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Resposta inválida do servidor');
       }
 
       return Array.isArray(response.data) ? response.data : [];
     } catch (error) {
-      console.error('Error getting documents:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 404) {
-          return [];
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Get documents by category');
+      return [];
     }
   },
 };

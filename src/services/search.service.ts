@@ -41,7 +41,7 @@ export const SearchService = {
       return {
         answer:
           'Infelizmente, devido a uma indisponibilidade não consigo responder sua pergunta no momento.',
-        files: [],
+        fileNames: [],
       };
     }
   },

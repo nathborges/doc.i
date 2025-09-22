@@ -9,7 +9,7 @@
   const username = ref('nahfborges@hotmail.com');
   const passwordRules = ref([
     (v: string) => !!v || 'Senha é obrigatória',
-    (v: string) => (v && v.length <= 10) || 'Senha deve ter menos de 10 caracteres',
+    (v: string) => (v && v.length <= 40) || 'Senha deve ter menos de 10 caracteres',
   ]);
   const emailRules = ref([
     (v: string) => !!v || 'E-mail é obrigatório',

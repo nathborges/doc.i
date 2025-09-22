@@ -1,26 +1,20 @@
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref, watch, onMounted } from 'vue';
   import ModalWrapper from './ModalWrapper.vue';
-  import LoadingOverlay from './LoadingOverlay.vue';
   import { useCategoriesStore } from '@/stores/categories';
-  import { useDocumentsStore } from '@/stores/documents';
   import { CloudUploadIcon, XIcon } from 'vue-tabler-icons';
   import { getFileIcon } from '@/utils/fileIcons';
   import { formatFileSize } from '@/utils/formatter';
+  import { useRouter } from 'vue-router';
 
   interface Props {
     modelValue: boolean;
   }
 
-  interface Emits {
-    (e: 'update:modelValue', value: boolean): void;
-    (e: 'upload', data: { files: File[]; categoryId: string }): void;
-  }
-
   const props = defineProps<Props>();
-  const emit = defineEmits<Emits>();
+  const emit = defineEmits(['update:modelValue', 'upload']);
   const categoriesStore = useCategoriesStore();
-  const documentsStore = useDocumentsStore();
+  const router = useRouter();
 
   const selectedFiles = ref<File[]>([]);
   const selectedCategory = ref('');
@@ -28,7 +22,9 @@
 
   const closeModal = () => {
     emit('update:modelValue', false);
-    resetForm();
+    selectedFiles.value = [];
+    selectedCategory.value = '';
+    if (fileInput.value) fileInput.value.value = '';
   };
 
   const selectFiles = () => {
@@ -36,18 +32,9 @@
   };
 
   const handleFileSelect = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    const files = target.files;
-    if (files && files.length > 0) {
-      const fileArray = Array.from(files);
-      if (fileArray.length > 10) {
-        selectedFiles.value = fileArray.slice(0, 10);
-        console.warn(
-          'Máximo de 10 arquivos permitidos. Apenas os primeiros 10 foram selecionados.'
-        );
-      } else {
-        selectedFiles.value = fileArray;
-      }
+    const files = (event.target as HTMLInputElement).files;
+    if (files) {
+      selectedFiles.value = Array.from(files).slice(0, 10);
     }
   };
 
@@ -61,27 +48,21 @@
     }
   };
 
-  const resetForm = () => {
-    selectedFiles.value = [];
-    selectedCategory.value = '';
-    if (fileInput.value) {
-      fileInput.value.value = '';
-    }
-  };
-
   const removeFile = (index: number) => {
     selectedFiles.value.splice(index, 1);
   };
 
-  // Load categories when modal opens
   watch(
     () => props.modelValue,
     (isOpen) => {
-      if (isOpen) {
-        categoriesStore.loadCategories();
-      }
+      if (isOpen) categoriesStore.loadCategories();
     }
   );
+
+  onMounted(() => {
+    const categoryId = router.currentRoute.value.params.id;
+    selectedCategory.value = categoryId ?? '';
+  })
 </script>
 
 <template>
@@ -106,35 +87,34 @@
       class="mb-4"
     />
 
-    <v-card variant="outlined" class="upload-area mb-4">
-      <v-card-text class="text-center pa-8" @click="selectFiles">
-        <CloudUploadIcon size="48" class="mb-4 text-primary" />
-        <div class="text-h6 mb-2">Clique para selecionar arquivos</div>
-        <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
-        <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
-      </v-card-text>
-      
-      <div v-if="selectedFiles.length > 0" class="pa-4 pt-0">
-        <v-divider class="mb-3" />
-        <div class="text-subtitle-2 mb-3">
-          {{ selectedFiles.length }} arquivo(s) selecionado(s)
-          <span v-if="selectedFiles.length === 10" class="text-warning ml-2">(máximo atingido)</span>
+    <v-card variant="outlined" class="upload-area">
+      <div class="upload-content pa-3 pr-0" @click="selectFiles">
+        <div v-if="selectedFiles.length <= 0" class="text-center h-100 d-flex flex-column align-center justify-center">
+          <CloudUploadIcon size="48" class="text-primary" />
+          <div class="text-h6 mb-2">Clique para selecionar arquivos</div>
+          <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
+          <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
         </div>
-        <div class="files-tags">
-          <perfect-scrollbar class="files-scroll">
-            <div class="pa-2">
-              <v-chip
+      <div v-else class="files-container">
+
+        <div class="pt-2 pb-2">
+          <div class="text-subtitle-2 mb-3">{{ selectedFiles.length }} arquivo(s) selecionado(s)</div>
+                  <v-divider />
+          
+          <div class="files-list">
+            <v-list density="compact" class="pa-0">
+              <v-list-item
                 v-for="(file, index) in selectedFiles"
                 :key="index"
-                class="ma-1"
-                size="small"
-                variant="outlined"
+                class="px-0 py-1"
               >
                 <template v-slot:prepend>
-                  <component :is="getFileIcon(file.name)" size="16" class="mr-1" />
+                  <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
                 </template>
-                <span class="file-name">{{ file.name }}</span>
-                <span class="file-size ml-2">({{ formatFileSize(file.size) }})</span>
+                
+                <v-list-item-title class="file-name text-body-2">{{ file.name }}</v-list-item-title>
+                <v-list-item-subtitle class="text-caption">{{ formatFileSize(file.size) }}</v-list-item-subtitle>
+                
                 <template v-slot:append>
                   <v-btn
                     icon
@@ -142,16 +122,18 @@
                     variant="text"
                     color="error"
                     @click="removeFile(index)"
-                    class="ml-1"
                   >
-                    <XIcon size="12" />
+                    <XIcon size="14" />
                   </v-btn>
                 </template>
-              </v-chip>
-            </div>
-          </perfect-scrollbar>
+              </v-list-item>
+            </v-list>
+          </div>
         </div>
       </div>
+      </div>
+      
+
     </v-card>
 
     <template #footer>
@@ -161,62 +143,40 @@
         variant="flat"
         size="large"
         rounded="sm"
-        :disabled="selectedFiles.length === 0 || !selectedCategory || documentsStore.uploading"
+        :disabled="selectedFiles.length === 0 || !selectedCategory"
         @click="uploadFiles"
       >
-        <v-progress-circular
-          v-if="documentsStore.uploading"
-          indeterminate
-          size="16"
-          width="2"
-          color="white"
-          class="mr-2"
-        />
-        {{
-          documentsStore.uploading
-            ? `Enviando... ${documentsStore.uploadProgress}%`
-            : 'Enviar arquivos'
-        }}
+        Enviar arquivos
       </v-btn>
     </template>
   </ModalWrapper>
-  
-  <LoadingOverlay 
-    :is-visible="documentsStore.uploading" 
-    :message="`Enviando arquivos... ${documentsStore.uploadProgress}%`" 
-  />
 </template>
 
 <style scoped>
   .upload-area {
+    border: 2px dashed;
+  }
+
+  .upload-content {
     cursor: pointer;
     transition: all 0.3s ease;
-    border-style: dashed !important;
+    height: 180px;
   }
 
-  .upload-area:hover {
-    border-color: rgb(var(--v-theme-primary)) !important;
+  .upload-content:hover {
+    background-color: rgba(var(--v-theme-primary), 0.04);
   }
 
-  .files-tags {
-    border: 1px solid rgba(var(--v-border-color), var(--v-border-opacity));
-    border-radius: 4px;
-    max-height: 120px;
-  }
-
-  .files-scroll {
-    max-height: 120px;
+  .files-container {
+    background-color: rgba(var(--v-theme-surface), 1);
+    overflow-y: scroll;
+    height: 100%;
   }
 
   .file-name {
-    max-width: 200px;
+    max-width: 280px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .file-size {
-    font-size: 0.75rem;
-    opacity: 0.7;
   }
 </style>

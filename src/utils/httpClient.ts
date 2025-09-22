@@ -7,7 +7,6 @@ const httpClient = axios.create({
     'Access-Control-Allow-Origin': '*',
     'Referrer-Policy': 'no-referrer',
   },
-  mode: 'cors',
 });
 
 export default httpClient;

@@ -1,21 +1,42 @@
 import axios from '@/utils/httpClient';
+import { isAxiosError } from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-export const DocumentsService = {
-  async uploadDocuments(files: File[], categoryId: string) {
-    try {
-      if (!files || !Array.isArray(files) || files.length === 0) {
-        throw new Error('Arquivos são obrigatórios');
-      }
-      if (!categoryId || !categoryId.trim()) {
-        throw new Error('ID da categoria é obrigatório');
-      }
-      if (!API_URL) {
-        throw new Error('API URL não configurada');
-      }
+const handleError = (error: any, context: string) => {
+  console.error(`${context} error:`, error);
 
-      // Validate files
+  if (isAxiosError(error)) {
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    switch (status) {
+      case 400:
+        throw new Error(message || 'Dados de upload inválidos');
+      case 401:
+        throw new Error('Não autorizado');
+      case 403:
+        throw new Error('Acesso negado');
+      case 413:
+        throw new Error('Arquivos muito grandes');
+      case 415:
+        throw new Error('Tipo de arquivo não suportado');
+      case 500:
+        throw new Error('Erro interno do servidor');
+      default:
+        throw new Error('Erro de conexão');
+    }
+  }
+
+  throw error;
+};
+
+export const DocumentsService = {
+  async uploadDocuments(file: File, categoryId: string) {
+    try {
+      if (!categoryId?.trim()) throw new Error('ID da categoria é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
+
       const maxFileSize = 10 * 1024 * 1024; // 10MB
       const allowedTypes = [
         'application/pdf',
@@ -27,23 +48,12 @@ export const DocumentsService = {
         'image/png',
       ];
 
-      for (const file of files) {
-        if (!file || !(file instanceof File)) {
-          throw new Error('Arquivo inválido detectado');
-        }
-        if (file.size > maxFileSize) {
-          throw new Error(`Arquivo ${file.name} excede o tamanho máximo de 10MB`);
-        }
         if (!allowedTypes.includes(file.type)) {
           throw new Error(`Tipo de arquivo ${file.name} não permitido`);
         }
-      }
 
       const formData = new FormData();
-
-      files.forEach((file) => {
-        formData.append('files', file);
-      });
+      formData.append('files', file);
 
       const response = await axios.post(`${API_URL}/documents/process`, formData, {
         headers: {
@@ -52,25 +62,13 @@ export const DocumentsService = {
         },
       });
 
-      if (!response || !response.data) {
+      if (!response?.data) {
         throw new Error('Resposta inválida do servidor');
       }
 
       return response.data;
     } catch (error) {
-      console.error('Error uploading documents:', error);
-
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 400) {
-          throw new Error('Dados de upload inválidos');
-        } else if (error.response?.status === 413) {
-          throw new Error('Arquivos muito grandes');
-        } else if (error.response?.status === 500) {
-          throw new Error('Erro interno do servidor');
-        }
-      }
-
-      throw error;
+      handleError(error, 'Upload documents');
     }
   },
 };

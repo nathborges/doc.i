@@ -9,27 +9,13 @@ export const useDocumentsStore = defineStore({
     error: null as string | null,
   }),
   actions: {
-    async uploadDocuments(files: File[], categoryId: string) {
-      this.uploading = true;
-      this.error = null;
-      this.uploadProgress = 50; // Set to 50% while uploading
-
+    async uploadDocuments(file: File, categoryId: string) {
       try {
-        const result = await DocumentsService.uploadDocuments(files, categoryId);
-        this.uploadProgress = 100;
-
-        return {
-          success: true,
-          data: result,
-          filesCount: files.length,
-        };
+        await DocumentsService.uploadDocuments(file, categoryId);
       } catch (error) {
         this.error = 'Erro durante o upload dos arquivos';
         console.error('Erro no upload:', error);
         throw error;
-      } finally {
-        this.uploading = false;
-        this.uploadProgress = 0;
       }
     },
 

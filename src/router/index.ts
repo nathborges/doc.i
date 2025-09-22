@@ -15,6 +15,15 @@ export const router = createRouter({
   ],
 });
 
+router.beforeEach((to, from, next) => {
+  if (to.name === from.name && to.params.id !== from.params.id) {
+    window.location.href = to.fullPath;
+    return;
+  }
+  
+  next();
+});
+
 interface User {
   // Define the properties and their types for the user data here
   // For example:
@@ -53,7 +62,10 @@ router.beforeEach(async (to, from, next) => {
       },
     });
   } else {
-    // All other scenarios, either public page or authorized access
+      if (to.name === from.name && to.params.id !== from.params.id) {
+    window.location.href = to.fullPath;
+    return;
+  }
     next();
   }
 });

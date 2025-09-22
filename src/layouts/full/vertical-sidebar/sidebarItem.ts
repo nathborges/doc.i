@@ -38,7 +38,7 @@ const sidebarItem: menu[] = [
   {
     title: 'Categorias',
     icon: CategoryIcon,
-    to: '/auth',
+    to: '/category',
   },
 
   { divider: true },
