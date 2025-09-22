@@ -3,7 +3,7 @@
   import TotalEarning from './components/TotalEarning.vue';
   import TotalOrder from './components/TotalOrder.vue';
   import TotalIncome from './components/TotalIncome.vue';
-  import CategoriesSection from '@/components/dashboard/CategoriesSection.vue';
+  import CategoriesSection from './components/CategoriesSection.vue';
   import PopularStocks from './components/PopularStocks.vue';
 </script>
 
