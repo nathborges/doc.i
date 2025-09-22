@@ -61,7 +61,7 @@
 
   onMounted(() => {
     const categoryId = router.currentRoute.value.params.id;
-    selectedCategory.value = categoryId ?? '';
+    selectedCategory.value = Array.isArray(categoryId) ? categoryId[0] ?? '' : categoryId ?? '';
   })
 </script>
 
