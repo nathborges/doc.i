@@ -29,7 +29,7 @@
     searchQuery.value = '';
     searchStore.clearIsAnActiveSearch();
     props.closesearch();
-  };  
+  };
 
   const handleSearch = async () => {
     if (!searchQuery.value.trim() || searchStore.isLoading) return;
@@ -50,7 +50,7 @@
     placeholder="Busque arquivos ou insights da IA..."
     color="primary"
     variant="outlined"
-    style="text-transform: capitalize;"
+    style="text-transform: capitalize"
     hide-details
     @keyup.enter="handleSearch"
   >

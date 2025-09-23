@@ -1,4 +1,4 @@
-export const formatFileSize = (bytes: string | number| undefined): string => {
+export const formatFileSize = (bytes: string | number | undefined): string => {
   if (bytes == '0' || bytes == 0 || !bytes || bytes == undefined) return '0 GB';
   const numBytes = typeof bytes === 'string' ? parseInt(bytes) : bytes;
   if (numBytes === 0) return '0 Bytes';
@@ -7,7 +7,6 @@ export const formatFileSize = (bytes: string | number| undefined): string => {
   const i = Math.floor(Math.log(numBytes) / Math.log(k));
   return parseFloat((numBytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
-
 
 export const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString('pt-BR', {

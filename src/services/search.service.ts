@@ -10,7 +10,6 @@ interface SearchRequest {
   categoryId?: string;
 }
 
-
 const handleError = (error: any, context: string) => {
   console.error(`${context} error:`, error);
 
@@ -53,21 +52,21 @@ export const SearchService = {
       }
 
       const response = await axios.post(`${API_URL}/search`, searchData);
-      
+
       const { results, responseAi } = response.data;
       const fileNames = responseAi.fileNames;
-      
+
       // Extract files with plainText and fileName
       const files = results
         .filter((result: any) => fileNames.includes(result.payload.fileName))
         .map((result: any) => ({
           plainText: result.payload.plainText,
-          fileName: result.payload.fileName
+          fileName: result.payload.fileName,
         }));
-      
+
       return {
         answer: responseAi.answer,
-        files
+        files,
       };
     } catch (error) {
       console.error('Error searching:', error);
@@ -79,16 +78,20 @@ export const SearchService = {
       };
     }
   },
-    async exportReport(fields: string, content: string): Promise<Blob> {
+  async exportReport(fields: string, content: string): Promise<Blob> {
     try {
       if (!API_URL) throw new Error('API URL não configurada');
 
-      const response = await axios.post(`${API_URL}/reports/excel`, {
-        fields,
-        content
-      }, {
-        responseType: 'blob'
-      });
+      const response = await axios.post(
+        `${API_URL}/reports/excel`,
+        {
+          fields,
+          content,
+        },
+        {
+          responseType: 'blob',
+        }
+      );
 
       return response.data;
     } catch (error) {

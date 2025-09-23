@@ -56,8 +56,8 @@ export const UserService = {
       return {
         name: userInformation.name,
         email: userInformation.email,
-        totalDocuments: totalDocuments ,
-        totalStorageUsed: totalStorageUsed
+        totalDocuments: totalDocuments,
+        totalStorageUsed: totalStorageUsed,
       };
     } catch (error) {
       handleError(error, 'Get user profile');

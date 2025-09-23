@@ -61,8 +61,8 @@
 
   onMounted(() => {
     const categoryId = router.currentRoute.value.params.id;
-    selectedCategory.value = Array.isArray(categoryId) ? categoryId[0] ?? '' : categoryId ?? '';
-  })
+    selectedCategory.value = Array.isArray(categoryId) ? (categoryId[0] ?? '') : (categoryId ?? '');
+  });
 </script>
 
 <template>
@@ -89,51 +89,53 @@
 
     <v-card variant="outlined" class="upload-area">
       <div class="upload-content pa-3 pr-0" @click="selectFiles">
-        <div v-if="selectedFiles.length <= 0" class="text-center h-100 d-flex flex-column align-center justify-center">
+        <div
+          v-if="selectedFiles.length <= 0"
+          class="text-center h-100 d-flex flex-column align-center justify-center"
+        >
           <CloudUploadIcon size="48" class="text-primary" />
           <div class="text-h6 mb-2">Clique para selecionar arquivos</div>
           <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
           <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
         </div>
-      <div v-else class="files-container">
+        <div v-else class="files-container">
+          <div class="pt-2 pb-2">
+            <div class="text-subtitle-2 mb-3">
+              {{ selectedFiles.length }} arquivo(s) selecionado(s)
+            </div>
+            <v-divider />
 
-        <div class="pt-2 pb-2">
-          <div class="text-subtitle-2 mb-3">{{ selectedFiles.length }} arquivo(s) selecionado(s)</div>
-                  <v-divider />
-          
-          <div class="files-list">
-            <v-list density="compact" class="pa-0">
-              <v-list-item
-                v-for="(file, index) in selectedFiles"
-                :key="index"
-                class="px-0 py-1"
-              >
-                <template v-slot:prepend>
-                  <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
-                </template>
-                
-                <v-list-item-title class="file-name text-body-2">{{ file.name }}</v-list-item-title>
-                <v-list-item-subtitle class="text-caption">{{ formatFileSize(file.size) }}</v-list-item-subtitle>
-                
-                <template v-slot:append>
-                  <v-btn
-                    icon
-                    size="x-small"
-                    variant="text"
-                    color="error"
-                    @click="removeFile(index)"
-                  >
-                    <XIcon size="14" />
-                  </v-btn>
-                </template>
-              </v-list-item>
-            </v-list>
+            <div class="files-list">
+              <v-list density="compact" class="pa-0">
+                <v-list-item v-for="(file, index) in selectedFiles" :key="index" class="px-0 py-1">
+                  <template v-slot:prepend>
+                    <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
+                  </template>
+
+                  <v-list-item-title class="file-name text-body-2">
+                    {{ file.name }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle class="text-caption">
+                    {{ formatFileSize(file.size) }}
+                  </v-list-item-subtitle>
+
+                  <template v-slot:append>
+                    <v-btn
+                      icon
+                      size="x-small"
+                      variant="text"
+                      color="error"
+                      @click="removeFile(index)"
+                    >
+                      <XIcon size="14" />
+                    </v-btn>
+                  </template>
+                </v-list-item>
+              </v-list>
+            </div>
           </div>
         </div>
       </div>
-      </div>
-      
-
     </v-card>
 
     <template #footer>

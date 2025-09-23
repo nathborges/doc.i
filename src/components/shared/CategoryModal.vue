@@ -34,9 +34,16 @@
   ];
 
   const availableColors = [
-    '#0d47a1', '#2e7d32', '#e65100', '#b71c1c',
-    '#4a148c', '#263238', '#ad1457',
-    '#bf360c', '#3e2723', '#6a1b9a'
+    '#0d47a1',
+    '#2e7d32',
+    '#e65100',
+    '#b71c1c',
+    '#4a148c',
+    '#263238',
+    '#ad1457',
+    '#bf360c',
+    '#3e2723',
+    '#6a1b9a',
   ];
 
   const closeModal = () => {
@@ -122,7 +129,7 @@
           v-for="color in availableColors"
           :key="color"
           class="color-square"
-          :class="{ 'selected': categoryColor === color }"
+          :class="{ selected: categoryColor === color }"
           :style="{ backgroundColor: color }"
           @click="categoryColor = color"
         />

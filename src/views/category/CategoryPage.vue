@@ -1,6 +1,6 @@
 <template>
   <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
-        <!-- Overlay de loading -->
+    <!-- Overlay de loading -->
     <template v-slot:action>
       <v-chip v-if="!mobile" size="small" color="primary" variant="tonal">
         {{ documents.length }} arquivos
@@ -8,38 +8,43 @@
     </template>
 
     <div class="d-flex justify-space-between align-center mb-4">
-        <h4 class="text-h4">{{ tableTitle }}</h4>
-        <div class="d-flex">
-                  <v-btn v-if="isSearchMode" color="primary" variant="text" @click="openReportModal">
+      <h4 class="text-h4">{{ tableTitle }}</h4>
+      <div class="d-flex">
+        <v-btn v-if="isSearchMode" color="primary" variant="text" @click="openReportModal">
           Exportar
         </v-btn>
-        <v-btn v-if="isSearchMode && !mobile" color="primary" variant="text" @click="searchStore.clearIsAnActiveSearch()">
+        <v-btn
+          v-if="isSearchMode && !mobile"
+          color="primary"
+          variant="text"
+          @click="searchStore.clearIsAnActiveSearch()"
+        >
           Limpar filtro
         </v-btn>
-
-        </div>
-
       </div>
+    </div>
 
-    
     <!-- Loading State -->
-    <div v-if="loading" class="d-flex flex-column justify-center align-center h-100" style="height: 60vh">
+    <div
+      v-if="loading"
+      class="d-flex flex-column justify-center align-center h-100"
+      style="height: 60vh"
+    >
       <v-progress-circular indeterminate color="primary" />
       <div class="text-h5 mt-2">Carregando documentos...</div>
     </div>
 
     <!-- Content -->
     <div v-else class="d-flex flex-column h-100">
-      <v-data-table 
-        :headers="headers" 
+      <v-data-table
+        :headers="headers"
         :items="documents"
         :items-per-page="-1"
         hide-default-footer
-
         :loading="loading"
-        class="elevation-0 flex-grow-1" 
+        class="elevation-0 flex-grow-1"
         height="100%"
-        hover 
+        hover
         density="comfortable"
       >
         <template v-slot:item.fileName="{ item }">
@@ -69,24 +74,18 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-btn 
-            icon 
-            size="small" 
-            variant="text" 
+          <v-btn
+            icon
+            size="small"
+            variant="text"
             color="primary"
-            :href="item.fileLocation" 
+            :href="item.fileLocation"
             target="_blank"
             class="mr-1"
           >
             <DownloadIcon size="16" stroke-width="1.5" />
           </v-btn>
-          <v-btn 
-            icon 
-            size="small" 
-            variant="text" 
-            color="error" 
-            @click="deleteDocument(item.id)"
-          >
+          <v-btn icon size="small" variant="text" color="error" @click="deleteDocument(item.id)">
             <TrashIcon size="16" stroke-width="1.5" />
           </v-btn>
         </template>
@@ -104,111 +103,134 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { useDisplay } from 'vuetify';
-import { useCategoriesStore } from '@/stores/categories';
-import { DownloadIcon, TrashIcon, FileFilledIcon } from 'vue-tabler-icons';
-import UiParentCard from '@/components/shared/UiParentCard.vue';
-import { formatFileSize, formatDate } from '@/utils/formatter';
-import ReportModal from '@/components/shared/ReportModal.vue';
-import { useSearchStore } from '@/stores/search';
-import LoadingOverlay from '@/components/shared/LoadingOverlay.vue';
+  import { ref, computed, watch } from 'vue';
+  import { useRoute } from 'vue-router';
+  import { useDisplay } from 'vuetify';
+  import { useCategoriesStore } from '@/stores/categories';
+  import { DownloadIcon, TrashIcon, FileFilledIcon } from 'vue-tabler-icons';
+  import UiParentCard from '@/components/shared/UiParentCard.vue';
+  import { formatFileSize, formatDate } from '@/utils/formatter';
+  import ReportModal from '@/components/shared/ReportModal.vue';
+  import { useSearchStore } from '@/stores/search';
+  import LoadingOverlay from '@/components/shared/LoadingOverlay.vue';
 
-const route = useRoute();
-const { mobile } = useDisplay();
-const categoriesStore = useCategoriesStore();
-const searchStore = useSearchStore();
-const categoryId = ref(route.params.id as string);
-const showModal = ref(false);
+  const route = useRoute();
+  const { mobile } = useDisplay();
+  const categoriesStore = useCategoriesStore();
+  const searchStore = useSearchStore();
+  const categoryId = ref(route.params.id as string);
+  const showModal = ref(false);
 
-const isSearchMode = computed(() => searchStore.isAnActiveSearch);
-const categoryName = computed(() => categoriesStore.getCategoryName(categoryId.value));
-const documents = computed(() => 
-  categoriesStore.getFilteredDocuments(searchStore.lastSearchFileNames, isSearchMode.value)
-);
-const loading = computed(() => categoriesStore.documentsLoading);
-const tableTitle = computed(() => 
-  isSearchMode.value ? 'Resultados da busca:' : 'Arquivos da categoria'
-);
+  const isSearchMode = computed(() => searchStore.isAnActiveSearch);
+  const categoryName = computed(() => categoriesStore.getCategoryName(categoryId.value));
+  const documents = computed(() =>
+    categoriesStore.getFilteredDocuments(searchStore.lastSearchFileNames, isSearchMode.value)
+  );
+  const loading = computed(() => categoriesStore.documentsLoading);
+  const tableTitle = computed(() =>
+    isSearchMode.value ? 'Resultados da busca:' : 'Arquivos da categoria'
+  );
 
-const headers = computed(() => {
-  const baseHeaders = [
-    { title: 'Nome', key: 'fileName', align: 'start' as const, sortable: true, width: '30%' },
-    { title: 'Tamanho', key: 'fileSize', align: 'start' as const, sortable: true, width: '15%' },
-    { title: 'Data de Criação', key: 'createdAt', align: 'start' as const, sortable: true, width: '20%' },
-    { title: 'Ações', key: 'actions', sortable: false, align: 'center' as const, width: '20%' },
-  ];
+  const headers = computed(() => {
+    const baseHeaders = [
+      { title: 'Nome', key: 'fileName', align: 'start' as const, sortable: true, width: '30%' },
+      { title: 'Tamanho', key: 'fileSize', align: 'start' as const, sortable: true, width: '15%' },
+      {
+        title: 'Data de Criação',
+        key: 'createdAt',
+        align: 'start' as const,
+        sortable: true,
+        width: '20%',
+      },
+      { title: 'Ações', key: 'actions', sortable: false, align: 'center' as const, width: '20%' },
+    ];
 
-  if (!mobile.value) {
-    baseHeaders.splice(2, 0, { 
-      title: 'Proprietário', 
-      key: 'owner', 
-      align: 'start' as const, 
-      sortable: true, 
-      width: '15%' 
-    });
-  }
-
-  return baseHeaders;
-});
-
-
-const openReportModal = () => {
-  showModal.value = true;
-};
-
-const exportReport = async (tags: string) => {
-  const content = isSearchMode.value 
-    ? searchStore.lastSearchFileNames.map(file => file.plainText).join('\n\n')
-    : '';
-  await searchStore.exportReport(tags, content);
-  showModal.value = false;
-};
-
-const deleteDocument = async (documentId: string) => {
-  try {
-    await categoriesStore.deleteDocument(documentId);
-  } catch (error) {
-    console.error('Erro ao deletar documento:', error);
-  }
-};
-
-const initializePage = async () => {
-  try {
-    searchStore.clearIsAnActiveSearch();
-    if (categoriesStore.categories.length === 0) {
-      await categoriesStore.loadCategories();
+    if (!mobile.value) {
+      baseHeaders.splice(2, 0, {
+        title: 'Proprietário',
+        key: 'owner',
+        align: 'start' as const,
+        sortable: true,
+        width: '15%',
+      });
     }
-    await categoriesStore.loadDocumentsByCategory(categoryId.value);
-  } catch (error) {
-    console.error('Erro ao carregar dados:', error);
-  }
-};
 
+    return baseHeaders;
+  });
 
-onMounted(initializePage);
+  const openReportModal = () => {
+    showModal.value = true;
+  };
+
+  const exportReport = async (tags: string) => {
+    const content = isSearchMode.value
+      ? searchStore.lastSearchFileNames.map((file) => file.plainText).join('\n\n')
+      : '';
+    await searchStore.exportReport(tags, content);
+    showModal.value = false;
+  };
+
+  const deleteDocument = async (documentId: string) => {
+    try {
+      await categoriesStore.deleteDocument(documentId);
+    } catch (error) {
+      console.error('Erro ao deletar documento:', error);
+    }
+  };
+
+  const initializePage = async () => {
+    try {
+      searchStore.clearIsAnActiveSearch();
+      if (categoriesStore.categories.length === 0) {
+        await categoriesStore.loadCategories();
+      }
+      await categoriesStore.loadDocumentsByCategory(categoryId.value);
+    } catch (error) {
+      console.error('Erro ao carregar dados:', error);
+    }
+  };
+
+  // Watch para mudanças no categoryId da rota
+  watch(
+    () => route.params.id,
+    async (newCategoryId, oldCategoryId) => {
+      // Primeira execução (oldCategoryId é undefined)
+      if (!oldCategoryId) {
+        categoryId.value = newCategoryId as string;
+        await initializePage();
+        return;
+      }
+
+      // Mudanças subsequentes
+      if (newCategoryId && newCategoryId !== categoryId.value) {
+        categoryId.value = newCategoryId as string;
+        searchStore.clearIsAnActiveSearch();
+        await categoriesStore.loadDocumentsByCategory(categoryId.value);
+      }
+    },
+    { immediate: true }
+  );
 </script>
 
 <style lang="scss">
-.v-container.page-wrapper {
-  height: 80%;
+  .v-container.page-wrapper {
+    height: 80%;
 
-  > div:not([class]) {
+    > div:not([class]) {
+      height: 100% !important;
+    }
+  }
+
+  .v-data-table {
     height: 100% !important;
   }
-}
 
-.v-data-table {
-  height: 100% !important;
-}
+  .v-data-table__wrapper {
+    height: 100% !important;
+    overflow-y: auto !important;
+  }
 
-.v-data-table__wrapper {
-  height: 100% !important;
-  overflow-y: auto !important;
-}
-
-.v-card-text {
-  height: 80% !important;
-}
+  .v-card-text {
+    height: 80% !important;
+  }
 </style>

@@ -9,7 +9,7 @@
   <!-- ---------------------------------------------- -->
   <!---Fixed Header -->
   <!-- ---------------------------------------------- -->
-  <v-list-item rounded class="mb-1 category-header" color="secondary" style="pointer-events: none;">
+  <v-list-item rounded class="mb-1 category-header" color="secondary" style="pointer-events: none">
     <!---Icon  -->
     <template v-slot:prepend>
       <Icon :item="item.icon" :level="level" />
@@ -21,7 +21,7 @@
       {{ item.subCaption }}
     </v-list-item-subtitle>
   </v-list-item>
-  
+
   <!-- ---------------------------------------------- -->
   <!---Direct Children -->
   <!-- ---------------------------------------------- -->

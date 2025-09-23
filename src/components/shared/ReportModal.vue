@@ -8,20 +8,21 @@
     loading?: boolean;
   }
   const props = withDefaults(defineProps<Props>(), {
-    loading: false
+    loading: false,
   });
   const emit = defineEmits(['update:modelValue', 'confirm']);
-  
+
   const tags = ref<string[]>([]);
   const tagInput = ref('');
 
-const addTag = () => {
-  const capitalizedTag = tagInput.value.trim().charAt(0).toUpperCase() + tagInput.value.trim().slice(1).toLowerCase();
-  if (capitalizedTag && !tags.value.includes(capitalizedTag)) {
-    tags.value.push(capitalizedTag);
-    tagInput.value = '';
-  }
-};
+  const addTag = () => {
+    const capitalizedTag =
+      tagInput.value.trim().charAt(0).toUpperCase() + tagInput.value.trim().slice(1).toLowerCase();
+    if (capitalizedTag && !tags.value.includes(capitalizedTag)) {
+      tags.value.push(capitalizedTag);
+      tagInput.value = '';
+    }
+  };
 
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key === ',') {
@@ -46,8 +47,8 @@ const addTag = () => {
   const confirmAction = () => {
     var tagsValue = '';
     if (tags.value.length) {
-        tagsValue = tags.value.join(', ');
-    };
+      tagsValue = tags.value.join(', ');
+    }
     emit('confirm', tagsValue);
     tags.value = [];
   };
@@ -67,15 +68,10 @@ const addTag = () => {
         append-inner-icon="mdi-plus"
         @click:append-inner="addTag"
       />
-      
+
       <div class="tags-container mt-2">
         <transition-group name="tag" tag="div" class="d-flex flex-wrap">
-          <v-chip
-            v-for="(tag, index) in tags"
-            :key="tag"
-            size="small"
-            class="mr-2 mb-2"
-          >
+          <v-chip v-for="(tag, index) in tags" :key="tag" size="small" class="mr-2 mb-2">
             {{ tag }}
             <XIcon size="16" class="ml-1 cursor-pointer" @click="removeTag(index)" />
           </v-chip>
@@ -85,9 +81,9 @@ const addTag = () => {
 
     <template #footer>
       <div class="d-flex gap-2">
-        <v-btn 
-          color="primary" 
-          variant="flat" 
+        <v-btn
+          color="primary"
+          variant="flat"
           size="large"
           rounded="sm"
           class="pr-5 pl-5"
@@ -103,25 +99,25 @@ const addTag = () => {
 </template>
 
 <style scoped>
-.tags-container {
-  min-height: 40px;
-  max-height: 120px;
-  overflow-y: auto;
-  transition: all 0.3s ease;
-}
+  .tags-container {
+    min-height: 40px;
+    max-height: 120px;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+  }
 
-.tag-enter-active,
-.tag-leave-active {
-  transition: all 0.3s ease;
-}
+  .tag-enter-active,
+  .tag-leave-active {
+    transition: all 0.3s ease;
+  }
 
-.tag-enter-from {
-  opacity: 0;
-  transform: scale(0.8);
-}
+  .tag-enter-from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
 
-.tag-leave-to {
-  opacity: 0;
-  transform: scale(0.8);
-}
+  .tag-leave-to {
+    opacity: 0;
+    transform: scale(0.8);
+  }
 </style>

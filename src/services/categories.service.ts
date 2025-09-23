@@ -112,6 +112,4 @@ export const CategoriesService = {
       handleError(error, 'Delete document');
     }
   },
-
-
 };

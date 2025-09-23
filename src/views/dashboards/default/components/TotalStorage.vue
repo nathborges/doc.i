@@ -1,11 +1,8 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue';
-  import {
-    DatabaseIcon,
-    CircleArrowUpRightIcon,
-  } from 'vue-tabler-icons';
+  import { DatabaseIcon, CircleArrowUpRightIcon } from 'vue-tabler-icons';
   import { useUserStore } from '@/stores/user';
-  import { formatFileSize  } from '@/utils/formatter';
+  import { formatFileSize } from '@/utils/formatter';
 
   const tab = ref('1');
   const userStore = useUserStore();
@@ -132,7 +129,16 @@
       series: [
         {
           name: 'series1',
-          data: [baseValue * 0.2, baseValue * 0.4, baseValue * 0.1, baseValue * 0.6, baseValue * 0.5, baseValue * 0.8, baseValue * 0.4, baseValue],
+          data: [
+            baseValue * 0.2,
+            baseValue * 0.4,
+            baseValue * 0.1,
+            baseValue * 0.6,
+            baseValue * 0.5,
+            baseValue * 0.8,
+            baseValue * 0.4,
+            baseValue,
+          ],
         },
       ],
     };
@@ -163,7 +169,9 @@
                   <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
-              <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento utilizado</span>
+              <span class="text-subtitle-1 text-medium-emphasis text-white">
+                Armazenamento utilizado
+              </span>
             </v-col>
             <v-col cols="6">
               <apexchart
@@ -184,7 +192,9 @@
                   <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
-              <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento Usado</span>
+              <span class="text-subtitle-1 text-medium-emphasis text-white">
+                Armazenamento Usado
+              </span>
             </v-col>
             <v-col cols="6">
               <apexchart

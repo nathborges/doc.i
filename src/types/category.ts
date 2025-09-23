@@ -5,7 +5,6 @@ export interface CreateCategoryData {
   iconName: string;
 }
 
-
 // src/types/categories/Category.ts
 export interface Category {
   id: string;
@@ -24,5 +23,4 @@ export interface CategoryDisplay {
   iconColor: string;
   iconName: string;
   totalDocuments: string;
-
 }

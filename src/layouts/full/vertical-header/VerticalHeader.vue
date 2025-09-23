@@ -5,14 +5,14 @@
 
   import ProfileDD from './ProfileDD.vue';
   import Searchbar from './SearchBarPanel.vue';
-import { useSearchStore } from '@/stores/search';
+  import { useSearchStore } from '@/stores/search';
 
   const drawerStore = useDrawerStore();
   const searchStore = useSearchStore();
 
   const showSearch = ref(false);
   function searchbox() {
-    searchStore.clearIsAnActiveSearch()
+    searchStore.clearIsAnActiveSearch();
     showSearch.value = !showSearch.value;
   }
 

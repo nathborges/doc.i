@@ -48,9 +48,9 @@ export const DocumentsService = {
         'image/png',
       ];
 
-        if (!allowedTypes.includes(file.type)) {
-          throw new Error(`Tipo de arquivo ${file.name} não permitido`);
-        }
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error(`Tipo de arquivo ${file.name} não permitido`);
+      }
 
       const formData = new FormData();
       formData.append('files', file);

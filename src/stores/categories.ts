@@ -31,12 +31,7 @@ const lightenColor = (hex: string, percent: number) => {
 
   return (
     '#' +
-    (
-      0x1000000 +
-      (R < 255 ? R : 255) * 0x10000 +
-      (G < 255 ? G : 255) * 0x100 +
-      (B < 255 ? B : 255)
-    )
+    (0x1000000 + (R < 255 ? R : 255) * 0x10000 + (G < 255 ? G : 255) * 0x100 + (B < 255 ? B : 255))
       .toString(16)
       .slice(1)
   );
@@ -56,15 +51,15 @@ export const useCategoriesStore = defineStore({
     categoriesCount: (state) => state.categories.length,
     getFilteredDocuments: (state) => (searchFiles: any[], isSearchMode: boolean) => {
       if (isSearchMode && searchFiles.length) {
-        const fileNames = searchFiles.map(file => file.fileName);
-        return state.documents.filter(doc => fileNames.includes(doc.fileName));
+        const fileNames = searchFiles.map((file) => file.fileName);
+        return state.documents.filter((doc) => fileNames.includes(doc.fileName));
       }
       return state.documents;
     },
     getCategoryName: (state) => (id: string) => {
-      const category = state.categories.find(cat => cat.id === id);
+      const category = state.categories.find((cat) => cat.id === id);
       return category?.title || '';
-    }
+    },
   },
   actions: {
     async loadCategories() {
@@ -130,7 +125,6 @@ export const useCategoriesStore = defineStore({
       }
     },
 
-
     async deleteDocument(documentId: string) {
       try {
         await CategoriesService.deleteDocument(documentId);
@@ -144,7 +138,5 @@ export const useCategoriesStore = defineStore({
     clearError() {
       this.error = null;
     },
-
-
   },
 });

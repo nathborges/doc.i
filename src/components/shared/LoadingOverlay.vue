@@ -1,5 +1,11 @@
 <template>
-  <v-overlay :model-value="isVisible" scrim="rgba(0, 0, 0, 10)" class="align-center justify-center" persistent z-index="9999">
+  <v-overlay
+    :model-value="isVisible"
+    scrim="rgba(0, 0, 0, 10)"
+    class="align-center justify-center"
+    persistent
+    z-index="9999"
+  >
     <div class="text-center">
       <v-progress-circular indeterminate size="64" width="6" color="primary" />
       <div class="text-h3 mt-4 text-white">{{ message }}</div>
