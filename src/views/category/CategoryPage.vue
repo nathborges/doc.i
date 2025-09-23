@@ -39,8 +39,7 @@
       <v-data-table
         :headers="headers"
         :items="documents"
-        :items-per-page="-1"
-        hide-default-footer
+        :items-per-page="10"
         :loading="loading"
         class="elevation-0 flex-grow-1"
         height="100%"

@@ -47,7 +47,7 @@ export const SearchService = {
     try {
       const searchData: SearchRequest = {
         query: this.capitalizeQuery(query),
-        limit: 10,
+        limit: 100,
       };
 
       // Add categoryId only if provided
