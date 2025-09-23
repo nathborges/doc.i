@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 
 export const useDrawerStore = defineStore('drawer', {
   state: () => ({
-    Sidebar_drawer: true,
+  Sidebar_drawer: window.innerWidth >= 1024,
     iaDrawerIsOpen: false,
     inputBg: false,
   }),

@@ -64,9 +64,11 @@
   };
 
   const handleUpload = async (data: { files: File[]; categoryId: string }) => {
-    data.files.forEach(async (file) => {
-      await uploadEachFile(file, data.categoryId);
-    });
+    try {
+      await documentsStore.uploadDocuments(data.files, data.categoryId);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   };
 
   onMounted(async () => {

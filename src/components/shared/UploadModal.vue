@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { ref, watch, onMounted } from 'vue';
+  import { ref, watch } from 'vue';
   import ModalWrapper from './ModalWrapper.vue';
   import { useCategoriesStore } from '@/stores/categories';
   import { CloudUploadIcon, XIcon } from 'vue-tabler-icons';
@@ -20,13 +20,14 @@
   const selectedCategory = ref('');
   const fileInput = ref<HTMLInputElement>();
   const isDragOver = ref(false);
+  const limit = 10;
 
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
     isDragOver.value = false;
     const files = event.dataTransfer?.files;
     if (files) {
-      selectedFiles.value = Array.from(files).slice(0, 10);
+      selectedFiles.value = Array.from(files).slice(0, limit);
     }
   };
 
@@ -53,7 +54,7 @@
   const handleFileSelect = (event: Event) => {
     const files = (event.target as HTMLInputElement).files;
     if (files) {
-      selectedFiles.value = Array.from(files).slice(0, 100);
+      selectedFiles.value = Array.from(files).slice(0, limit);
     }
   };
 
@@ -169,10 +170,10 @@
         variant="flat"
         size="large"
         rounded="sm"
-        :disabled="selectedFiles.length === 0 || !selectedCategory"
+        :disabled="false"
         @click="uploadFiles"
       >
-        Enviar arquivos
+        Enviar arquivos (Desativado)
       </v-btn>
     </template>
   </ModalWrapper>

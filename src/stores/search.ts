@@ -71,10 +71,10 @@ export const useSearchStore = defineStore('search', {
         return result;
       } catch (error) {
         this.error = 'Erro ao realizar busca';
+        this.clearIsAnActiveSearch();
         throw error;
       } finally {
         this.isLoading = false;
-        this.isAnActiveSearch = false;
       }
     },
 

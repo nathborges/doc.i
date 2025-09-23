@@ -32,10 +32,11 @@ const handleError = (error: any, context: string) => {
 };
 
 export const DocumentsService = {
-  async uploadDocuments(file: File, categoryId: string) {
+  async uploadDocuments(files: File[], categoryId: string) {
     try {
       if (!categoryId?.trim()) throw new Error('ID da categoria é obrigatório');
       if (!API_URL) throw new Error('API URL não configurada');
+      if (!files?.length) throw new Error('Nenhum arquivo fornecido');
 
       const maxFileSize = 10 * 1024 * 1024; // 10MB
       const allowedTypes = [
@@ -48,12 +49,20 @@ export const DocumentsService = {
         'image/png',
       ];
 
-      if (!allowedTypes.includes(file.type)) {
-        throw new Error(`Tipo de arquivo ${file.name} não permitido`);
+      // Validar todos os arquivos
+      for (const file of files) {
+        if (!allowedTypes.includes(file.type)) {
+          throw new Error(`Tipo de arquivo ${file.name} não permitido`);
+        }
+        if (file.size > maxFileSize) {
+          throw new Error(`Arquivo ${file.name} excede o tamanho máximo de 10MB`);
+        }
       }
 
       const formData = new FormData();
-      formData.append('files', file);
+      files.forEach(file => {
+        formData.append('files', file);
+      });
 
       const response = await axios.post(`${API_URL}/documents/process`, formData, {
         headers: {

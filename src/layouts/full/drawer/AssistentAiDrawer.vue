@@ -111,16 +111,19 @@
     text-align: center;
   }
 
-  .chat-container {
-    overflow-y: scroll;
-    height: 100%;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    justify-items: end;
-    font-weight: 500;
-  }
+.chat-container {
+  overflow-y: auto;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+}
+
+.chat-container > div:first-child {
+  margin-top: auto;
+}
+
 
   :deep(.v-navigation-drawer__content) {
     overflow-y: hidden !important;

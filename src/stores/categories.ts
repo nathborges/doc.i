@@ -60,6 +60,10 @@ export const useCategoriesStore = defineStore({
       const category = state.categories.find((cat) => cat.id === id);
       return category?.title || '';
     },
+    getCategorySubtitle: (state) => (id: string) => {
+      const category = state.categories.find((cat) => cat.id === id);
+      return category?.subtitle || '';
+    },
   },
   actions: {
     async loadCategories() {
@@ -103,9 +107,17 @@ export const useCategoriesStore = defineStore({
 
     async deleteCategory(categoryId: string) {
       try {
+        this.categories = this.categories.map((cat) => 
+          cat.id === categoryId ? { ...cat, deleting: true } : cat
+        );
+        
         await CategoriesService.deleteCategory(categoryId);
+        
         this.categories = this.categories.filter((cat) => cat.id !== categoryId);
       } catch (error) {
+        this.categories = this.categories.map((cat) => 
+          cat.id === categoryId ? { ...cat, deleting: false } : cat
+        );
         this.error = 'Erro ao deletar categoria';
         throw error;
       }

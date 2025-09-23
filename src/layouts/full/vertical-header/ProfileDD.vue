@@ -16,9 +16,9 @@
     <div class="pa-2">
       <h4 class="mb-n1">
         Bom dia,
-        <span class="font-weight-regular">Nathália</span>
+        <span class="font-weight-regular">Fernando</span>
       </h4>
-      <span class="text-subtitle-2 text-medium-emphasis">Administrador(a) do projeto</span>
+      <span class="text-subtitle-2 text-medium-emphasis">Administrador do projeto</span>
     </div>
     <v-divider></v-divider>
 

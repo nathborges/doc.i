@@ -5,7 +5,13 @@
   import AssistentAiDrawer from './drawer/AssistentAiDrawer.vue';
   import { RobotIcon } from 'vue-tabler-icons';
   import { useDrawerStore } from '@/stores/drawer';
+  import { useSearchStore } from '@/stores/search';
+  import { computed } from 'vue';
+  
   const drawer = useDrawerStore();
+  const searchStore = useSearchStore();
+  
+  const shouldShake = computed(() => searchStore.isLoading || searchStore.chatMessages?.length > 0);
 </script>
 
 <template>
@@ -21,6 +27,7 @@
             <RouterView />
             <v-btn
               class="ia-btn"
+              :class="{ 'shake': shouldShake }"
               size="x-large"
               icon
               variant="flat"
@@ -36,3 +43,15 @@
     </v-app>
   </v-locale-provider>
 </template>
+
+<style scoped>
+.shake {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+</style>

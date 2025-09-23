@@ -9,7 +9,7 @@
         'chat-bubble--other': !isMine
       }"
     >
-      <div class="text-body-1 first-letter-capitalize" v-html="message.text"></div>
+      <div class="text-body-1 first-letter-capitalize" v-html="displayText"></div>
       <div class="text-caption mt-1 opacity-70" :class="{ 'text-right': isMine }">
         {{ message.time }}
       </div>
@@ -20,9 +20,10 @@
 </template>
 
 <script setup>
+import { ref, onMounted, watch } from 'vue';
 import { RobotIcon } from 'vue-tabler-icons';
 
-defineProps({
+const props = defineProps({
   message: {
     type: Object,
     required: true // { text: '...', time: 'HH:mm' }
@@ -35,7 +36,37 @@ defineProps({
     type: String,
     default: ''
   }
-})
+});
+
+const displayText = ref('');
+
+const typeWriter = () => {
+  if (props.isMine) {
+    displayText.value = props.message.text;
+    return;
+  }
+  
+  displayText.value = '';
+  let i = 0;
+  const text = props.message.text;
+  
+  const timer = setInterval(() => {
+    if (i < text.length) {
+      displayText.value += text.charAt(i);
+      i++;
+    } else {
+      clearInterval(timer);
+    }
+  }, 30);
+};
+
+onMounted(() => {
+  typeWriter();
+});
+
+watch(() => props.message.text, () => {
+  typeWriter();
+});
 </script>
 
 <style scoped>
