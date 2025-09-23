@@ -162,6 +162,8 @@
         </div>
       </div>
     </v-card>
+    
+
 
     <template #footer>
       <v-btn
@@ -173,7 +175,7 @@
         :disabled="false"
         @click="uploadFiles"
       >
-        Enviar arquivos (Desativado)
+        Enviar arquivos
       </v-btn>
     </template>
   </ModalWrapper>
