@@ -63,9 +63,13 @@
     }
   };
 
+  const estimatedTime = ref(0);
+
   const handleUpload = async (data: { files: File[]; categoryId: string }) => {
     try {
+      estimatedTime.value = data.files.length * 3;
       await documentsStore.uploadDocuments(data.files, data.categoryId);
+      uploadModal.value = false;
     } catch (error) {
       console.error('Error uploading file:', error);
     }
@@ -132,5 +136,10 @@
   </v-navigation-drawer>
 
   <CategoryModal v-model="categoryModal" @create="handleCreateCategory" />
-  <UploadModal v-model="uploadModal" @upload="handleUpload" />
+  <UploadModal 
+    v-model="uploadModal" 
+    :loading="documentsStore.uploading" 
+    :estimated-time="estimatedTime"
+    @upload="handleUpload" 
+  />
 </template>

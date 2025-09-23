@@ -42,6 +42,7 @@ export const useCategoriesStore = defineStore({
   state: () => ({
     categories: [] as CategoryDisplay[],
     loading: false,
+    deleting: false,
     documentsLoading: false,
     documents: [] as Document[],
     error: null as string | null,
@@ -107,14 +108,16 @@ export const useCategoriesStore = defineStore({
 
     async deleteCategory(categoryId: string) {
       try {
-        this.categories = this.categories.filter((cat) => cat.id !== categoryId);
-        
+        this.deleting = true;
         await CategoriesService.deleteCategory(categoryId);
-      } catch (error) {
+        this.categories = this.categories.filter((cat) => cat.id !== categoryId);
 
+      } catch (error) {
         await this.loadCategories();
         this.error = 'Erro ao deletar categoria';
         throw error;
+      } finally {
+        this.deleting = false;
       }
     },
 

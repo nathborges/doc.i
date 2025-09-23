@@ -22,7 +22,7 @@
     </div>
     <v-divider></v-divider>
 
-    <perfect-scrollbar style="height: calc(100vh - 670px); max-height: 250px">
+    <perfect-scrollbar style="height: calc(100vh - 500px); max-height: 150px">
       <v-list>
         <v-list-item color="secondary" rounded="md">
           <template v-slot:prepend>

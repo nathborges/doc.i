@@ -9,6 +9,8 @@
 
   interface Props {
     modelValue: boolean;
+    loading?: boolean;
+    estimatedTime?: number;
   }
 
   const props = defineProps<Props>();
@@ -20,7 +22,7 @@
   const selectedCategory = ref('');
   const fileInput = ref<HTMLInputElement>();
   const isDragOver = ref(false);
-  const limit = 10;
+  const limit = 100;
 
   const handleDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -41,10 +43,12 @@
   };
 
   const closeModal = () => {
-    emit('update:modelValue', false);
-    selectedFiles.value = [];
-    selectedCategory.value = '';
-    if (fileInput.value) fileInput.value.value = '';
+    if (!props.loading) {
+      emit('update:modelValue', false);
+      selectedFiles.value = [];
+      selectedCategory.value = '';
+      if (fileInput.value) fileInput.value.value = '';
+    }
   };
 
   const selectFiles = () => {
@@ -64,7 +68,6 @@
         files: selectedFiles.value,
         categoryId: selectedCategory.value,
       });
-      closeModal();
     }
   };
 
@@ -85,7 +88,7 @@
 </script>
 
 <template>
-  <ModalWrapper :is-open="props.modelValue" title="Upload de Arquivos" @close="closeModal">
+  <ModalWrapper :is-open="props.modelValue" :loading="props.loading" title="Upload de Arquivos" @close="closeModal">
     <input
       ref="fileInput"
       type="file"
@@ -103,16 +106,17 @@
       label="Categoria"
       variant="outlined"
       :hide-details="true"
+      :disabled="props.loading"
       class="mb-4"
     />
 
     <v-card variant="outlined" class="upload-area" :class="{ 'drag-over': isDragOver }">
       <div 
         class="upload-content pa-3 pr-0" 
-        @click="selectFiles"
-        @drop="handleDrop"
-        @dragover="handleDragOver"
-        @dragleave="handleDragLeave"
+        @click="!props.loading ? selectFiles() : null"
+        @drop="!props.loading ? handleDrop : null"
+        @dragover="!props.loading ? handleDragOver : null"
+        @dragleave="!props.loading ? handleDragLeave : null"
       >
         <div
           v-if="selectedFiles.length <= 0"
@@ -150,6 +154,7 @@
                       size="x-small"
                       variant="text"
                       color="error"
+                      :disabled="props.loading"
                       @click="removeFile(index)"
                     >
                       <XIcon size="14" />
@@ -165,6 +170,12 @@
     
 
 
+    <div v-if="props.loading && props.estimatedTime" class="text-center mt-3 mb-3">
+      <v-chip color="info" size="small">
+        Tempo estimado: ~{{ props.estimatedTime }}s
+      </v-chip>
+    </div>
+
     <template #footer>
       <v-btn
         color="primary"
@@ -172,10 +183,11 @@
         variant="flat"
         size="large"
         rounded="sm"
-        :disabled="false"
+        :disabled="selectedFiles.length === 0 || !selectedCategory || props.loading"
+        :loading="props.loading"
         @click="uploadFiles"
       >
-        Enviar arquivos
+        {{ props.loading ? 'Enviando...' : 'Enviar arquivos' }}
       </v-btn>
     </template>
   </ModalWrapper>

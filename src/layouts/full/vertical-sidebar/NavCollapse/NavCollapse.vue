@@ -27,7 +27,11 @@
   <!-- ---------------------------------------------- -->
   <template v-for="(subitem, i) in item.children" :key="i">
     <NavCollapse :item="subitem" v-if="subitem.children" :level="props.level + 1" />
-    <NavItem :item="subitem" :level="props.level + 1" v-else></NavItem>
+<div class="pl-5" v-else>
+  <NavItem :item="subitem" :level="props.level + 1"></NavItem>
+</div>
+
+
   </template>
 
   <!-- ---------------------------------------------- -->
