@@ -77,7 +77,10 @@
                     </v-menu>
                   </div>
                 </div>
-                <h2 class="text-h3 font-weight-medium text-white text-capitalize">
+                <h2 class="text-h4 font-weight-medium text-white text-capitalize d-none d-sm-block">
+                  {{ category.title }}
+                </h2>
+                <h2 class="text-h5 font-weight-bold text-white text-capitalize d-block d-sm-none">
                   {{ category.title }}
                 </h2>
 
@@ -113,7 +116,7 @@
               height="160"
             >
               <v-card-text class="pa-4">
-                <div class="d-flex align-start mb-4">
+                <div class="d-flex align-start mb-2">
                   <v-skeleton-loader type="avatar" width="32" height="32" class="mr-3" />
                   <v-spacer />
                   <v-skeleton-loader type="button" width="20" height="20" />
@@ -168,7 +171,7 @@
   }
 
   .category-card {
-    width: 180px;
+    min-width: 200px;
     flex-shrink: 1;
     height: 160px;
   }

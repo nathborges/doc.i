@@ -21,10 +21,15 @@
           <SearchIcon size="20" stroke-width="1.5" />
         </v-btn>
       </div>
-      <h2 class="text-h1 font-weight-medium">
+      <h2 class="text-h1 d-none d-md-block font-weight-medium">
         {{ userStore.loading ? '--' : userStore.user?.totalDocuments || '0' }}
         <a href="#"><CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" /></a>
       </h2>
+      <h2 class="text-h2 d-block d-md-none font-weight-medium">
+        {{ userStore.loading ? '--' : userStore.user?.totalDocuments || '0' }}
+        <a href="#"><CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" /></a>
+      </h2>
+
       <span class="text-subtitle-1 text-medium-emphasis text-white">Documentos analisados</span>
     </v-card-text>
   </v-card>

@@ -8,7 +8,7 @@
 <template>
   <v-card variant="flat">
     <v-card-item>
-      <div class="d-sm-flex align-center justify-space-between">
+      <div class="d-sm-flex align-center justify-space-between d-flex">
         <v-card-title>{{ props.title }}</v-card-title>
         <slot name="action"></slot>
       </div>

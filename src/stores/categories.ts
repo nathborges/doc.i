@@ -107,17 +107,12 @@ export const useCategoriesStore = defineStore({
 
     async deleteCategory(categoryId: string) {
       try {
-        this.categories = this.categories.map((cat) => 
-          cat.id === categoryId ? { ...cat, deleting: true } : cat
-        );
+        this.categories = this.categories.filter((cat) => cat.id !== categoryId);
         
         await CategoriesService.deleteCategory(categoryId);
-        
-        this.categories = this.categories.filter((cat) => cat.id !== categoryId);
       } catch (error) {
-        this.categories = this.categories.map((cat) => 
-          cat.id === categoryId ? { ...cat, deleting: false } : cat
-        );
+
+        await this.loadCategories();
         this.error = 'Erro ao deletar categoria';
         throw error;
       }

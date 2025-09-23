@@ -11,7 +11,10 @@
   const drawer = useDrawerStore();
   const searchStore = useSearchStore();
   
-  const shouldShake = computed(() => searchStore.isLoading || searchStore.chatMessages?.length > 0);
+  const shouldShake = computed(() => {
+    console.log('shouldShake:', searchStore.shouldShake);
+    return searchStore.shouldShake;
+  });
 </script>
 
 <template>
@@ -46,12 +49,17 @@
 
 <style scoped>
 .shake {
-  animation: shake 0.5s ease-in-out infinite;
+  animation: chatShake 0.8s ease-in-out;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-2px); }
-  75% { transform: translateX(2px); }
+@keyframes chatShake {
+  0% { transform: translateX(0); }
+  10% { transform: translateX(-3px); }
+  20% { transform: translateX(3px); }
+  30% { transform: translateX(-2px); }
+  40% { transform: translateX(2px); }
+  50% { transform: translateX(-1px); }
+  60% { transform: translateX(1px); }
+  100% { transform: translateX(0); }
 }
 </style>

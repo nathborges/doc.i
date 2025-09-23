@@ -146,7 +146,7 @@
 </script>
 
 <template>
-  <v-card elevation="0" class="bg-primary overflow-hidden bubble-shape bubble-primary-shape">
+  <v-card elevation="0" class="bg-secondary overflow-hidden bubble-shape bubble-primary-shape">
     <v-card-text>
       <div class="d-flex align-start mb-3">
         <v-btn icon rounded="sm" color="darkprimary" variant="flat">
@@ -163,18 +163,22 @@
         <v-tabs-window-item value="1">
           <v-row>
             <v-col cols="6">
-              <h2 class="text-h1 d-none d-md-block font-weight-medium">
-                {{ storage }}
+              <div class="d-none d-md-block">
+                <h2 class="text-h1 font-weight-medium">
+                  {{ storage }}
+                  <a href="#">
+                    <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
+                  </a>
+                </h2>
+              </div>
+              <div class="d-flex align-center d-block d-md-none">
+                <h2 class="text-h2 font-weight-medium mr-2 mobile-storage">
+                  {{ storage }}
+                </h2>
                 <a href="#">
-                  <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
+                  <CircleArrowUpRightIcon stroke-width="1.5" width="24" class="text-white" />
                 </a>
-              </h2>
-              <h2 class="text-h2 d-block d-md-none font-weight-medium">
-                {{ storage }}
-                <a href="#">
-                  <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
-                </a>
-              </h2>
+              </div>
               <span class="text-subtitle-1 text-medium-emphasis text-white">
                 Armazenamento utilizado
               </span>
@@ -192,18 +196,22 @@
         <v-tabs-window-item value="2">
           <v-row>
             <v-col cols="6">
-              <h2 class="text-h1 d-none d-md-block font-weight-medium">
-                {{ storage }}
+              <div class="d-none d-md-block">
+                <h2 class="text-h1 font-weight-medium">
+                  {{ storage }}
+                  <a href="#">
+                    <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
+                  </a>
+                </h2>
+              </div>
+              <div class="d-flex align-center d-block d-md-none">
+                <h2 class="text-h2 font-weight-medium mr-2 mobile-storage">
+                  {{ storage }}
+                </h2>
                 <a href="#">
-                  <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
+                  <CircleArrowUpRightIcon stroke-width="1.5" width="24" class="text-white" />
                 </a>
-              </h2>
-              <h2 class="text-h2 d-block d-md-none font-weight-medium">
-                {{ storage }}
-                <a href="#">
-                  <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
-                </a>
-              </h2>
+              </div>
               <span class="text-subtitle-1 text-medium-emphasis text-white">
                 Armazenamento Usado
               </span>
@@ -222,3 +230,9 @@
     </v-card-text>
   </v-card>
 </template>
+
+<style scoped>
+.mobile-storage {
+  font-size: 1.2rem !important;
+}
+</style>

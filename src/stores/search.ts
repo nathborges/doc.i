@@ -12,12 +12,19 @@ export const useSearchStore = defineStore('search', {
     isAnActiveSearch: false,
     lastSearchFileNames: [] as SearchFile[],
     error: null as string | null,
+    shouldShake: false,
   }),
 
   actions: {
     async performSearch(query: string, categoryId: string | null) {
       this.isLoading = true;
+      this.shouldShake = true;
       this.error = null;
+
+      // Vibra o celular se suportado
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
 
       // Adiciona mensagem do usuário
       const userTime = new Date().toLocaleString('pt-BR', {
@@ -75,6 +82,10 @@ export const useSearchStore = defineStore('search', {
         throw error;
       } finally {
         this.isLoading = false;
+        // Para o shake após a animação
+        setTimeout(() => {
+          this.shouldShake = false;
+        }, 600);
       }
     },
 

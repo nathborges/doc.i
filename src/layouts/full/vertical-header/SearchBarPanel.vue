@@ -36,7 +36,6 @@
 
     try {
       await searchStore.performSearch(searchQuery.value, categoryId.value);
-      drawer.SET_IA_DRAWER(true);
     } catch (error) {
       console.error('Erro na busca:', error);
     }

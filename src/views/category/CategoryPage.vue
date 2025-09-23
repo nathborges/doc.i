@@ -2,7 +2,7 @@
   <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
     <!-- Overlay de loading -->
     <template v-slot:action>
-      <v-chip v-if="!mobile" size="small" color="primary" variant="tonal">
+      <v-chip size="small" color="primary" variant="tonal">
         {{ documents.length }} arquivos
       </v-chip>
     </template>
@@ -33,9 +33,9 @@
         :hide-default-footer="true" hide-no-data class="elevation-0" height="60vh" hover density="comfortable">
         <template v-slot:item.fileName="{ item }">
           <div class="d-flex align-center py-2">
-            <v-avatar size="32" variant="tonal" class="mr-3">
+            <!-- <v-avatar size="32" variant="tonal" class="mr-3">
               <FileFilledIcon size="16" stroke-width="1.5" />
-            </v-avatar>
+            </v-avatar> -->
             <div class="text-body-1">{{ item.fileName }}</div>
           </div>
         </template>
@@ -113,13 +113,6 @@ const headers = computed(() => {
   const baseHeaders = [
     { title: 'Nome', key: 'fileName', align: 'start' as const, sortable: true, width: '30%' },
     { title: 'Tamanho', key: 'fileSize', align: 'start' as const, sortable: true, width: '15%' },
-    {
-      title: 'Data de Criação',
-      key: 'createdAt',
-      align: 'start' as const,
-      sortable: true,
-      width: '20%',
-    },
     { title: 'Ações', key: 'actions', sortable: false, align: 'center' as const, width: '20%' },
   ];
 
@@ -130,6 +123,13 @@ const headers = computed(() => {
       align: 'start' as const,
       sortable: true,
       width: '15%',
+    });
+    baseHeaders.splice(3, 0, {
+      title: 'Data de Criação',
+      key: 'createdAt',
+      align: 'start' as const,
+      sortable: true,
+      width: '20%',
     });
   }
 
