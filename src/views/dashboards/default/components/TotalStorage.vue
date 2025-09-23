@@ -148,7 +148,7 @@
 <template>
   <v-card elevation="0" class="bg-secondary overflow-hidden bubble-shape bubble-primary-shape">
     <v-card-text>
-      <div class="d-flex align-start mb-3">
+      <div class="d-flex align-start mb-6">
         <v-btn icon rounded="sm" color="darkprimary" variant="flat">
           <DatabaseIcon stroke-width="1.5" width="20" />
         </v-btn>
