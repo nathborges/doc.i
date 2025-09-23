@@ -58,7 +58,7 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <div class="d-flex gap-1">
+          <div class="d-flex gap-1 justify-center">
                       <v-btn icon size="small" variant="text" color="primary" :href="item.fileLocation" target="_blank">
             <DownloadIcon size="16" stroke-width="1.5" />
           </v-btn>
