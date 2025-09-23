@@ -1,8 +1,8 @@
 <template>
   <v-overlay
     :model-value="isVisible"
-    scrim="rgba(0, 0, 0, 10)"
-    class="align-center justify-center"
+    scrim="rgba(0, 0, 0, 0.6)"
+    class="align-center justify-center loading-overlay"
     persistent
     z-index="9999"
   >
@@ -21,3 +21,10 @@
 
   defineProps<Props>();
 </script>
+
+<style scoped>
+.loading-overlay {
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+</style>

@@ -28,7 +28,8 @@
       <div class="text-h5 mt-2">Carregando documentos...</div>
     </div>
     
-    <div v-else-if="documents.length > 0" class="d-flex flex-column">
+    <div v-else-if="documents.length > 0" class="d-flex flex-column position-relative">
+      <LoadingOverlay :isVisible="categoriesStore.deletingDocument" message="Deletando documento..." />
       <v-data-table :headers="headers" :items="documents" :items-per-page="-1" :loading="loading"
         :hide-default-footer="true" hide-no-data class="elevation-0" height="60vh" hover density="comfortable" :sort-by="[{ key: 'fileName', order: 'asc' }]">
         <template v-slot:item.fileName="{ item }">
@@ -67,8 +68,6 @@
               size="small" 
               variant="text" 
               color="error" 
-              :loading="categoriesStore.deletingDocument"
-              :disabled="categoriesStore.deletingDocument"
               @click="deleteDocument(item.id)"
             >
               <TrashIcon size="16" stroke-width="1.5" />
@@ -98,6 +97,7 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { formatFileSize, formatDate } from '@/utils/formatter';
 import ReportModal from '@/components/shared/ReportModal.vue';
 import { useSearchStore } from '@/stores/search';
+import LoadingOverlay from '@/components/shared/LoadingOverlay.vue';
 
 const route = useRoute();
 const { mobile } = useDisplay();

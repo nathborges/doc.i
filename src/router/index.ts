@@ -32,26 +32,38 @@ interface AuthStore {
   checkAuth(): Promise<boolean>;
 }
 
-router.beforeEach(async (to, from, next) => {
-  // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ['/'];
-  const auth: AuthStore = useAuthStore();
+// router.beforeEach(async (to, from, next) => {
+//   // redirect to login page if not logged in and trying to access a restricted page
+//   const publicPages = ['/'];
+//   const auth: AuthStore = useAuthStore();
 
-  const isPublicPage = publicPages.includes(to.path);
-  const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
-  const isAuthenticated = await auth.checkAuth();
+//   const isPublicPage = publicPages.includes(to.path);
+//   const authRequired = !isPublicPage && to.matched.some((record) => record.meta.requiresAuth);
+//   const isAuthenticated = await auth.checkAuth();
 
-  if (authRequired && !auth.isAuthenticated) {
-    auth.returnUrl = to.fullPath; // Save the intended page
+//   if (authRequired && !auth.isAuthenticated) {
+//     auth.returnUrl = to.fullPath; // Save the intended page
+//     next('/login');
+//   } else if (auth.user && to.path === '/login') {
+//     // User logged in and trying to access the login page
+//     next({
+//       query: {
+//         ...to.query,
+//         redirect: auth.returnUrl !== '/' ? to.fullPath : undefined,
+//       },
+//     });
+//   } else {
+//     next();
+//   }
+// });
+
+router.beforeEach((to, from, next) => {
+  const publicPages = ['/login', '/'];
+  const authRequired = !publicPages.includes(to.path);
+  const token = localStorage.getItem('token');
+
+  if (authRequired && !token) {
     next('/login');
-  } else if (auth.user && to.path === '/login') {
-    // User logged in and trying to access the login page
-    next({
-      query: {
-        ...to.query,
-        redirect: auth.returnUrl !== '/' ? to.fullPath : undefined,
-      },
-    });
   } else {
     next();
   }

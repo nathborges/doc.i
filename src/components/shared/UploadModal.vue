@@ -6,6 +6,7 @@
   import { getFileIcon } from '@/utils/fileIcons';
   import { formatFileSize } from '@/utils/formatter';
   import { useRouter } from 'vue-router';
+  import LoadingOverlay from './LoadingOverlay.vue';
 
   interface Props {
     modelValue: boolean;
@@ -89,91 +90,99 @@
 
 <template>
   <ModalWrapper :is-open="props.modelValue" :loading="props.loading" title="Upload de Arquivos" @close="closeModal">
-    <input
-      ref="fileInput"
-      type="file"
-      multiple
-      style="display: none"
-      @change="handleFileSelect"
-      accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-    />
+    <div class="position-relative">
+      <LoadingOverlay :isVisible="props.loading" message="Enviando arquivos..." />
+      
+      <input
+        ref="fileInput"
+        type="file"
+        multiple
+        style="display: none"
+        @change="handleFileSelect"
+        accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+      />
 
-    <v-select
-      v-model="selectedCategory"
-      :items="categoriesStore.categories"
-      item-title="title"
-      item-value="id"
-      label="Categoria"
-      variant="outlined"
-      :hide-details="true"
-      :disabled="props.loading"
-      class="mb-4"
-    />
+      <v-select
+        v-model="selectedCategory"
+        :items="categoriesStore.categories"
+        item-title="title"
+        item-value="id"
+        label="Categoria"
+        variant="outlined"
+        :hide-details="true"
+        :disabled="props.loading"
+        class="mb-4"
+      />
 
-    <v-card variant="outlined" class="upload-area" :class="{ 'drag-over': isDragOver }">
-      <div 
-        class="upload-content pa-3 pr-0" 
-        @click="!props.loading ? selectFiles() : null"
-        @drop="!props.loading ? handleDrop : null"
-        @dragover="!props.loading ? handleDragOver : null"
-        @dragleave="!props.loading ? handleDragLeave : null"
-      >
-        <div
-          v-if="selectedFiles.length <= 0"
-          class="text-center h-100 d-flex flex-column align-center justify-center"
+      <v-card variant="outlined" class="upload-area" :class="{ 'drag-over': isDragOver }">
+        <div 
+          class="upload-content pa-3 pr-0" 
+          @click="!props.loading ? selectFiles() : null"
+          @drop="!props.loading ? handleDrop : null"
+          @dragover="!props.loading ? handleDragOver : null"
+          @dragleave="!props.loading ? handleDragLeave : null"
         >
-          <CloudUploadIcon size="48" class="text-primary" />
-          <div class="text-h6 mb-2">Arraste arquivos ou clique para selecionar</div>
-          <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
-          <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
-        </div>
-        <div v-else class="files-container">
-          <div class="pt-2 pb-2">
-            <div class="text-subtitle-2 mb-3">
-              {{ selectedFiles.length }} arquivo(s) selecionado(s)
-            </div>
-            <v-divider />
+          <div
+            v-if="selectedFiles.length <= 0"
+            class="text-center h-100 d-flex flex-column align-center justify-center"
+          >
+            <CloudUploadIcon size="48" class="text-primary" />
+            <div class="text-h6 mb-2">Arraste arquivos ou clique para selecionar</div>
+            <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
+            <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
+          </div>
+          <div v-else class="files-container">
+            <div class="pt-2 pb-2">
+              <div class="text-subtitle-2 mb-3">
+                {{ selectedFiles.length }} arquivo(s) selecionado(s)
+              </div>
+              <v-divider />
 
-            <div class="files-list">
-              <v-list density="compact" class="pa-0">
-                <v-list-item v-for="(file, index) in selectedFiles" :key="index" class="px-0 py-1">
-                  <template v-slot:prepend>
-                    <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
-                  </template>
+              <div class="files-list">
+                <v-list density="compact" class="pa-0">
+                  <v-list-item v-for="(file, index) in selectedFiles" :key="index" class="px-0 py-1">
+                    <template v-slot:prepend>
+                      <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
+                    </template>
 
-                  <v-list-item-title class="file-name text-body-2">
-                    {{ file.name }}
-                  </v-list-item-title>
-                  <v-list-item-subtitle class="text-caption">
-                    {{ formatFileSize(file.size) }}
-                  </v-list-item-subtitle>
+                    <v-list-item-title class="file-name text-body-2">
+                      {{ file.name }}
+                    </v-list-item-title>
+                    <v-list-item-subtitle class="text-caption">
+                      {{ formatFileSize(file.size) }}
+                    </v-list-item-subtitle>
 
-                  <template v-slot:append>
-                    <v-btn
-                      icon
-                      size="x-small"
-                      variant="text"
-                      color="error"
-                      :disabled="props.loading"
-                      @click="removeFile(index)"
-                    >
-                      <XIcon size="14" />
-                    </v-btn>
-                  </template>
-                </v-list-item>
-              </v-list>
+                    <template v-slot:append>
+                      <v-btn
+                        icon
+                        size="x-small"
+                        variant="text"
+                        color="error"
+                        :disabled="props.loading"
+                        @click="removeFile(index)"
+                      >
+                        <XIcon size="14" />
+                      </v-btn>
+                    </template>
+                  </v-list-item>
+                </v-list>
+              </div>
             </div>
           </div>
         </div>
+      </v-card>
+      
+
+      <div v-if="props.loading && props.estimatedTime" class="text-center mt-3 mb-3">
+        <v-chip color="info" size="small">
+          Tempo estimado: ~{{ props.estimatedTime }}s
+        </v-chip>
       </div>
-    </v-card>
-    
-
-
-    <div v-if="props.loading && props.estimatedTime" class="text-center mt-3 mb-3">
-      <v-chip color="info" size="small">
-        Tempo estimado: ~{{ props.estimatedTime }}s
-      </v-chip>
+        <div v-if="true" class="text-center mt-3 mb-3">
+        <v-chip color="error" size="small">
+          Upload será reativado após a apresentação.
+        </v-chip>
+      </div>
     </div>
 
     <template #footer>
@@ -183,7 +192,7 @@
         variant="flat"
         size="large"
         rounded="sm"
-        :disabled="selectedFiles.length === 0 || !selectedCategory || props.loading"
+        :disabled="true"
         :loading="props.loading"
         @click="uploadFiles"
       >
