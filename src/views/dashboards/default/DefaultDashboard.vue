@@ -6,10 +6,10 @@
 
 <template>
   <v-row>
-    <v-col cols="6">
+    <v-col cols="12" md="6">
       <TotalAnalized />
     </v-col>
-    <v-col cols="6">
+    <v-col cols="12" md="6">
       <TotalStorage />
     </v-col>
     <!-- <v-col cols="12" md="4">

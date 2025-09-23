@@ -163,7 +163,13 @@
         <v-tabs-window-item value="1">
           <v-row>
             <v-col cols="6">
-              <h2 class="text-h1 font-weight-medium">
+              <h2 class="text-h1 d-none d-md-block font-weight-medium">
+                {{ storage }}
+                <a href="#">
+                  <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
+                </a>
+              </h2>
+              <h2 class="text-h2 d-block d-md-none font-weight-medium">
                 {{ storage }}
                 <a href="#">
                   <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
@@ -186,7 +192,13 @@
         <v-tabs-window-item value="2">
           <v-row>
             <v-col cols="6">
-              <h2 class="text-h1 font-weight-medium">
+              <h2 class="text-h1 d-none d-md-block font-weight-medium">
+                {{ storage }}
+                <a href="#">
+                  <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
+                </a>
+              </h2>
+              <h2 class="text-h2 d-block d-md-none font-weight-medium">
                 {{ storage }}
                 <a href="#">
                   <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
