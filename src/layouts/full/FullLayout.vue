@@ -12,8 +12,15 @@
   const searchStore = useSearchStore();
   
   const shouldShake = computed(() => {
-    return false;
+    return searchStore.newSearch;
   });
+
+  const openDrawer = () => {
+    searchStore.setNewSearchFalse();
+    console.log(searchStore.newSearch)
+
+    drawer.SET_IA_DRAWER(true);
+  };  
 </script>
 
 <template>
@@ -34,7 +41,7 @@
               icon
               variant="flat"
               color="secondary"
-              @click="drawer.SET_IA_DRAWER(true)"
+              @click="openDrawer()"
             >
               <RobotIcon size="28" />
             </v-btn>
@@ -48,17 +55,15 @@
 
 <style scoped>
 .shake {
-  animation: chatShake 0.5s ease-in-out infinite;
+  animation: pulse-shake 1.5s infinite;
 }
 
-@keyframes chatShake {
-  0% { transform: translateX(0); }
-  10% { transform: translateX(-3px); }
-  20% { transform: translateX(3px); }
-  30% { transform: translateX(-2px); }
-  40% { transform: translateX(2px); }
-  50% { transform: translateX(-1px); }
-  60% { transform: translateX(1px); }
-  100% { transform: translateX(0); }
+@keyframes pulse-shake {
+  0%, 70%, 100% { transform: scale(1) translateX(0); }
+  10% { transform: scale(1.05) translateX(-2px); }
+  20% { transform: scale(1.05) translateX(2px); }
+  30% { transform: scale(1.05) translateX(-2px); }
+  40% { transform: scale(1.05) translateX(2px); }
+  50% { transform: scale(1) translateX(0); }
 }
 </style>

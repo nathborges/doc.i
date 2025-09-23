@@ -12,6 +12,7 @@ export const useSearchStore = defineStore('search', {
     isAnActiveSearch: false,
     lastSearchFileNames: [] as SearchFile[],
     error: null as string | null,
+    newSearch: false,
   }),
 
   actions: {
@@ -80,7 +81,12 @@ export const useSearchStore = defineStore('search', {
         throw error;
       } finally {
         this.isLoading = false;
+        this.newSearch = true;
       }
+    },
+
+    setNewSearchFalse() {
+      this.newSearch = false;
     },
 
     clearCurrent() {
