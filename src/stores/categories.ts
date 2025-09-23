@@ -42,7 +42,8 @@ export const useCategoriesStore = defineStore({
   state: () => ({
     categories: [] as CategoryDisplay[],
     loading: false,
-    deleting: false,
+    deletingCategory: false,
+    deletingDocument: false,
     documentsLoading: false,
     documents: [] as Document[],
     error: null as string | null,
@@ -108,7 +109,7 @@ export const useCategoriesStore = defineStore({
 
     async deleteCategory(categoryId: string) {
       try {
-        this.deleting = true;
+        this.deletingCategory = true;
         await CategoriesService.deleteCategory(categoryId);
         this.categories = this.categories.filter((cat) => cat.id !== categoryId);
 
@@ -117,7 +118,7 @@ export const useCategoriesStore = defineStore({
         this.error = 'Erro ao deletar categoria';
         throw error;
       } finally {
-        this.deleting = false;
+        this.deletingCategory = false;
       }
     },
 
@@ -135,13 +136,16 @@ export const useCategoriesStore = defineStore({
       }
     },
 
-    async deleteDocument(documentId: string) {
+    async deleteDocument(documentId: string, categoryId: string) {
       try {
-        await CategoriesService.deleteDocument(documentId);
+        this.deletingDocument = true;
+        await CategoriesService.deleteDocument(documentId, categoryId);
         this.documents = this.documents.filter((doc: any) => doc.id !== documentId);
       } catch (error) {
         this.error = 'Erro ao deletar documento';
         throw error;
+      } finally {
+        this.deletingDocument = false;
       }
     },
 

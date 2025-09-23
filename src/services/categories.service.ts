@@ -102,12 +102,17 @@ export const CategoriesService = {
     }
   },
 
-  async deleteDocument(documentId: string): Promise<void> {
+  async deleteDocument(documentId: string, categoryId: string): Promise<void> {
     try {
       if (!documentId?.trim()) throw new Error('ID do documento é obrigatório');
+      if (!categoryId?.trim()) throw new Error('ID da categoria é obrigatório');
       if (!API_URL) throw new Error('API URL não configurada');
 
-      await axios.delete(`${API_URL}/documents/${documentId.trim()}`);
+      await axios.delete(`${API_URL}/documents/${documentId.trim()}`, {
+        headers: {
+          'X-Category-Id': categoryId.trim(),
+        },
+      });
     } catch (error) {
       handleError(error, 'Delete document');
     }

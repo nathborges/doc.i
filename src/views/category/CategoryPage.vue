@@ -30,7 +30,7 @@
     
     <div v-else-if="documents.length > 0" class="d-flex flex-column">
       <v-data-table :headers="headers" :items="documents" :items-per-page="-1" :loading="loading"
-        :hide-default-footer="true" hide-no-data class="elevation-0" height="60vh" hover density="comfortable">
+        :hide-default-footer="true" hide-no-data class="elevation-0" height="60vh" hover density="comfortable" :sort-by="[{ key: 'fileName', order: 'asc' }]">
         <template v-slot:item.fileName="{ item }">
           <div class="d-flex align-center py-2">
             <!-- <v-avatar size="32" variant="tonal" class="mr-3">
@@ -59,15 +59,21 @@
 
         <template v-slot:item.actions="{ item }">
           <div class="d-flex gap-1 justify-center">
-                      <v-btn icon size="small" variant="text" color="primary" :href="item.fileLocation" target="_blank">
-            <DownloadIcon size="16" stroke-width="1.5" />
-          </v-btn>
-          <v-btn icon size="small" variant="text" color="error" @click="deleteDocument(item.id)">
-            <TrashIcon size="16" stroke-width="1.5" />
-          </v-btn>
-
+            <v-btn icon size="small" variant="text" color="primary" :href="item.fileLocation" target="_blank">
+              <DownloadIcon size="16" stroke-width="1.5" />
+            </v-btn>
+            <v-btn 
+              icon 
+              size="small" 
+              variant="text" 
+              color="error" 
+              :loading="categoriesStore.deletingDocument"
+              :disabled="categoriesStore.deletingDocument"
+              @click="deleteDocument(item.id)"
+            >
+              <TrashIcon size="16" stroke-width="1.5" />
+            </v-btn>
           </div>
-
         </template>
       </v-data-table>
     </div>
@@ -153,7 +159,7 @@ const exportReport = async (tags: string) => {
 
 const deleteDocument = async (documentId: string) => {
   try {
-    await categoriesStore.deleteDocument(documentId);
+    await categoriesStore.deleteDocument(documentId, categoryId.value);
   } catch (error) {
     console.error('Erro ao deletar documento:', error);
   }

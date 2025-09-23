@@ -65,6 +65,8 @@
                             v-for="(item, itemIndex) in menuItems"
                             :key="itemIndex"
                             :value="itemIndex"
+                            :loading="categoriesStore.deletingCategory"
+                            :disabled="categoriesStore.deletingCategory"
                             @click="item.action === 'delete' ? deleteCategory(category.id) : null"
                           >
                             <template v-slot:prepend>
