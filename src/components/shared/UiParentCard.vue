@@ -1,6 +1,7 @@
 <script setup lang="ts">
   const props = defineProps({
     title: String,
+    subtitle: String,
   });
 </script>
 
@@ -9,7 +10,10 @@
   <v-card variant="flat">
     <v-card-item>
       <div class="d-sm-flex align-center justify-space-between d-flex">
-        <v-card-title>{{ props.title }}</v-card-title>
+        <div>
+          <v-card-title>{{ props.title }}</v-card-title>
+          <v-card-subtitle v-if="props.subtitle">{{ props.subtitle }}</v-card-subtitle>
+        </div>
         <slot name="action"></slot>
       </div>
     </v-card-item>

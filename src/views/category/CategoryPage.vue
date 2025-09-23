@@ -1,5 +1,5 @@
 <template>
-  <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
+  <UiParentCard :title="`${categoryName}`" :subtitle="categoryDescription" class="w-100 h-100">
     <!-- Overlay de loading -->
     <template v-slot:action>
       <v-chip size="small" color="primary" variant="tonal">
@@ -115,7 +115,7 @@ const documents = computed(() =>
 );
 const loading = computed(() => categoriesStore.documentsLoading);
 const tableTitle = computed(() =>
-  isSearchMode.value ? 'Resultados da busca:' : 'Arquivos da categoria'
+  isSearchMode.value ? 'Resultados da busca:' : 'Arquivos:'
 );
 
 const headers = computed(() => {
