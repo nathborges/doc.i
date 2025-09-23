@@ -82,17 +82,24 @@
       if (isOpen) {
         categoriesStore.loadCategories();
         const categoryId = router.currentRoute.value.params.id;
-        selectedCategory.value = Array.isArray(categoryId) ? (categoryId[0] ?? '') : (categoryId ?? '');
+        selectedCategory.value = Array.isArray(categoryId)
+          ? (categoryId[0] ?? '')
+          : (categoryId ?? '');
       }
     }
   );
 </script>
 
 <template>
-  <ModalWrapper :is-open="props.modelValue" :loading="props.loading" title="Upload de Arquivos" @close="closeModal">
+  <ModalWrapper
+    :is-open="props.modelValue"
+    :loading="props.loading"
+    title="Upload de Arquivos"
+    @close="closeModal"
+  >
     <div class="position-relative">
       <LoadingOverlay :isVisible="props.loading" message="Enviando arquivos..." />
-      
+
       <input
         ref="fileInput"
         type="file"
@@ -115,8 +122,8 @@
       />
 
       <v-card variant="outlined" class="upload-area" :class="{ 'drag-over': isDragOver }">
-        <div 
-          class="upload-content pa-3 pr-0" 
+        <div
+          class="upload-content pa-3 pr-0"
           @click="!props.loading ? selectFiles() : null"
           @drop="!props.loading ? handleDrop : null"
           @dragover="!props.loading ? handleDragOver : null"
@@ -140,7 +147,11 @@
 
               <div class="files-list">
                 <v-list density="compact" class="pa-0">
-                  <v-list-item v-for="(file, index) in selectedFiles" :key="index" class="px-0 py-1">
+                  <v-list-item
+                    v-for="(file, index) in selectedFiles"
+                    :key="index"
+                    class="px-0 py-1"
+                  >
                     <template v-slot:prepend>
                       <component :is="getFileIcon(file.name)" size="18" class="mr-3" />
                     </template>
@@ -171,17 +182,12 @@
           </div>
         </div>
       </v-card>
-      
 
       <div v-if="props.loading && props.estimatedTime" class="text-center mt-3 mb-3">
-        <v-chip color="info" size="small">
-          Tempo estimado: ~{{ props.estimatedTime }}s
-        </v-chip>
+        <v-chip color="info" size="small">Tempo estimado: ~{{ props.estimatedTime }}s</v-chip>
       </div>
-        <div v-if="true" class="text-center mt-3 mb-3">
-        <v-chip color="error" size="small">
-          Upload será reativado após a apresentação.
-        </v-chip>
+      <div v-if="true" class="text-center mt-3 mb-3">
+        <v-chip color="error" size="small">Upload será reativado após a apresentação.</v-chip>
       </div>
     </div>
 

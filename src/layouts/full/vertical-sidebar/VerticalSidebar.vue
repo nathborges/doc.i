@@ -136,10 +136,10 @@
   </v-navigation-drawer>
 
   <CategoryModal v-model="categoryModal" @create="handleCreateCategory" />
-  <UploadModal 
-    v-model="uploadModal" 
-    :loading="documentsStore.uploading" 
+  <UploadModal
+    v-model="uploadModal"
+    :loading="documentsStore.uploading"
     :estimated-time="estimatedTime"
-    @upload="handleUpload" 
+    @upload="handleUpload"
   />
 </template>

@@ -1,6 +1,7 @@
 import { SearchService } from '@/services/search.service';
 import { defineStore } from 'pinia';
 import type { SearchResult, SearchFile } from '@/types/search';
+import { useDrawerStore } from '@/stores/drawer';
 
 export const useSearchStore = defineStore('search', {
   state: () => ({
@@ -17,6 +18,8 @@ export const useSearchStore = defineStore('search', {
 
   actions: {
     async performSearch(query: string, categoryId: string | null) {
+      const drawerStore = useDrawerStore();
+
       this.isLoading = true;
       this.error = null;
 
@@ -36,7 +39,7 @@ export const useSearchStore = defineStore('search', {
         text: query,
         time: userTime,
         isMine: true,
-        query: query
+        query: query,
       });
 
       try {
@@ -63,7 +66,7 @@ export const useSearchStore = defineStore('search', {
             .replace(/\\_/g, '_')
             .replace(/\n/g, '<br>'),
           time: aiTime,
-          isMine: false
+          isMine: false,
         });
 
         this.currentResult = result;
@@ -81,7 +84,9 @@ export const useSearchStore = defineStore('search', {
         throw error;
       } finally {
         this.isLoading = false;
-        this.newSearch = true;
+        if (!drawerStore.iaDrawerIsOpen) {
+          this.newSearch = true;
+        }
       }
     },
 

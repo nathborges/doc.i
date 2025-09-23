@@ -19,16 +19,22 @@
   };
 
   // Scroll para baixo quando drawer abre
-  watch(() => drawer.iaDrawerIsOpen, (isOpen) => {
-    if (isOpen) {
-      scrollToBottom();
+  watch(
+    () => drawer.iaDrawerIsOpen,
+    (isOpen) => {
+      if (isOpen) {
+        scrollToBottom();
+      }
     }
-  });
+  );
 
   // Scroll para baixo quando novas mensagens chegam
-  watch(() => messages.value.length, () => {
-    scrollToBottom();
-  });
+  watch(
+    () => messages.value.length,
+    () => {
+      scrollToBottom();
+    }
+  );
 </script>
 
 <template>
@@ -71,7 +77,6 @@
 </template>
 
 <style lang="scss" scoped>
-
   :deep(.text-body-1 strong) {
     font-weight: 700 !important;
     color: inherit !important;
@@ -112,19 +117,18 @@
     text-align: center;
   }
 
-.chat-container {
-  overflow-y: auto;
-  height: 100%;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  font-weight: 500;
-}
+  .chat-container {
+    overflow-y: auto;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+  }
 
-.chat-container > div:first-child {
-  margin-top: auto;
-}
-
+  .chat-container > div:first-child {
+    margin-top: auto;
+  }
 
   :deep(.v-navigation-drawer__content) {
     overflow-y: hidden !important;

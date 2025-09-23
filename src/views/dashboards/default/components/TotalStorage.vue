@@ -232,7 +232,7 @@
 </template>
 
 <style scoped>
-.mobile-storage {
-  font-size: 1.2rem !important;
-}
+  .mobile-storage {
+    font-size: 1.2rem !important;
+  }
 </style>

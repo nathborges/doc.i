@@ -1,12 +1,11 @@
 <template>
   <div class="d-flex mb-3" :class="{ 'justify-end': isMine, 'justify-start': !isMine }">
-
     <!-- Bubble da mensagem -->
     <div
       class="chat-bubble px-3 py-2"
       :class="{
         'chat-bubble--mine': isMine,
-        'chat-bubble--other': !isMine
+        'chat-bubble--other': !isMine,
       }"
     >
       <div class="text-body-1 first-letter-capitalize" v-html="displayText"></div>
@@ -20,89 +19,92 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
-import { RobotIcon } from 'vue-tabler-icons';
+  import { ref, onMounted, watch } from 'vue';
+  import { RobotIcon } from 'vue-tabler-icons';
 
-const props = defineProps({
-  message: {
-    type: Object,
-    required: true // { text: '...', time: 'HH:mm' }
-  },
-  isMine: {
-    type: Boolean,
-    default: false
-  },
-  avatar: {
-    type: String,
-    default: ''
-  },
-  showTypewriter: {
-    type: Boolean,
-    default: false
-  }
-});
-
-const displayText = ref('');
-
-const wordByWord = () => {
-  if (props.isMine || !props.showTypewriter) {
-    displayText.value = props.message.text;
-    return;
-  }
-  
-  displayText.value = '';
-  const words = props.message.text.split(' ');
-  
-  words.forEach((word, index) => {
-    setTimeout(() => {
-      displayText.value += (index > 0 ? ' ' : '') + word;
-    }, index * 150);
+  const props = defineProps({
+    message: {
+      type: Object,
+      required: true, // { text: '...', time: 'HH:mm' }
+    },
+    isMine: {
+      type: Boolean,
+      default: false,
+    },
+    avatar: {
+      type: String,
+      default: '',
+    },
+    showTypewriter: {
+      type: Boolean,
+      default: false,
+    },
   });
-};
 
-onMounted(() => {
-  wordByWord();
-});
+  const displayText = ref('');
 
-watch(() => props.message.text, () => {
-  wordByWord();
-});
+  const wordByWord = () => {
+    if (props.isMine || !props.showTypewriter) {
+      displayText.value = props.message.text;
+      return;
+    }
+
+    displayText.value = '';
+    const words = props.message.text.split(' ');
+
+    words.forEach((word, index) => {
+      setTimeout(() => {
+        displayText.value += (index > 0 ? ' ' : '') + word;
+      }, index * 150);
+    });
+  };
+
+  onMounted(() => {
+    wordByWord();
+  });
+
+  watch(
+    () => props.message.text,
+    () => {
+      wordByWord();
+    }
+  );
 </script>
 
 <style scoped>
-.chat-bubble {
-  max-width: 75%;
-  border-radius: 18px;
-  word-wrap: break-word;
-  position: relative;
-  font-weight: 600;
-}
+  .chat-bubble {
+    max-width: 75%;
+    border-radius: 18px;
+    word-wrap: break-word;
+    position: relative;
+    font-weight: 600;
+  }
 
-.chat-bubble--mine {
-  background: #f5f5f5;
-  color: #333;
-  border-bottom-right-radius: 4px;
-}
+  .chat-bubble--mine {
+    background: #f5f5f5;
+    color: #333;
+    border-bottom-right-radius: 4px;
+  }
 
-.chat-bubble--other {
-  background: linear-gradient(135deg, #eef2f6 0%, #ede7f6 100%);
-  color: #333;
-  border-bottom-left-radius: 4px;
-}
+  .chat-bubble--other {
+    background: linear-gradient(135deg, #eef2f6 0%, #ede7f6 100%);
+    color: #333;
+    border-bottom-left-radius: 4px;
+  }
 
-.chat-bubble--mine .text-caption {
-  color: rgba(0, 0, 0, 0.6);
-}
+  .chat-bubble--mine .text-caption {
+    color: rgba(0, 0, 0, 0.6);
+  }
 
-.chat-bubble--other .text-caption {
-  color: rgba(0, 0, 0, 0.6);
-}
+  .chat-bubble--other .text-caption {
+    color: rgba(0, 0, 0, 0.6);
+  }
 
-:deep(strong) {
-  font-weight: 600;
-}
+  :deep(strong) {
+    font-weight: 600;
+  }
 
-.first-letter-capitalize::first-letter {
-  text-transform: uppercase;
-}
+  .first-letter-capitalize::first-letter {
+    text-transform: uppercase;
+  }
 </style>

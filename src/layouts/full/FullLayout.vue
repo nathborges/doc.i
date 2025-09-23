@@ -7,20 +7,20 @@
   import { useDrawerStore } from '@/stores/drawer';
   import { useSearchStore } from '@/stores/search';
   import { computed } from 'vue';
-  
+
   const drawer = useDrawerStore();
   const searchStore = useSearchStore();
-  
+
   const shouldShake = computed(() => {
     return searchStore.newSearch;
   });
 
   const openDrawer = () => {
     searchStore.setNewSearchFalse();
-    console.log(searchStore.newSearch)
+    console.log(searchStore.newSearch);
 
     drawer.SET_IA_DRAWER(true);
-  };  
+  };
 </script>
 
 <template>
@@ -36,7 +36,7 @@
             <RouterView />
             <v-btn
               class="ia-btn"
-              :class="{ 'shake': shouldShake }"
+              :class="{ shake: shouldShake }"
               size="x-large"
               icon
               variant="flat"
@@ -54,16 +54,30 @@
 </template>
 
 <style scoped>
-.shake {
-  animation: pulse-shake 1.5s infinite;
-}
+  .shake {
+    animation: pulse-shake 1.5s infinite;
+  }
 
-@keyframes pulse-shake {
-  0%, 70%, 100% { transform: scale(1) translateX(0); }
-  10% { transform: scale(1.05) translateX(-2px); }
-  20% { transform: scale(1.05) translateX(2px); }
-  30% { transform: scale(1.05) translateX(-2px); }
-  40% { transform: scale(1.05) translateX(2px); }
-  50% { transform: scale(1) translateX(0); }
-}
+  @keyframes pulse-shake {
+    0%,
+    70%,
+    100% {
+      transform: scale(1) translateX(0);
+    }
+    10% {
+      transform: scale(1.05) translateX(-2px);
+    }
+    20% {
+      transform: scale(1.05) translateX(2px);
+    }
+    30% {
+      transform: scale(1.05) translateX(-2px);
+    }
+    40% {
+      transform: scale(1.05) translateX(2px);
+    }
+    50% {
+      transform: scale(1) translateX(0);
+    }
+  }
 </style>

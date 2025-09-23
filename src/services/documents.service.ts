@@ -60,7 +60,7 @@ export const DocumentsService = {
       }
 
       const formData = new FormData();
-      files.forEach(file => {
+      files.forEach((file) => {
         formData.append('files', file);
       });
 

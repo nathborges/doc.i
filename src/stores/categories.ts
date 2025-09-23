@@ -112,7 +112,6 @@ export const useCategoriesStore = defineStore({
         this.deletingCategory = true;
         await CategoriesService.deleteCategory(categoryId);
         this.categories = this.categories.filter((cat) => cat.id !== categoryId);
-
       } catch (error) {
         await this.loadCategories();
         this.error = 'Erro ao deletar categoria';
