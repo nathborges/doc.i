@@ -75,7 +75,6 @@
       </v-btn>
       <v-btn
         color="lighterror"
-        v-if="searchStore.isAnActiveSearch"
         icon
         rounded="sm"
         variant="flat"

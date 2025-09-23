@@ -6,6 +6,7 @@ export const useSearchStore = defineStore('search', {
   state: () => ({
     currentResult: null as SearchResult | null,
     searchHistory: [] as SearchResult[],
+    chatMessages: [] as Array<{ text: string; time: string; isMine: boolean; query?: string }>,
     isLoading: false,
     isExportLoading: false,
     isAnActiveSearch: false,
@@ -18,6 +19,20 @@ export const useSearchStore = defineStore('search', {
       this.isLoading = true;
       this.error = null;
 
+      // Adiciona mensagem do usuário
+      const userTime = new Date().toLocaleString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+      this.chatMessages.push({
+        text: query,
+        time: userTime,
+        isMine: true,
+        query: query
+      });
+
       try {
         const response = await SearchService.search(query, categoryId);
 
@@ -28,6 +43,22 @@ export const useSearchStore = defineStore('search', {
           timestamp: new Date(),
         };
         this.isAnActiveSearch = true;
+
+        // Adiciona resposta da IA
+        const aiTime = new Date().toLocaleString('pt-BR', {
+          day: '2-digit',
+          month: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+        });
+        this.chatMessages.push({
+          text: response.answer
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\\_/g, '_')
+            .replace(/\n/g, '<br>'),
+          time: aiTime,
+          isMine: false
+        });
 
         this.currentResult = result;
         this.searchHistory.unshift(result);

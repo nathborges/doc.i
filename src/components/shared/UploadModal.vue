@@ -55,14 +55,13 @@
   watch(
     () => props.modelValue,
     (isOpen) => {
-      if (isOpen) categoriesStore.loadCategories();
+      if (isOpen) {
+        categoriesStore.loadCategories();
+        const categoryId = router.currentRoute.value.params.id;
+        selectedCategory.value = Array.isArray(categoryId) ? (categoryId[0] ?? '') : (categoryId ?? '');
+      }
     }
   );
-
-  onMounted(() => {
-    const categoryId = router.currentRoute.value.params.id;
-    selectedCategory.value = Array.isArray(categoryId) ? (categoryId[0] ?? '') : (categoryId ?? '');
-  });
 </script>
 
 <template>

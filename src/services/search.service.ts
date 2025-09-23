@@ -39,10 +39,14 @@ const handleError = (error: any, context: string) => {
 };
 
 export const SearchService = {
+  capitalizeQuery(query: string): string {
+    return query.charAt(0).toUpperCase() + query.slice(1).toLowerCase();
+  },
+
   async search(query: string, categoryId: string | null): Promise<SearchResponse> {
     try {
       const searchData: SearchRequest = {
-        query,
+        query: this.capitalizeQuery(query),
         limit: 10,
       };
 

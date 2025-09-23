@@ -1,13 +1,34 @@
 <script setup lang="ts">
   import { useDrawerStore } from '@/stores/drawer';
   import { useSearchStore } from '@/stores/search';
-  import { RobotIcon } from 'vue-tabler-icons';
-  import { computed } from 'vue';
+  import { computed, watch, nextTick, ref } from 'vue';
+  import ChatBubble from '@/components/shared/ChatBubble.vue';
 
   const drawer = useDrawerStore();
   const search = useSearchStore();
+  const chatContainer = ref<HTMLElement>();
 
-  const answers = computed(() => (search.formattedAnswers || []).slice().reverse());
+  const messages = computed(() => search.chatMessages || []);
+
+  const scrollToBottom = () => {
+    nextTick(() => {
+      if (chatContainer.value) {
+        chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+      }
+    });
+  };
+
+  // Scroll para baixo quando drawer abre
+  watch(() => drawer.iaDrawerIsOpen, (isOpen) => {
+    if (isOpen) {
+      scrollToBottom();
+    }
+  });
+
+  // Scroll para baixo quando novas mensagens chegam
+  watch(() => messages.value.length, () => {
+    scrollToBottom();
+  });
 </script>
 
 <template>
@@ -32,42 +53,23 @@
       </div>
       <v-divider />
 
-      <div v-if="answers.length === 0" class="text-center text-disabled py-8 h-100">
+      <div v-if="messages.length === 0" class="text-center text-disabled py-8 h-100">
         <div class="text-body-1 font-weight-regular">Nenhuma conversa ainda.</div>
         <div class="text-caption font-weight-regular">Faça uma busca com IA para começar</div>
       </div>
-      <perfect-scrollbar class="d-flex flex-column justify-end flex-grow-1 pa-5">
-        <div v-for="(answer, index) in answers" :key="index" class="mb-4">
-          <div class="d-flex align-start">
-            <v-btn
-              size="small"
-              icon
-              variant="flat"
-              color="secondary"
-              class="flex-shrink-0 mt-1 mr-3"
-            >
-              <RobotIcon />
-            </v-btn>
-            <v-card class="flex-grow-1" variant="tonal" color="primary" rounded="lg">
-              <v-card-text class="pa-3">
-                <div class="text-body-1 mb-2 text-on-primary" v-html="answer.content"></div>
-                <div class="text-caption text-on-primary opacity-75 text-right">
-                  {{ answer.timestamp }}
-                </div>
-              </v-card-text>
-            </v-card>
-          </div>
+      <div ref="chatContainer" class="chat-container flex-grow-1 pa-5">
+        <div v-for="(message, index) in messages" :key="index">
+          <ChatBubble
+            :message="{ text: message.text, time: message.time }"
+            :is-mine="message.isMine"
+          />
         </div>
-      </perfect-scrollbar>
+      </div>
     </div>
   </v-navigation-drawer>
 </template>
 
 <style lang="scss" scoped>
-  :deep(.v-card-text strong) {
-    font-weight: 700 !important;
-    color: inherit !important;
-  }
 
   :deep(.text-body-1 strong) {
     font-weight: 700 !important;
@@ -79,7 +81,14 @@
     text-align: center;
   }
 
+  :deep(.v-card) {
+    background-color: #0f5d2e;
+    color: white !important;
+  }
+
   :deep(.v-card-text) {
+    color: white;
+    font-weight: 600;
     strong {
       font-weight: 700 !important;
       color: inherit !important;
@@ -100,5 +109,20 @@
   .label {
     flex: 1;
     text-align: center;
+  }
+
+  .chat-container {
+    overflow-y: scroll;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    justify-items: end;
+    font-weight: 500;
+  }
+
+  :deep(.v-navigation-drawer__content) {
+    overflow-y: hidden !important;
   }
 </style>
