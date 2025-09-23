@@ -47,7 +47,7 @@ export const SearchService = {
     try {
       const searchData: SearchRequest = {
         query: this.capitalizeQuery(query),
-        limit: 100,
+        limit: 60,
       };
 
       if (categoryId) {
