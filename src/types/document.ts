@@ -1,8 +1,8 @@
 export interface Document {
   id: string;
   fileName: string;
-  fileSize: number;
+  fileSize: string;
   fileLocation: string;
   createdAt: string;
-  categoryId: string;
+  pointId: string;
 }

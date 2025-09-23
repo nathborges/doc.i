@@ -33,6 +33,12 @@
     { name: 'SettingsIcon', component: categoryIconMap.SettingsIcon, title: 'Configurações' },
   ];
 
+  const availableColors = [
+    '#0d47a1', '#2e7d32', '#e65100', '#b71c1c',
+    '#4a148c', '#263238', '#ad1457',
+    '#bf360c', '#3e2723', '#6a1b9a'
+  ];
+
   const closeModal = () => {
     emit('update:modelValue', false);
     resetForm();
@@ -83,42 +89,44 @@
       :maxlength="50"
     />
 
-    <div class="d-flex ga-3">
-      <v-select
-        v-model="selectedIcon"
-        :items="availableIcons"
-        item-title="title"
-        item-value="name"
-        label="Ícone"
-        variant="outlined"
-        density="compact"
-        :hide-details="true"
-        class="flex-grow-1"
-      >
-        <template v-slot:selection="{ item }">
-          <div class="d-flex align-center ga-2">
-            <component :is="item.raw.component" size="20" />
-            <span style="font-size: 0.875rem">{{ item.raw.title }}</span>
-          </div>
-        </template>
-        <template v-slot:item="{ props, item }">
-          <v-list-item v-bind="props">
-            <template v-slot:prepend>
-              <component :is="item.raw.component" size="20" class="mr-2" />
-            </template>
-          </v-list-item>
-        </template>
-      </v-select>
+    <v-select
+      v-model="selectedIcon"
+      :items="availableIcons"
+      item-title="title"
+      item-value="name"
+      label="Ícone"
+      variant="outlined"
+      density="compact"
+      :hide-details="true"
+      class="mb-4"
+    >
+      <template v-slot:selection="{ item }">
+        <div class="d-flex align-center ga-2">
+          <component :is="item.raw.component" size="20" />
+          <span style="font-size: 0.875rem">{{ item.raw.title }}</span>
+        </div>
+      </template>
+      <template v-slot:item="{ props, item }">
+        <v-list-item v-bind="props">
+          <template v-slot:prepend>
+            <component :is="item.raw.component" size="20" class="mr-2" />
+          </template>
+        </v-list-item>
+      </template>
+    </v-select>
 
-      <v-text-field
-        v-model="categoryColor"
-        type="color"
-        label="Cor"
-        variant="outlined"
-        density="compact"
-        style="max-width: 120px"
-        :hide-details="true"
-      />
+    <div class="color-selection">
+      <div class="text-caption mb-2">Cor</div>
+      <div class="d-flex flex-wrap ga-2 justify-center mb-2">
+        <div
+          v-for="color in availableColors"
+          :key="color"
+          class="color-square"
+          :class="{ 'selected': categoryColor === color }"
+          :style="{ backgroundColor: color }"
+          @click="categoryColor = color"
+        />
+      </div>
     </div>
 
     <template #footer>
@@ -142,5 +150,27 @@
   :deep(.v-list-item-title) {
     font-size: 0.875rem !important;
     font-weight: normal !important;
+  }
+
+  .color-square {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+  }
+
+  .color-square:hover {
+    transform: scale(1.1);
+  }
+
+  .color-square.selected {
+    border-color: rgba(0, 0, 0, 0.3);
+    transform: scale(1.1);
+  }
+
+  .color-selection {
+    min-width: 200px;
   }
 </style>

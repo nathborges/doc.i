@@ -1,7 +1,7 @@
 <script setup>
-  import { ref, computed } from 'vue';
+  import { ref, computed, watch } from 'vue';
   import { useRoute } from 'vue-router';
-  import { SearchIcon, BulbOffIcon, BulbIcon, XIcon } from 'vue-tabler-icons';
+  import { SearchIcon, XIcon } from 'vue-tabler-icons';
   import { useSearchStore } from '@/stores/search';
   import { useDrawerStore } from '@/stores/drawer';
 
@@ -13,28 +13,30 @@
   const searchStore = useSearchStore();
   const drawer = useDrawerStore();
   const searchQuery = ref('');
-  const isExpanded = ref(false);
 
   const categoryId = computed(() => route.params.id || null);
 
-  const handleFocus = () => {
-    isExpanded.value = true;
-  };
-
-  const handleBlur = () => {
-    if (!searchQuery.value.trim()) {
-      isExpanded.value = false;
+  watch(
+    () => searchQuery.value,
+    (newSearchQuery) => {
+      if (newSearchQuery === '') {
+        searchStore.clearIsAnActiveSearch();
+      }
     }
-  };
+  );
+
+  const cleanSearch = () => {
+    searchQuery.value = '';
+    searchStore.clearIsAnActiveSearch();
+    props.closesearch();
+  };  
 
   const handleSearch = async () => {
     if (!searchQuery.value.trim() || searchStore.isLoading) return;
 
     try {
       await searchStore.performSearch(searchQuery.value, categoryId.value);
-      searchQuery.value = '';
       drawer.SET_IA_DRAWER(true);
-      isExpanded.value = false;
     } catch (error) {
       console.error('Erro na busca:', error);
     }
@@ -45,13 +47,11 @@
   <v-text-field
     v-model="searchQuery"
     persistent-placeholder
-    placeholder="Busque arquivos, categorias ou insights da IA..."
+    placeholder="Busque arquivos ou insights da IA..."
     color="primary"
     variant="outlined"
     hide-details
     @keyup.enter="handleSearch"
-    @focus="handleFocus"
-    @blur="handleBlur"
   >
     <template v-slot:append-inner>
       <v-btn
@@ -74,12 +74,13 @@
       </v-btn>
       <v-btn
         color="lighterror"
+        v-if="searchStore.isAnActiveSearch"
         icon
         rounded="sm"
         variant="flat"
         size="small"
-        class="text-error SearchSetting ml-3 d-block d-lg-none"
-        @click="props.closesearch"
+        class="text-error SearchSetting ml-3 d-block"
+        @click="cleanSearch"
       >
         <XIcon stroke-width="1.5" size="20" />
       </v-btn>

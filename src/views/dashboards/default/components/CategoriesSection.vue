@@ -88,7 +88,7 @@
                     </div>
                   </template>
                 </v-tooltip>
-                <div class="text-caption text-disabled mt-1 text-lightText">
+                <div class="text-caption text-disabled mt-1 text-white">
                   {{ category.totalDocuments }} arquivos
                 </div>
               </v-card-text>

@@ -1,36 +1,20 @@
 <script setup lang="ts">
-  // imported components
-  import TotalEarning from './components/TotalEarning.vue';
-  import TotalOrder from './components/TotalOrder.vue';
-  import TotalIncome from './components/TotalIncome.vue';
+  import TotalAnalized from './components/TotalAnalized.vue';
+  import TotalStorage from './components/TotalStorage.vue';
   import CategoriesSection from './components/CategoriesSection.vue';
-  import PopularStocks from './components/PopularStocks.vue';
 </script>
 
 <template>
   <v-row>
-    <!-- -------------------------------------------------------------------- -->
-    <!-- Total Earning -->
-    <!-- -------------------------------------------------------------------- -->
-    <v-col cols="12" md="4">
-      <TotalEarning />
+    <v-col cols="6">
+      <TotalAnalized />
     </v-col>
-    <!-- -------------------------------------------------------------------- -->
-    <!-- Total Order -->
-    <!-- -------------------------------------------------------------------- -->
-    <v-col cols="12" md="4">
-      <TotalOrder />
+    <v-col cols="6">
+      <TotalStorage />
     </v-col>
-    <!-- -------------------------------------------------------------------- -->
-    <!-- Total Income -->
-    <!-- -------------------------------------------------------------------- -->
-    <v-col cols="12" md="4">
+    <!-- <v-col cols="12" md="4">
       <TotalIncome />
-    </v-col>
-
-    <!-- -------------------------------------------------------------------- -->
-    <!-- Categories Section -->
-    <!-- -------------------------------------------------------------------- -->
+    </v-col> -->
     <v-col cols="12">
       <CategoriesSection />
     </v-col>

@@ -5,15 +5,19 @@
 
   import ProfileDD from './ProfileDD.vue';
   import Searchbar from './SearchBarPanel.vue';
+import { useSearchStore } from '@/stores/search';
 
-  const drawer = useDrawerStore();
+  const drawerStore = useDrawerStore();
+  const searchStore = useSearchStore();
+
   const showSearch = ref(false);
   function searchbox() {
+    searchStore.clearIsAnActiveSearch()
     showSearch.value = !showSearch.value;
   }
 
   const shouldShowProfile = computed(() => {
-    if (drawer.iaDrawerIsOpen) {
+    if (drawerStore.iaDrawerIsOpen) {
       return false;
     }
     return true;
@@ -28,7 +32,7 @@
       icon
       rounded="sm"
       variant="flat"
-      @click.stop="drawer.SET_SIDEBAR_DRAWER"
+      @click.stop="drawerStore.SET_SIDEBAR_DRAWER"
       size="small"
     >
       <Menu2Icon size="20" stroke-width="1.5" />

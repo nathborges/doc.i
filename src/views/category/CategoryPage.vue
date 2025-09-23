@@ -1,10 +1,25 @@
 <template>
-  <UiParentCard :title="`Categorias > ${categoryName}`" class="w-100 h-100">
+  <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
     <template v-slot:action>
       <v-chip v-if="!mobile" size="small" color="primary" variant="tonal">
         {{ documents.length }} arquivos
       </v-chip>
     </template>
+
+    <div class="d-flex justify-space-between align-center mb-4">
+        <h4 class="text-h4">{{ tableTitle }}</h4>
+        <div class="d-flex">
+                  <v-btn v-if="isSearchMode" color="primary" variant="text" @click="openReportModal">
+          Exportar
+        </v-btn>
+        <v-btn v-if="isSearchMode && !mobile" color="primary" variant="text" @click="searchStore.clearIsAnActiveSearch()">
+          Limpar filtro
+        </v-btn>
+
+        </div>
+
+      </div>
+
     
     <!-- Loading State -->
     <div v-if="loading" class="d-flex flex-column justify-center align-center h-100" style="height: 60vh">
@@ -14,19 +29,12 @@
 
     <!-- Content -->
     <div v-else class="d-flex flex-column h-100">
-      <!-- Header -->
-      <div class="d-flex justify-space-between align-center mb-4">
-        <h4 class="text-h4">Resultados da pesquisa</h4>
-        <v-btn color="primary" variant="text">
-          Exportar
-        </v-btn>
-      </div>
-      
-      <!-- Data Table -->
       <v-data-table 
         :headers="headers" 
         :items="documents"
-        :items-per-page="10" 
+        :items-per-page="-1"
+        hide-default-footer
+
         :loading="loading"
         class="elevation-0 flex-grow-1" 
         height="100%"
@@ -91,27 +99,37 @@
       </v-data-table>
     </div>
   </UiParentCard>
-
-  <UploadModal v-model="uploadModalOpen" :category-id="categoryId" @upload="onFileUploaded" />
+  <ReportModal v-model="showModal" @confirm="exportReport" />
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
-import { CategoriesService } from '@/services/categories.service';
+import { useCategoriesStore } from '@/stores/categories';
 import { DownloadIcon, TrashIcon, FileFilledIcon } from 'vue-tabler-icons';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
-import UploadModal from '@/components/shared/UploadModal.vue';
-import { formatFileSize } from '@/utils/formatter';
+import { formatFileSize, formatDate } from '@/utils/formatter';
+import ReportModal from '@/components/shared/ReportModal.vue';
+import { useSearchStore } from '@/stores/search';
 
 const route = useRoute();
 const { mobile } = useDisplay();
+const categoriesStore = useCategoriesStore();
+const searchStore = useSearchStore();
 const categoryId = ref(route.params.id as string);
-const categoryName = ref('Carregando...');
-const documents = ref<any[]>([]);
-const loading = ref(true);
-const uploadModalOpen = ref(false);
+const showModal = ref(false);
+
+// Computeds centralizados
+const isSearchMode = computed(() => searchStore.isAnActiveSearch);
+const categoryName = computed(() => categoriesStore.getCategoryName(categoryId.value));
+const documents = computed(() => 
+  categoriesStore.getFilteredDocuments(searchStore.lastSearchFileNames, isSearchMode.value)
+);
+const loading = computed(() => categoriesStore.documentsLoading);
+const tableTitle = computed(() => 
+  isSearchMode.value ? 'Resultados da busca:' : 'Arquivos da categoria'
+);
 
 const headers = computed(() => {
   const baseHeaders = [
@@ -134,52 +152,39 @@ const headers = computed(() => {
   return baseHeaders;
 });
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+
+
+const openReportModal = () => {
+  showModal.value = true;
+};
+
+const exportReport = async (tags: string) => {
+  const content = isSearchMode.value 
+    ? searchStore.lastSearchFileNames.map(file => file.plainText).join('\n\n')
+    : '';
+  await searchStore.exportReport(tags, content);
+  showModal.value = false;
 };
 
 const deleteDocument = async (documentId: string) => {
   try {
-    // TODO: Implementar chamada para deletar documento
-    // await DocumentService.deleteDocument(documentId)
-    documents.value = documents.value.filter((doc: any) => doc.id !== documentId);
+    await categoriesStore.deleteDocument(documentId);
   } catch (error) {
     console.error('Erro ao deletar documento:', error);
   }
 };
 
-const onFileUploaded = () => {
-  loadCategoryAndDocuments();
-};
-
-const loadCategoryAndDocuments = async () => {
+// Função simplificada
+const initializePage = async () => {
   try {
-    const categories = await CategoriesService.getCategories();
-    const category = categories.find((cat: any) => cat.id === categoryId.value);
-    
-    if (category) {
-      categoryName.value = category.name.charAt(0).toUpperCase() + category.name.slice(1).toLowerCase();
-    }
-
-    const docs = await CategoriesService.getDocumentsByCategory(categoryId.value);
-    documents.value = docs;
+    searchStore.clearIsAnActiveSearch();
+    await categoriesStore.initializeCategoryPage(categoryId.value);
   } catch (error) {
     console.error('Erro ao carregar dados:', error);
-    categoryName.value = 'Categoria não encontrada';
-  } finally {
-    loading.value = false;
   }
 };
 
-onMounted(() => {
-  loadCategoryAndDocuments();
-});
+onMounted(initializePage);
 </script>
 
 <style lang="scss">

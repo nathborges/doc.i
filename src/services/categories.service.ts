@@ -71,7 +71,7 @@ export const CategoriesService = {
 
       const sanitizedData = {
         name: categoryData.name.trim(),
-        description: categoryData.description?.trim() || '',
+        description: categoryData.description?.trim() || 'Sem descrição',
         color: categoryData.color.trim(),
         iconName: categoryData.iconName.trim(),
       };
@@ -101,4 +101,17 @@ export const CategoriesService = {
       return [];
     }
   },
+
+  async deleteDocument(documentId: string): Promise<void> {
+    try {
+      if (!documentId?.trim()) throw new Error('ID do documento é obrigatório');
+      if (!API_URL) throw new Error('API URL não configurada');
+
+      await axios.delete(`${API_URL}/documents/${documentId.trim()}`);
+    } catch (error) {
+      handleError(error, 'Delete document');
+    }
+  },
+
+
 };

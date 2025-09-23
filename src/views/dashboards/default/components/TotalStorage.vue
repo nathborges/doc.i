@@ -1,12 +1,24 @@
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
+  import { ref, computed, onMounted } from 'vue';
   import {
     ArrowDownLeftCircleIcon,
-    ShoppingCartIcon,
+    DatabaseIcon,
     CircleArrowDownLeftIcon,
   } from 'vue-tabler-icons';
+  import { UserService } from '@/services/user.service';
+  import type { User } from '@/types/user';
 
   const tab = ref('1');
+  const user = ref<User | null>(null);
+
+  onMounted(async () => {
+    try {
+      const response = await UserService.getUserProfile();
+      user.value = response;
+    } catch (error) {
+      console.error('Erro ao carregar perfil:', error);
+    }
+  });
 
   const chartOptions1 = computed(() => {
     return {
@@ -45,7 +57,7 @@
         },
         y: {
           title: {
-            formatter: () => 'Pedidos Totais',
+            formatter: () => 'Armazenamento usado (GB):',
           },
         },
         marker: {
@@ -60,7 +72,7 @@
     series: [
       {
         name: 'series1',
-        data: [45, 66, 41, 89, 25, 44, 9, 54],
+        data: [0, 1, 6, 7, 2, 10, 9, 2],
       },
     ],
   };
@@ -129,7 +141,7 @@
     <v-card-text>
       <div class="d-flex align-start mb-3">
         <v-btn icon rounded="sm" color="darkprimary" variant="flat">
-          <ShoppingCartIcon stroke-width="1.5" width="20" />
+          <DatabaseIcon stroke-width="1.5" width="20" />
         </v-btn>
         <div class="ml-auto z-1">
           <v-tabs v-model="tab" class="theme-tab" density="compact" align-tabs="end">
@@ -143,12 +155,12 @@
           <v-row>
             <v-col cols="6">
               <h2 class="text-h1 font-weight-medium">
-                $108
+                {{ user?.totalStorageUsed || '0' }} MB
                 <a href="#">
                   <CircleArrowDownLeftIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
-              <span class="text-subtitle-1 text-medium-emphasis text-white">Pedidos Totais</span>
+              <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento utilizado</span>
             </v-col>
             <v-col cols="6">
               <apexchart
@@ -164,12 +176,12 @@
           <v-row>
             <v-col cols="6">
               <h2 class="text-h1 font-weight-medium">
-                $961
+                {{ user?.totalStorageUsed || '0' }} MB
                 <a href="#">
                   <ArrowDownLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
-              <span class="text-subtitle-1 text-medium-emphasis text-white">Pedidos Totais</span>
+              <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento Usado</span>
             </v-col>
             <v-col cols="6">
               <apexchart
