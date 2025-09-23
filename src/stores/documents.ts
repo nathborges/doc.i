@@ -11,12 +11,15 @@ export const useDocumentsStore = defineStore({
   actions: {
     async uploadDocuments(files: File | File[], categoryId: string) {
       try {
+        this.uploading = true;
         const fileArray = Array.isArray(files) ? files : [files];
         await DocumentsService.uploadDocuments(fileArray, categoryId);
       } catch (error) {
         this.error = 'Erro durante o upload dos arquivos';
         console.error('Erro no upload:', error);
         throw error;
+      } finally {
+        this.uploading = false;
       }
     },
 

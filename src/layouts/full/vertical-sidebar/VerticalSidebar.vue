@@ -70,6 +70,8 @@
       estimatedTime.value = data.files.length * 3;
       await documentsStore.uploadDocuments(data.files, data.categoryId);
       uploadModal.value = false;
+      // Reload files after upload
+      router.go(0);
     } catch (error) {
       console.error('Error uploading file:', error);
     }
