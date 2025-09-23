@@ -2,6 +2,7 @@
   import { ref, computed } from 'vue';
   import { useDrawerStore } from '../../../stores/drawer';
   import { SettingsIcon, SearchIcon, Menu2Icon } from 'vue-tabler-icons';
+  import { useRoute } from 'vue-router';
 
   import ProfileDD from './ProfileDD.vue';
   import Searchbar from './SearchBarPanel.vue';
@@ -9,6 +10,7 @@
 
   const drawerStore = useDrawerStore();
   const searchStore = useSearchStore();
+  const route = useRoute();
 
   const showSearch = ref(false);
   function searchbox() {
@@ -21,6 +23,10 @@
       return false;
     }
     return true;
+  });
+
+  const isOnCategoryPage = computed(() => {
+    return route.name === 'CategoryPage' || route.path.startsWith('/category/');
   });
 </script>
 
@@ -40,6 +46,7 @@
 
     <!-- search mobile -->
     <v-btn
+      v-if="isOnCategoryPage"
       class="hidden-lg-and-up text-secondary ml-3"
       color="lightsecondary"
       icon
@@ -51,7 +58,7 @@
       <SearchIcon size="17" stroke-width="1.5" />
     </v-btn>
 
-    <v-sheet v-if="showSearch" class="search-sheet v-col-12">
+    <v-sheet v-if="showSearch && isOnCategoryPage" class="search-sheet v-col-12">
       <Searchbar :closesearch="searchbox" />
     </v-sheet>
 
@@ -59,7 +66,7 @@
     <!-- Search part -->
     <!-- ---------------------------------------------- -->
     <!-- Search part -->
-    <v-sheet class="mx-3 d-none d-lg-block w-33">
+    <v-sheet v-if="isOnCategoryPage" class="mx-3 d-none d-lg-block w-33">
       <Searchbar />
     </v-sheet>
 

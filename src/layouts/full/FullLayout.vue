@@ -12,8 +12,7 @@
   const searchStore = useSearchStore();
   
   const shouldShake = computed(() => {
-    console.log('shouldShake:', searchStore.shouldShake);
-    return searchStore.shouldShake;
+    return false;
   });
 </script>
 
@@ -49,7 +48,7 @@
 
 <style scoped>
 .shake {
-  animation: chatShake 0.8s ease-in-out;
+  animation: chatShake 0.5s ease-in-out infinite;
 }
 
 @keyframes chatShake {

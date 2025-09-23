@@ -35,37 +35,37 @@ const props = defineProps({
   avatar: {
     type: String,
     default: ''
+  },
+  showTypewriter: {
+    type: Boolean,
+    default: false
   }
 });
 
 const displayText = ref('');
 
-const typeWriter = () => {
-  if (props.isMine) {
+const wordByWord = () => {
+  if (props.isMine || !props.showTypewriter) {
     displayText.value = props.message.text;
     return;
   }
   
   displayText.value = '';
-  let i = 0;
-  const text = props.message.text;
+  const words = props.message.text.split(' ');
   
-  const timer = setInterval(() => {
-    if (i < text.length) {
-      displayText.value += text.charAt(i);
-      i++;
-    } else {
-      clearInterval(timer);
-    }
-  }, 30);
+  words.forEach((word, index) => {
+    setTimeout(() => {
+      displayText.value += (index > 0 ? ' ' : '') + word;
+    }, index * 150);
+  });
 };
 
 onMounted(() => {
-  typeWriter();
+  wordByWord();
 });
 
 watch(() => props.message.text, () => {
-  typeWriter();
+  wordByWord();
 });
 </script>
 

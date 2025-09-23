@@ -58,13 +58,16 @@
         </template>
 
         <template v-slot:item.actions="{ item }">
-          <v-btn icon size="small" variant="text" color="primary" :href="item.fileLocation" target="_blank"
-            class="mr-1">
+          <div class="d-flex gap-1">
+                      <v-btn icon size="small" variant="text" color="primary" :href="item.fileLocation" target="_blank">
             <DownloadIcon size="16" stroke-width="1.5" />
           </v-btn>
           <v-btn icon size="small" variant="text" color="error" @click="deleteDocument(item.id)">
             <TrashIcon size="16" stroke-width="1.5" />
           </v-btn>
+
+          </div>
+
         </template>
       </v-data-table>
     </div>
@@ -197,12 +200,15 @@ watch(
 
 .v-data-table__wrapper {
   min-height: 50vh !important;
-  ;
   height: 50vh !important;
   overflow-y: auto !important;
 }
 
 :deep(.v-card-text) {
   height: 75vh !important;
+}
+
+:deep(.v-data-table__wrapper) {
+  scroll-behavior: smooth;
 }
 </style>

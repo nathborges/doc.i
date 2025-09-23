@@ -62,6 +62,7 @@
           <ChatBubble
             :message="{ text: message.text, time: message.time }"
             :is-mine="message.isMine"
+            :show-typewriter="!message.isMine && index === messages.length - 1"
           />
         </div>
       </div>

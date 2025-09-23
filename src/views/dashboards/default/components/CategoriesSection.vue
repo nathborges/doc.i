@@ -172,6 +172,7 @@
 
   .category-card {
     min-width: 200px;
+    max-width: 200px;
     flex-shrink: 1;
     height: 160px;
   }
