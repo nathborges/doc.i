@@ -74,6 +74,7 @@ export const useSearchStore = defineStore('search', {
         throw error;
       } finally {
         this.isLoading = false;
+        this.isAnActiveSearch = false;
       }
     },
 
