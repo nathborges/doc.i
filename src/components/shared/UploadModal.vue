@@ -19,6 +19,25 @@
   const selectedFiles = ref<File[]>([]);
   const selectedCategory = ref('');
   const fileInput = ref<HTMLInputElement>();
+  const isDragOver = ref(false);
+
+  const handleDrop = (event: DragEvent) => {
+    event.preventDefault();
+    isDragOver.value = false;
+    const files = event.dataTransfer?.files;
+    if (files) {
+      selectedFiles.value = Array.from(files).slice(0, 10);
+    }
+  };
+
+  const handleDragOver = (event: DragEvent) => {
+    event.preventDefault();
+    isDragOver.value = true;
+  };
+
+  const handleDragLeave = () => {
+    isDragOver.value = false;
+  };
 
   const closeModal = () => {
     emit('update:modelValue', false);
@@ -34,7 +53,7 @@
   const handleFileSelect = (event: Event) => {
     const files = (event.target as HTMLInputElement).files;
     if (files) {
-      selectedFiles.value = Array.from(files).slice(0, 10);
+      selectedFiles.value = Array.from(files).slice(0, 100);
     }
   };
 
@@ -86,14 +105,20 @@
       class="mb-4"
     />
 
-    <v-card variant="outlined" class="upload-area">
-      <div class="upload-content pa-3 pr-0" @click="selectFiles">
+    <v-card variant="outlined" class="upload-area" :class="{ 'drag-over': isDragOver }">
+      <div 
+        class="upload-content pa-3 pr-0" 
+        @click="selectFiles"
+        @drop="handleDrop"
+        @dragover="handleDragOver"
+        @dragleave="handleDragLeave"
+      >
         <div
           v-if="selectedFiles.length <= 0"
           class="text-center h-100 d-flex flex-column align-center justify-center"
         >
           <CloudUploadIcon size="48" class="text-primary" />
-          <div class="text-h6 mb-2">Clique para selecionar arquivos</div>
+          <div class="text-h6 mb-2">Arraste arquivos ou clique para selecionar</div>
           <div class="text-caption text-disabled">PDF, DOC, DOCX, TXT, JPG, PNG</div>
           <div class="text-caption text-disabled mt-1">Máximo: 10 arquivos, 10MB cada</div>
         </div>

@@ -9,7 +9,7 @@
         'chat-bubble--other': !isMine
       }"
     >
-      <div class="text-body-2" v-html="message.text"></div>
+      <div class="text-body-1 first-letter-capitalize" v-html="message.text"></div>
       <div class="text-caption mt-1 opacity-70" :class="{ 'text-right': isMine }">
         {{ message.time }}
       </div>
@@ -69,5 +69,9 @@ defineProps({
 
 :deep(strong) {
   font-weight: 600;
+}
+
+.first-letter-capitalize::first-letter {
+  text-transform: uppercase;
 }
 </style>

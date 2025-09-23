@@ -50,7 +50,6 @@ export const SearchService = {
         limit: 100,
       };
 
-      // Add categoryId only if provided
       if (categoryId) {
         searchData.categoryId = categoryId;
       }
