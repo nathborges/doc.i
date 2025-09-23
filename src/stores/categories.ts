@@ -145,12 +145,6 @@ export const useCategoriesStore = defineStore({
       this.error = null;
     },
 
-    async initializeCategoryPage(categoryId: string) {
-      await this.loadCategories();
-      await this.loadDocumentsByCategory(categoryId);
-      return this.getCategoryById(categoryId);
-    },
-
 
   },
 });

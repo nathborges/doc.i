@@ -1,7 +1,15 @@
 <script setup>
   import Icon from '../IconSet.vue';
+  import { useRoute } from 'vue-router';
+  import { computed } from 'vue';
 
   const props = defineProps({ item: Object, level: Number });
+  const route = useRoute();
+
+  const isActive = computed(() => {
+    if (!props.item.to) return false;
+    return route.path === props.item.to;
+  });
 </script>
 
 <template>
@@ -9,9 +17,10 @@
   <v-list-item
     :to="item.type === 'external' ? '' : item.to"
     :href="item.type === 'external' ? item.to : ''"
+    :active="isActive"
     rounded
     class="mb-1"
-    color="secondary"
+    :color="isActive ? 'primary' : 'secondary'"
     :disabled="item.disabled"
     :target="item.type === 'external' ? '_blank' : ''"
   >

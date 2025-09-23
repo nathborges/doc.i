@@ -16,14 +16,14 @@
 
   const categoryId = computed(() => route.params.id || null);
 
-  watch(
-    () => searchQuery.value,
-    (newSearchQuery) => {
-      if (newSearchQuery === '') {
-        searchStore.clearIsAnActiveSearch();
-      }
-    }
-  );
+  // watch(
+  //   () => searchQuery.value,
+  //   (newSearchQuery) => {
+  //     if (newSearchQuery === '') {
+  //       searchStore.clearIsAnActiveSearch();
+  //     }
+  //   }
+  // );
 
   const cleanSearch = () => {
     searchQuery.value = '';
@@ -50,6 +50,7 @@
     placeholder="Busque arquivos ou insights da IA..."
     color="primary"
     variant="outlined"
+    style="text-transform: capitalize;"
     hide-details
     @keyup.enter="handleSearch"
   >

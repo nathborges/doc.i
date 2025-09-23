@@ -7,6 +7,7 @@ export const useSearchStore = defineStore('search', {
     currentResult: null as SearchResult | null,
     searchHistory: [] as SearchResult[],
     isLoading: false,
+    isExportLoading: false,
     isAnActiveSearch: false,
     lastSearchFileNames: [] as SearchFile[],
     error: null as string | null,
@@ -59,7 +60,7 @@ export const useSearchStore = defineStore('search', {
       this.currentResult = null;
     },
     async exportReport(fields: string, content: string) {
-      this.isLoading = true;
+      this.isExportLoading = true;
       this.error = null;
       try {
         const blob = await SearchService.exportReport(fields, content);
@@ -75,7 +76,7 @@ export const useSearchStore = defineStore('search', {
         this.error = 'Erro ao exportar relatório';
         throw error;
       } finally {
-        this.isLoading = false;
+        this.isExportLoading = false;
       }
     },
 

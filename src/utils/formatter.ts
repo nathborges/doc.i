@@ -1,4 +1,5 @@
-export const formatFileSize = (bytes: string | number): string => {
+export const formatFileSize = (bytes: string | number| undefined): string => {
+  if (bytes == '0' || bytes == 0 || !bytes || bytes == undefined) return '0 GB';
   const numBytes = typeof bytes === 'string' ? parseInt(bytes) : bytes;
   if (numBytes === 0) return '0 Bytes';
   const k = 1024;

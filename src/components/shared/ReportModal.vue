@@ -5,20 +5,23 @@
 
   interface Props {
     modelValue: boolean;
+    loading?: boolean;
   }
-
-  const props = defineProps<Props>();
+  const props = withDefaults(defineProps<Props>(), {
+    loading: false
+  });
   const emit = defineEmits(['update:modelValue', 'confirm']);
   
   const tags = ref<string[]>([]);
   const tagInput = ref('');
 
-  const addTag = () => {
-    if (tagInput.value.trim() && !tags.value.includes(tagInput.value.trim())) {
-      tags.value.push(tagInput.value.trim());
-      tagInput.value = '';
-    }
-  };
+const addTag = () => {
+  const capitalizedTag = tagInput.value.trim().charAt(0).toUpperCase() + tagInput.value.trim().slice(1).toLowerCase();
+  if (capitalizedTag && !tags.value.includes(capitalizedTag)) {
+    tags.value.push(capitalizedTag);
+    tagInput.value = '';
+  }
+};
 
   const handleKeyup = (event: KeyboardEvent) => {
     if (event.key === ',') {
@@ -47,7 +50,6 @@
     };
     emit('confirm', tagsValue);
     tags.value = [];
-    closeModal();
   };
 </script>
 
@@ -89,10 +91,11 @@
           size="large"
           rounded="sm"
           class="pr-5 pl-5"
-          :disabled="tagsIsEmpty"
+          :disabled="tagsIsEmpty || props.loading"
+          :loading="props.loading"
           @click="confirmAction"
         >
-          Exportar em planilha
+          Exportar para planilha
         </v-btn>
       </div>
     </template>

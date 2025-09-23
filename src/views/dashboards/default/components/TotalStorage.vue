@@ -1,23 +1,22 @@
 <script setup lang="ts">
   import { ref, computed, onMounted } from 'vue';
   import {
-    ArrowDownLeftCircleIcon,
     DatabaseIcon,
-    CircleArrowDownLeftIcon,
+    CircleArrowUpRightIcon,
   } from 'vue-tabler-icons';
-  import { UserService } from '@/services/user.service';
-  import type { User } from '@/types/user';
+  import { useUserStore } from '@/stores/user';
+  import { formatFileSize  } from '@/utils/formatter';
 
   const tab = ref('1');
-  const user = ref<User | null>(null);
+  const userStore = useUserStore();
+
+  const storage = computed(() => {
+    if (userStore.loading) return '--';
+    return formatFileSize(userStore.user?.totalStorageUsed || 0);
+  });
 
   onMounted(async () => {
-    try {
-      const response = await UserService.getUserProfile();
-      user.value = response;
-    } catch (error) {
-      console.error('Erro ao carregar perfil:', error);
-    }
+    await userStore.loadUserProfile();
   });
 
   const chartOptions1 = computed(() => {
@@ -125,15 +124,19 @@
     };
   });
 
-  // chart 1
-  const lineChart2 = {
-    series: [
-      {
-        name: 'series1',
-        data: [35, 44, 9, 54, 45, 66, 41, 69],
-      },
-    ],
-  };
+  // chart 2
+  const lineChart2 = computed(() => {
+    const storageValue = parseInt(userStore.user?.totalStorageUsed || '0');
+    const baseValue = Math.max(storageValue, 50); // Mínimo 50 para mostrar variação
+    return {
+      series: [
+        {
+          name: 'series1',
+          data: [baseValue * 0.2, baseValue * 0.4, baseValue * 0.1, baseValue * 0.6, baseValue * 0.5, baseValue * 0.8, baseValue * 0.4, baseValue],
+        },
+      ],
+    };
+  });
 </script>
 
 <template>
@@ -155,9 +158,9 @@
           <v-row>
             <v-col cols="6">
               <h2 class="text-h1 font-weight-medium">
-                {{ user?.totalStorageUsed || '0' }} MB
+                {{ storage }}
                 <a href="#">
-                  <CircleArrowDownLeftIcon stroke-width="1.5" width="28" class="text-white" />
+                  <CircleArrowUpRightIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
               <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento utilizado</span>
@@ -176,9 +179,9 @@
           <v-row>
             <v-col cols="6">
               <h2 class="text-h1 font-weight-medium">
-                {{ user?.totalStorageUsed || '0' }} MB
+                {{ storage }}
                 <a href="#">
-                  <ArrowDownLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
+                  <ArrowUpLeftCircleIcon stroke-width="1.5" width="28" class="text-white" />
                 </a>
               </h2>
               <span class="text-subtitle-1 text-medium-emphasis text-white">Armazenamento Usado</span>

@@ -1,5 +1,6 @@
 <template>
   <UiParentCard :title="`${categoryName}`" class="w-100 h-100">
+        <!-- Overlay de loading -->
     <template v-slot:action>
       <v-chip v-if="!mobile" size="small" color="primary" variant="tonal">
         {{ documents.length }} arquivos
@@ -99,7 +100,7 @@
       </v-data-table>
     </div>
   </UiParentCard>
-  <ReportModal v-model="showModal" @confirm="exportReport" />
+  <ReportModal v-model="showModal" :loading="searchStore.isExportLoading" @confirm="exportReport" />
 </template>
 
 <script setup lang="ts">
@@ -112,6 +113,7 @@ import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { formatFileSize, formatDate } from '@/utils/formatter';
 import ReportModal from '@/components/shared/ReportModal.vue';
 import { useSearchStore } from '@/stores/search';
+import LoadingOverlay from '@/components/shared/LoadingOverlay.vue';
 
 const route = useRoute();
 const { mobile } = useDisplay();
@@ -120,7 +122,6 @@ const searchStore = useSearchStore();
 const categoryId = ref(route.params.id as string);
 const showModal = ref(false);
 
-// Computeds centralizados
 const isSearchMode = computed(() => searchStore.isAnActiveSearch);
 const categoryName = computed(() => categoriesStore.getCategoryName(categoryId.value));
 const documents = computed(() => 
@@ -153,7 +154,6 @@ const headers = computed(() => {
 });
 
 
-
 const openReportModal = () => {
   showModal.value = true;
 };
@@ -174,15 +174,18 @@ const deleteDocument = async (documentId: string) => {
   }
 };
 
-// Função simplificada
 const initializePage = async () => {
   try {
     searchStore.clearIsAnActiveSearch();
-    await categoriesStore.initializeCategoryPage(categoryId.value);
+    if (categoriesStore.categories.length === 0) {
+      await categoriesStore.loadCategories();
+    }
+    await categoriesStore.loadDocumentsByCategory(categoryId.value);
   } catch (error) {
     console.error('Erro ao carregar dados:', error);
   }
 };
+
 
 onMounted(initializePage);
 </script>
