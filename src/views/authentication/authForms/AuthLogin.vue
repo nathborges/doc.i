@@ -5,8 +5,8 @@
 
   const valid = ref(false);
   const show1 = ref(false);
-  const password = ref('123');
-  const username = ref('felopes@doc-i.com');
+  const password = ref('ZG9jLWktcGFzc3dvcmQ=');
+  const username = ref('admin@doc-i.com');
   const passwordRules = ref([
     (v: string) => !!v || 'Senha é obrigatória',
     (v: string) => (v && v.length <= 40) || 'Senha deve ter menos de 10 caracteres',
