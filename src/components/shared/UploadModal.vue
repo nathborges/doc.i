@@ -186,9 +186,6 @@
       <div v-if="props.loading && props.estimatedTime" class="text-center mt-3 mb-3">
         <v-chip color="info" size="small">Tempo estimado: ~{{ props.estimatedTime }}s</v-chip>
       </div>
-      <div v-if="true" class="text-center mt-3 mb-3">
-        <v-chip color="error" size="small">Upload será reativado após a apresentação.</v-chip>
-      </div>
     </div>
 
     <template #footer>
@@ -198,7 +195,6 @@
         variant="flat"
         size="large"
         rounded="sm"
-        :disabled="true"
         :loading="props.loading"
         @click="uploadFiles"
       >
